@@ -1,0 +1,122 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# dbt Project Configuration
+# ============================================================
+# This file configures the dbt project: model paths, materializations,
+# variables, and naming conventions. It is the single source of truth
+# for how dbt builds this project.
+# ============================================================
+
+name: 'ecommerce'
+version: '1.0.0'
+config-version: 2
+
+# Profile maps to profiles.yml (or env var DBT_PROFILES_DIR)
+profile: 'ecommerce'
+
+# ============================================================
+# PATH CONFIGURATION
+# ============================================================
+# Where dbt looks for different file types.
+# These are defaults — listed here explicitly for clarity.
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+asset-paths: ["assets"]
+
+# Compiled SQL and run artifacts go here (gitignored)
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+# ============================================================
+# VARIABLES
+# ============================================================
+# Project-level variables accessible via {{ var('variable_name') }}.
+# Override at runtime: dbt run --vars '{"currency": "EUR"}'
+
+vars:
+  # Earliest date for the date spine dimension.
+  # All date-dependent models use this as the lower bound.
+  start_date: '2024-01-01'
+
+  # Default reporting currency. Used by the currency_convert macro.
+  # Supported values: USD, EUR, GBP, CAD, AUD
+  currency: 'USD'
+
+# ============================================================
+# MODEL CONFIGURATION
+# ============================================================
+# Materialization strategy per folder. Models can override
+# individually using {{ config(materialized='...') }}.
+#
+# Strategy:
+#   staging     = view  (zero storage, always fresh)
+#   intermediate = table (reused by multiple downstream models)
+#   marts       = table (optimized for query performance)
+
+models:
+  ecommerce:
+
+    # -- STAGING LAYER --
+    # Views in ECOMMERCE_STAGING.STAGING
+    # 1:1 with raw sources. Clean, rename, cast only.
+    staging:
+      +materialized: view
+      +schema: staging
+      +tags:
+        - "staging"
+        - "daily"
+
+    # -- INTERMEDIATE LAYER --
+    # Tables in ECOMMERCE_ANALYTICS.INTERMEDIATE
+    # Joins and business logic. Reusable building blocks.
+    intermediate:
+      +materialized: table
+      +schema: intermediate
+      +tags:
+        - "intermediate"
+        - "daily"
+
+    # -- MART LAYER --
+    # Tables in ECOMMERCE_ANALYTICS.MARTS
+    # Star schema: dimensions + facts. Final consumption layer.
+    # Individual models override to 'incremental' where appropriate.
+    marts:
+      +materialized: table
+      +schema: marts
+      +tags:
+        - "marts"
+        - "daily"
+
+# ============================================================
+# SEED CONFIGURATION
+# ============================================================
+# Seeds are loaded into the target schema by default.
+# Small reference tables (< 1000 rows) only.
+
+seeds:
+  ecommerce:
+    +schema: seeds
+    currency_rates:
+      +column_types:
+        from_currency: VARCHAR(3)
+        to_currency: VARCHAR(3)
+        exchange_rate: FLOAT
+        effective_date: DATE
+
+# ============================================================
+# TEST CONFIGURATION
+# ============================================================
+# Severity levels for tests. 'warn' logs but doesn't fail the run.
+# 'error' (default) fails the run and blocks downstream models.
+
+tests:
+  ecommerce:
+    +severity: error
+    +store_failures: true

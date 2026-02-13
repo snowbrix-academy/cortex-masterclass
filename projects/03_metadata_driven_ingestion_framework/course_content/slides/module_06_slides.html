@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 06 — Semi-Structured Data | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;overflow:auto;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 06</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1>Semi-Structured Data</h1>
+  <div class="st">JSON &bull; Parquet &bull; VARIANT &bull; FLATTEN</div>
+  <p style="font-size:20px;">Load nested data. Flatten arrays. Build typed views. One framework handles everything.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: Schema-on-Read vs Schema-on-Write -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Concepts</div>
+  <h2>Schema-on-Read vs Schema-on-Write</h2>
+  <div class="g2">
+    <div class="cd wc">
+      <h3 style="color:var(--orange);">Schema-on-Write (CSV)</h3>
+      <ul>
+        <li>Define columns <span class="w">before</span> loading</li>
+        <li>Schema must match the file</li>
+        <li>New columns break the load</li>
+        <li>Types enforced at ingestion</li>
+        <li>Rigid but predictable</li>
+      </ul>
+      <div class="cb" style="font-size:14px;"><span class="kw">CREATE TABLE</span> orders (
+  order_id <span class="n">VARCHAR</span>,
+  amount   <span class="n">NUMBER</span>,
+  status   <span class="n">VARCHAR</span>
+);</div>
+    </div>
+    <div class="cd hc">
+      <h3>Schema-on-Read (JSON)</h3>
+      <ul>
+        <li>Load into <span class="hl">one VARIANT column</span></li>
+        <li>Schema is flexible at load time</li>
+        <li>New fields auto-captured</li>
+        <li>Types cast at query time</li>
+        <li>Flexible and future-proof</li>
+      </ul>
+      <div class="cb" style="font-size:14px;"><span class="kw">CREATE TABLE</span> raw_events (
+  RAW_DATA <span class="n">VARIANT</span>
+);
+<span class="c">-- All fields preserved</span></div>
+    </div>
+  </div>
+  <p style="margin-top:16px;text-align:center;">The MDF framework supports <span class="hl">both approaches</span>. Same procedures. Same audit. Different strategy.</p>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: JSON Ingestion Approach -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; JSON Ingestion</div>
+  <h2>Loading JSON into Snowflake</h2>
+  <p style="margin-bottom:12px;">One VARIANT column captures the entire JSON document. MDF metadata columns track lineage.</p>
+  <div class="cb" style="font-size:16px;"><span class="kw">CREATE OR REPLACE TABLE</span> MDF_RAW_DB.DEMO_WEB.<span class="fn">RAW_EVENTS</span> (
+    RAW_DATA            <span class="n">VARIANT</span>,                               <span class="c">-- Entire JSON doc</span>
+    _MDF_FILE_NAME      <span class="n">VARCHAR</span>       <span class="kw">DEFAULT</span> METADATA$FILENAME,
+    _MDF_FILE_ROW       <span class="n">NUMBER</span>        <span class="kw">DEFAULT</span> METADATA$FILE_ROW_NUMBER,
+    _MDF_LOADED_AT      <span class="n">TIMESTAMP_LTZ</span> <span class="kw">DEFAULT</span> CURRENT_TIMESTAMP()
+);</div>
+  <div class="ab" style="font-size:14px;margin-top:12px;">
+  JSON File          COPY INTO         RAW_EVENTS Table
+  ┌──────────┐       ┌──────┐       ┌───────────────────────────────┐
+  │ {        │       │      │       │ RAW_DATA (VARIANT)            │
+  │  "id":1, │  ───> │ MDF  │ ───>  │ _MDF_FILE_NAME                │
+  │  "type": │       │      │       │ _MDF_FILE_ROW                 │
+  │  "device"│       └──────┘       │ _MDF_LOADED_AT                │
+  │ }        │                      └───────────────────────────────┘
+  └──────────┘                      Each JSON object = 1 row</div>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: Dot Notation -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Dot Notation</div>
+  <h2>Accessing Nested Fields</h2>
+  <p style="margin-bottom:8px;">Colon (<span class="hl">:</span>) navigates into VARIANT. Double-colon (<span class="hl">::</span>) casts to a SQL type.</p>
+  <div class="cb" style="font-size:16px;"><span class="c">-- Top-level fields</span>
+<span class="kw">SELECT</span>
+    RAW_DATA<span class="hl">:</span>event_id<span class="w">::</span><span class="n">VARCHAR</span>        <span class="kw">AS</span> EVENT_ID,
+    RAW_DATA<span class="hl">:</span>event_type<span class="w">::</span><span class="n">VARCHAR</span>      <span class="kw">AS</span> EVENT_TYPE,
+    RAW_DATA<span class="hl">:</span>timestamp<span class="w">::</span><span class="n">TIMESTAMP</span>     <span class="kw">AS</span> EVENT_TIMESTAMP,
+
+<span class="c">-- Nested objects — chain with dot (.)</span>
+    RAW_DATA<span class="hl">:</span>device<span class="hl">.</span>type<span class="w">::</span><span class="n">VARCHAR</span>     <span class="kw">AS</span> DEVICE_TYPE,
+    RAW_DATA<span class="hl">:</span>device<span class="hl">.</span>os<span class="w">::</span><span class="n">VARCHAR</span>       <span class="kw">AS</span> DEVICE_OS,
+    RAW_DATA<span class="hl">:</span>geo<span class="hl">.</span>country<span class="w">::</span><span class="n">VARCHAR</span>     <span class="kw">AS</span> COUNTRY,
+
+<span class="c">-- Optional fields — returns NULL if missing</span>
+    RAW_DATA<span class="hl">:</span>video_title<span class="w">::</span><span class="n">VARCHAR</span>    <span class="kw">AS</span> VIDEO_TITLE
+<span class="kw">FROM</span> MDF_RAW_DB.DEMO_WEB.RAW_EVENTS;</div>
+  <p style="margin-top:8px;"><span class="g">Missing fields return NULL</span> &mdash; no errors. Query any event type with one SELECT.</p>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: LATERAL FLATTEN -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; LATERAL FLATTEN</div>
+  <h2>Exploding Arrays into Rows</h2>
+  <div class="g2">
+    <div>
+      <h3>The Problem</h3>
+      <p style="font-size:18px;margin-bottom:12px;">A PURCHASE event has an <span class="w">items[]</span> array. Dot notation can't iterate arrays.</p>
+      <div class="ab" style="font-size:13px;">{ "order_id": "ORD-10016",
+  "items": [
+    {"product_id":"PROD-009",
+     "quantity":1, "price":500},
+    {"product_id":"PROD-003",
+     "quantity":1, "price":2500}
+  ]
+}
+<span style="color:var(--orange);">1 row in &rarr; need 2 rows out</span></div>
+    </div>
+    <div>
+      <h3>The Solution</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">SELECT</span>
+  e.RAW_DATA:order_id<span class="w">::</span><span class="n">VARCHAR</span>   <span class="kw">AS</span> ORDER_ID,
+  f.VALUE:product_id<span class="w">::</span><span class="n">VARCHAR</span>  <span class="kw">AS</span> PRODUCT_ID,
+  f.VALUE:quantity<span class="w">::</span><span class="n">NUMBER</span>     <span class="kw">AS</span> QTY,
+  f.VALUE:price<span class="w">::</span><span class="n">NUMBER(12,2)</span>  <span class="kw">AS</span> PRICE
+<span class="kw">FROM</span> MDF_RAW_DB.DEMO_WEB.RAW_EVENTS e,
+  <span class="fn">LATERAL FLATTEN</span>(
+    <span class="kw">INPUT</span> => e.RAW_DATA:items
+  ) f
+<span class="kw">WHERE</span> e.RAW_DATA:items <span class="kw">IS NOT NULL</span>;</div>
+      <p style="font-size:16px;margin-top:8px;"><span class="hl">e</span> = parent row &nbsp; <span class="w">f.VALUE</span> = each array element</p>
+    </div>
+  </div>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: VW_EVENTS_FLATTENED -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Staging View</div>
+  <h2>VW_EVENTS_FLATTENED</h2>
+  <p style="margin-bottom:8px;">Raw VARIANT stays in RAW. Typed columns live in a <span class="hl">STAGING view</span>.</p>
+  <div class="cb" style="font-size:14px;"><span class="kw">CREATE OR REPLACE VIEW</span> MDF_STAGING_DB.DEMO_WEB.<span class="fn">VW_EVENTS_FLATTENED</span> <span class="kw">AS</span>
+<span class="kw">SELECT</span>
+    RAW_DATA:event_id<span class="w">::</span><span class="n">VARCHAR</span>            <span class="kw">AS</span> EVENT_ID,
+    RAW_DATA:event_type<span class="w">::</span><span class="n">VARCHAR</span>          <span class="kw">AS</span> EVENT_TYPE,
+    RAW_DATA:user_id<span class="w">::</span><span class="n">VARCHAR</span>             <span class="kw">AS</span> USER_ID,
+    RAW_DATA:session_id<span class="w">::</span><span class="n">VARCHAR</span>          <span class="kw">AS</span> SESSION_ID,
+    RAW_DATA:timestamp<span class="w">::</span><span class="n">TIMESTAMP_TZ</span>      <span class="kw">AS</span> EVENT_TIMESTAMP,
+    RAW_DATA:device.type<span class="w">::</span><span class="n">VARCHAR</span>         <span class="kw">AS</span> DEVICE_TYPE,
+    RAW_DATA:geo.country<span class="w">::</span><span class="n">VARCHAR</span>         <span class="kw">AS</span> COUNTRY,
+    RAW_DATA:metadata.campaign<span class="w">::</span><span class="n">VARCHAR</span>   <span class="kw">AS</span> CAMPAIGN,
+    RAW_DATA:total_amount<span class="w">::</span><span class="n">NUMBER(12,2)</span>    <span class="kw">AS</span> TOTAL_AMOUNT,
+    _MDF_FILE_NAME,
+    _MDF_LOADED_AT
+<span class="kw">FROM</span> MDF_RAW_DB.DEMO_WEB.RAW_EVENTS;</div>
+  <div class="g2" style="margin-top:8px;">
+    <div class="cd hc" style="padding:16px;">
+      <p style="font-size:16px;"><span class="hl">Downstream consumers</span> query the view &mdash; clean, typed columns. No VARIANT exposure.</p>
+    </div>
+    <div class="cd wc" style="padding:16px;">
+      <p style="font-size:16px;"><span class="w">New source field?</span> Add one line to the view. No re-ingestion. No table rebuild.</p>
+    </div>
+  </div>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: Parquet + INFER_SCHEMA -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Parquet</div>
+  <h2>Parquet + INFER_SCHEMA</h2>
+  <p style="margin-bottom:8px;">Parquet carries its schema <span class="hl">inside the file</span>. Snowflake reads it automatically.</p>
+  <div class="g2">
+    <div>
+      <h3>Step 1: Infer Schema</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">SELECT</span> *
+<span class="kw">FROM TABLE</span>(
+  <span class="fn">INFER_SCHEMA</span>(
+    <span class="kw">LOCATION</span> => <span class="s">'@MDF_STG_INTERNAL_PARQUET'</span>,
+    <span class="kw">FILE_FORMAT</span> => <span class="s">'MDF_FF_PARQUET_STANDARD'</span>
+  )
+);
+<span class="c">-- Returns: COLUMN_NAME, TYPE, NULLABLE</span></div>
+    </div>
+    <div>
+      <h3>Step 2: Auto-Create Table</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">CREATE TABLE</span> sensors
+  <span class="kw">USING TEMPLATE</span> (
+    <span class="kw">SELECT</span> <span class="fn">ARRAY_AGG</span>(<span class="fn">OBJECT_CONSTRUCT</span>(*))
+    <span class="kw">FROM TABLE</span>(
+      <span class="fn">INFER_SCHEMA</span>(
+        <span class="kw">LOCATION</span> => <span class="s">'@MDF_STG_INTERNAL_PARQUET'</span>,
+        <span class="kw">FILE_FORMAT</span> => <span class="s">'MDF_FF_PARQUET_STANDARD'</span>
+      )
+    )
+  );</div>
+    </div>
+  </div>
+  <div style="margin-top:16px;padding:16px 24px;background:var(--bg2);border-left:4px solid var(--green);border-radius:4px;">
+    <p style="font-size:18px;"><span class="g">No manual column definitions.</span> Schema is extracted from Parquet metadata. Typed columns from the start.</p>
+  </div>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: Analytics Queries -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Analytics</div>
+  <h2>Analytics on Flattened Data</h2>
+  <p style="margin-bottom:8px;">Standard SQL on typed columns. The VARIANT complexity is <span class="hl">hidden behind the view</span>.</p>
+  <div class="g2">
+    <div>
+      <h3>Event Funnel</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">SELECT</span>
+  EVENT_TYPE,
+  <span class="fn">COUNT</span>(*)               <span class="kw">AS</span> EVENTS,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> USER_ID)  <span class="kw">AS</span> USERS
+<span class="kw">FROM</span> VW_EVENTS_FLATTENED
+<span class="kw">GROUP BY</span> EVENT_TYPE
+<span class="kw">ORDER BY</span> EVENTS <span class="kw">DESC</span>;</div>
+      <table style="font-size:15px;margin-top:8px;">
+        <tr><th>EVENT_TYPE</th><th>EVENTS</th><th>USERS</th></tr>
+        <tr><td>PAGE_VIEW</td><td style="color:var(--cyan);">3</td><td>3</td></tr>
+        <tr><td>VIDEO_PLAY</td><td style="color:var(--cyan);">1</td><td>1</td></tr>
+        <tr><td>PURCHASE</td><td style="color:var(--cyan);">1</td><td>1</td></tr>
+        <tr><td>SIGNUP</td><td style="color:var(--cyan);">1</td><td>1</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Campaign Attribution</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">SELECT</span>
+  CAMPAIGN,
+  MEDIUM,
+  <span class="fn">COUNT</span>(*)  <span class="kw">AS</span> EVENTS
+<span class="kw">FROM</span> VW_EVENTS_FLATTENED
+<span class="kw">WHERE</span> CAMPAIGN <span class="kw">IS NOT NULL</span>
+<span class="kw">GROUP BY</span> CAMPAIGN, MEDIUM;</div>
+      <table style="font-size:15px;margin-top:8px;">
+        <tr><th>CAMPAIGN</th><th>MEDIUM</th><th>EVENTS</th></tr>
+        <tr><td>google_ads_q1</td><td>cpc</td><td style="color:var(--cyan);">1</td></tr>
+        <tr><td>linkedin_awareness</td><td>social</td><td style="color:var(--cyan);">1</td></tr>
+        <tr><td>organic_search</td><td>organic</td><td style="color:var(--cyan);">1</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Recap -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Recap</div>
+  <h2>Module 06 Complete</h2>
+  <div class="g2">
+    <div>
+      <h3>What We Built</h3>
+      <ul>
+        <li>RAW_EVENTS table with <span class="hl">VARIANT</span> column</li>
+        <li>JSON ingestion via the MDF framework</li>
+        <li><span class="hl">Dot notation</span> for nested field access</li>
+        <li><span class="hl">LATERAL FLATTEN</span> for array explosion</li>
+        <li>VW_EVENTS_FLATTENED staging view</li>
+        <li>Parquet with <span class="hl">INFER_SCHEMA</span></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Key Takeaways</h3>
+      <ul>
+        <li>Schema-on-Read: load first, shape later</li>
+        <li><span class="hl">:</span> navigates VARIANT, <span class="w">::</span> casts to type</li>
+        <li>Missing fields return NULL, not errors</li>
+        <li>FLATTEN turns arrays into queryable rows</li>
+        <li>Typed views isolate consumers from VARIANT</li>
+        <li>Same framework handles CSV, JSON, Parquet</li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex;gap:40px;margin-top:30px;justify-content:center;">
+    <div style="text-align:center;"><div class="bn">1</div><div class="sl">VARIANT Column</div></div>
+    <div style="text-align:center;"><div class="bn" style="color:var(--orange);">10</div><div class="sl">Events Loaded</div></div>
+    <div style="text-align:center;"><div class="bn">1</div><div class="sl">Flattened View</div></div>
+    <div style="text-align:center;"><div class="bn" style="color:var(--green);">0</div><div class="sl">Code Changes to Core</div></div>
+  </div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Next Module -->
+<div class="slide">
+  <div class="mt">Module 06 &mdash; Next</div>
+  <h2>Next: Module 07</h2>
+  <div style="margin-top:20px;padding:28px 32px;background:var(--bg2);border-left:4px solid var(--orange);border-radius:4px;">
+    <h3 style="color:var(--orange);font-size:28px;margin-bottom:12px;">Error Handling &amp; Audit Logging</h3>
+    <p style="font-size:20px;margin-bottom:16px;">What happens when things go wrong?</p>
+    <ul>
+      <li><span class="w">TRY_CAST</span> for safe type conversions on VARIANT data</li>
+      <li><span class="w">VALIDATION_MODE</span> to catch errors before they hit tables</li>
+      <li>Structured <span class="w">error logging</span> with file-level detail</li>
+      <li>Retry logic and <span class="w">dead-letter</span> patterns for bad records</li>
+      <li>Audit trail: what failed, why, and which file caused it</li>
+    </ul>
+  </div>
+  <div style="margin-top:30px;padding:16px 24px;background:#0D1117;border:1px solid #30363D;border-radius:8px;">
+    <p style="font-size:18px;color:var(--dim);">All SQL scripts are in the course repository. Run the full lab before Module 07.</p>
+  </div>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+let c=0;const ss=document.querySelectorAll('.slide'),n=ss.length;
+function go(i){if(i>=0&&i<n){ss[c].classList.remove('active');c=i;ss[c].classList.add('active');}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(c+1);if(e.key==='ArrowLeft')go(c-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)go(c+1);else go(c-1);});
+</script>
+</body>
+</html>

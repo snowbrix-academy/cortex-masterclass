@@ -1,0 +1,287 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# Source Definitions
+# ============================================================
+# Sources map dbt to the raw Snowflake tables created by the
+# ingestion pipeline (Module 2). Each source group corresponds
+# to one schema in the ECOMMERCE_RAW database.
+#
+# Freshness checks use the _loaded_at column that every raw
+# table has. This column is set to CURRENT_TIMESTAMP() on insert.
+#
+# Run freshness checks: dbt source freshness
+# ============================================================
+
+version: 2
+
+sources:
+
+  # --------------------------------------------------------
+  # POSTGRES SOURCE
+  # --------------------------------------------------------
+  # Data extracted from the operational PostgreSQL database.
+  # Tables: orders, customers, products, order_items
+  # Extraction: Full load (initial) + incremental (daily)
+  # Extractor: ingestion/postgres_extractor.py
+
+  - name: postgres
+    description: >
+      Operational e-commerce data extracted from PostgreSQL.
+      Contains orders, customers, products, and order line items.
+      Loaded daily via incremental extraction (updated_at watermark).
+    database: ECOMMERCE_RAW
+    schema: POSTGRES
+
+    # Freshness policy for all tables in this source.
+    # The ingestion pipeline runs daily. If data is older than
+    # 12 hours, something is delayed. Older than 24 hours = broken.
+    freshness:
+      warn_after:
+        count: 12
+        period: hour
+      error_after:
+        count: 24
+        period: hour
+    loaded_at_field: _loaded_at
+
+    tables:
+
+      - name: raw_orders
+        description: >
+          Raw orders from PostgreSQL. One row per order. Contains
+          order header information: customer reference, order date,
+          status, total amount, and shipping address fields.
+          Approximately 100,000 rows with ~1,600 new rows daily.
+        columns:
+          - name: order_id
+            description: Primary key. Sequential integer from PostgreSQL.
+          - name: customer_id
+            description: Foreign key to raw_customers.
+          - name: order_date
+            description: When the customer placed the order.
+          - name: status
+            description: >
+              Order lifecycle status. Known values: completed, shipped,
+              cancelled, pending, pending_review, returned.
+              Note: 'pending_review' is undocumented but exists in source data.
+          - name: total_amount
+            description: Order total in USD. NUMBER(12,2).
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+      - name: raw_customers
+        description: >
+          Raw customers from PostgreSQL. One row per customer.
+          Contains PII: email, name, phone, address. 50,000 rows.
+          WARNING: State field has inconsistent formatting ("CA" vs "California").
+        columns:
+          - name: customer_id
+            description: Primary key. Sequential integer from PostgreSQL.
+          - name: email
+            description: Customer email. Unique in source but may have duplicates from re-extraction.
+          - name: first_name
+            description: Customer first name. Nullable.
+          - name: last_name
+            description: Customer last name. Nullable.
+          - name: phone
+            description: Customer phone number. Approximately 30% NULL.
+          - name: state
+            description: >
+              State/province. Inconsistent format in source data:
+              some records use abbreviations ("CA"), others use full names ("California").
+              Normalized in staging model.
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+      - name: raw_products
+        description: >
+          Raw products from PostgreSQL. One row per product.
+          200 products across 10 categories. Some products have
+          negative cost values (data entry errors in source system).
+        columns:
+          - name: product_id
+            description: Primary key. Sequential integer from PostgreSQL.
+          - name: name
+            description: Product display name.
+          - name: category
+            description: Top-level product category (e.g., Electronics, Clothing).
+          - name: subcategory
+            description: Sub-category within the parent category.
+          - name: price
+            description: Retail price in USD.
+          - name: cost
+            description: >
+              Product cost in USD. Some values are NULL (cost unknown)
+              or negative (data entry error). Handled in staging model.
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+      - name: raw_order_items
+        description: >
+          Raw order line items from PostgreSQL. One row per item per order.
+          Approximately 250,000 rows (2.5 items per order average).
+          Append-only table (items are never updated, only inserted).
+        columns:
+          - name: order_item_id
+            description: Primary key. Sequential integer from PostgreSQL.
+          - name: order_id
+            description: Foreign key to raw_orders.
+          - name: product_id
+            description: Foreign key to raw_products.
+          - name: quantity
+            description: Number of units ordered for this line item.
+          - name: unit_price
+            description: Price per unit at time of order (may differ from current product price).
+          - name: discount_pct
+            description: Discount percentage applied to this line item (0-100).
+          - name: line_total
+            description: Pre-computed line total (quantity * unit_price * (1 - discount_pct/100)).
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+  # --------------------------------------------------------
+  # STRIPE SOURCE
+  # --------------------------------------------------------
+  # Payment data extracted from the Stripe API.
+  # Tables: payments, refunds
+  # Extraction: Incremental via Stripe created[gte] parameter
+  # Extractor: ingestion/stripe_connector.py
+
+  - name: stripe
+    description: >
+      Payment processing data from Stripe API. Contains payment
+      charges and refunds. Amounts are stored in the smallest
+      currency unit (cents for USD). Converted to dollars in staging.
+    database: ECOMMERCE_RAW
+    schema: STRIPE
+
+    freshness:
+      warn_after:
+        count: 12
+        period: hour
+      error_after:
+        count: 24
+        period: hour
+    loaded_at_field: _loaded_at
+
+    tables:
+
+      - name: raw_payments
+        description: >
+          Raw payment charges from Stripe API. One row per payment.
+          Linked to orders via order_id (stored in Stripe metadata).
+          Amount is in the smallest currency unit (cents for USD).
+          100,000 rows with ~1,600 new payments daily.
+        columns:
+          - name: payment_id
+            description: >
+              Primary key. Stripe charge ID (e.g., "ch_1234...").
+              VARCHAR, not integer — Stripe uses string identifiers.
+          - name: order_id
+            description: >
+              Foreign key to raw_orders. Extracted from Stripe charge
+              metadata field. May be NULL for payments not linked to orders.
+          - name: amount
+            description: >
+              Payment amount in the smallest currency unit.
+              For USD, this is cents (e.g., 6842 = $68.42).
+              Converted to dollars in the staging model.
+          - name: currency
+            description: Three-letter ISO currency code (e.g., "usd", "eur").
+          - name: status
+            description: >
+              Stripe payment status. Values: succeeded, pending, failed.
+              Mapped to internal statuses in staging model.
+          - name: payment_method
+            description: Payment method type (e.g., "card", "bank_transfer").
+          - name: _raw_json
+            description: >
+              Full Stripe API response stored as VARIANT.
+              Kept for auditability and future field extraction.
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+      - name: raw_refunds
+        description: >
+          Raw refunds from Stripe API. One row per refund.
+          Linked to payments via payment_id. 5,000 rows.
+        columns:
+          - name: refund_id
+            description: Primary key. Stripe refund ID (e.g., "re_1234...").
+          - name: payment_id
+            description: Foreign key to raw_payments.
+          - name: amount
+            description: Refund amount in smallest currency unit (cents for USD).
+          - name: reason
+            description: Refund reason (e.g., "requested_by_customer", "duplicate").
+          - name: status
+            description: Refund status. Values include succeeded, pending, failed.
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+  # --------------------------------------------------------
+  # CSV UPLOADS SOURCE
+  # --------------------------------------------------------
+  # Marketing data loaded from CSV files (Google Sheets exports).
+  # Tables: marketing_spend, campaign_performance
+  # Loader: ingestion/csv_loader.py
+
+  - name: csv_uploads
+    description: >
+      Marketing and campaign data uploaded from Google Sheets CSV exports.
+      Contains daily marketing spend by channel and campaign performance metrics.
+      Loaded weekly with daily append for spend data.
+    database: ECOMMERCE_RAW
+    schema: CSV_UPLOADS
+
+    freshness:
+      warn_after:
+        count: 12
+        period: hour
+      error_after:
+        count: 24
+        period: hour
+    loaded_at_field: _loaded_at
+
+    tables:
+
+      - name: raw_marketing_spend
+        description: >
+          Daily marketing spend by channel. Exported from Google Sheets
+          "Marketing Budget" tab. 365 rows (one per day). Includes
+          spend amount, impressions, and clicks by channel.
+        columns:
+          - name: date
+            description: The date of the marketing spend.
+          - name: channel
+            description: Marketing channel (e.g., google_ads, facebook, email).
+          - name: campaign_name
+            description: Name of the marketing campaign.
+          - name: spend
+            description: Amount spent in USD.
+          - name: impressions
+            description: Number of ad impressions.
+          - name: clicks
+            description: Number of ad clicks.
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.
+
+      - name: raw_campaign_performance
+        description: >
+          Campaign performance metrics from Google Sheets "Campaign Results" tab.
+          1,200 rows. Daily by campaign with conversion and revenue attribution data.
+        columns:
+          - name: date
+            description: The date of the performance measurement.
+          - name: campaign_id
+            description: Unique campaign identifier.
+          - name: campaign_name
+            description: Human-readable campaign name.
+          - name: channel
+            description: Marketing channel.
+          - name: conversions
+            description: Number of conversions attributed to this campaign.
+          - name: revenue_attributed
+            description: Revenue attributed to this campaign in USD.
+          - name: _loaded_at
+            description: Timestamp when this row was loaded into Snowflake.

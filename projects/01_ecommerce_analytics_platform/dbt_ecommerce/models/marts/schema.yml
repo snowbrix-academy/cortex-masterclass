@@ -1,0 +1,368 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# Mart Models — Schema Definitions
+# ============================================================
+# Tests and documentation for all mart models.
+# Mart models are the final consumption layer: dimensions and
+# facts in a star schema pattern. These are what dashboards
+# and analysts query directly.
+# ============================================================
+
+version: 2
+
+models:
+
+  # ========================================================
+  # DIMENSION TABLES
+  # ========================================================
+
+  # --------------------------------------------------------
+  # dim_customers
+  # --------------------------------------------------------
+  - name: dim_customers
+    description: >
+      Customer dimension table with lifetime metrics and tier
+      classification. Implements a simplified Type 2 SCD pattern
+      where each customer has a single current row with tier
+      assignment based on lifetime value:
+        - Platinum: LTV >= $1,000
+        - Gold: LTV >= $500
+        - Silver: LTV >= $100
+        - Bronze: LTV < $100 (including $0 for no-purchase customers)
+      Includes valid_from/valid_to timestamps and is_current flag
+      for historical tracking support.
+    columns:
+      - name: customer_key
+        description: >
+          Surrogate key for the dimension (hash of customer_id + valid_from).
+          Used as the primary key in the star schema.
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Natural key from the source system."
+        data_tests:
+          - not_null
+
+      - name: email
+        description: "Customer email address."
+
+      - name: full_name
+        description: "Customer full name."
+
+      - name: state
+        description: "Two-letter state abbreviation."
+
+      - name: country
+        description: "Country code."
+
+      - name: customer_tier
+        description: "Tier classification based on lifetime value: bronze, silver, gold, platinum."
+        data_tests:
+          - accepted_values:
+              values:
+                - 'bronze'
+                - 'silver'
+                - 'gold'
+                - 'platinum'
+
+      - name: lifetime_value
+        description: "Total net revenue from this customer."
+
+      - name: total_orders
+        description: "Total number of orders placed."
+
+      - name: avg_order_value
+        description: "Average order value."
+
+      - name: first_order_date
+        description: "Date of first order."
+
+      - name: last_order_date
+        description: "Date of most recent order."
+
+      - name: days_since_last_order
+        description: "Recency metric: days since last order."
+
+      - name: is_repeat_customer
+        description: "True if the customer has more than one order."
+
+      - name: valid_from
+        description: "Start of the validity period for this dimension row (SCD Type 2)."
+
+      - name: valid_to
+        description: "End of the validity period. NULL means this is the current row."
+
+      - name: is_current
+        description: "True if this is the current/active row for this customer."
+
+  # --------------------------------------------------------
+  # dim_products
+  # --------------------------------------------------------
+  - name: dim_products
+    description: >
+      Product dimension table with category hierarchy, margin
+      calculations, and product classification. One row per
+      product. Includes both absolute margin (price - cost)
+      and margin percentage for profitability analysis.
+    columns:
+      - name: product_key
+        description: "Surrogate key for the dimension (hash of product_id)."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_id
+        description: "Natural key from the source system."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: "Product display name."
+
+      - name: category
+        description: "Top-level product category."
+
+      - name: subcategory
+        description: "Sub-category."
+
+      - name: category_hierarchy
+        description: "Full category path: 'Category > Subcategory'."
+
+      - name: price
+        description: "Retail price in USD."
+        data_tests:
+          - not_null
+
+      - name: cost
+        description: "Product cost in USD. NULL if unknown or had data error."
+
+      - name: margin
+        description: "Profit margin in dollars (price - cost). NULL if cost is unknown."
+
+      - name: margin_pct
+        description: "Margin as a percentage of price. NULL if cost is unknown."
+
+      - name: price_tier
+        description: >
+          Price-based product classification:
+          budget (< $25), mid_range ($25-$99), premium ($100-$499), luxury ($500+).
+        data_tests:
+          - accepted_values:
+              values:
+                - 'budget'
+                - 'mid_range'
+                - 'premium'
+                - 'luxury'
+
+      - name: weight_kg
+        description: "Product weight in kilograms."
+
+      - name: is_active
+        description: "Whether the product is currently active."
+
+      - name: has_cost_error
+        description: "Flag for products with negative cost in source data."
+
+  # --------------------------------------------------------
+  # dim_dates
+  # --------------------------------------------------------
+  - name: dim_dates
+    description: >
+      Date dimension generated using dbt_utils.date_spine.
+      One row per calendar day from the project start_date
+      through 2 years into the future. Includes standard
+      calendar fields, fiscal calendar (FY starts February 1),
+      and US federal holiday flags.
+    columns:
+      - name: date_key
+        description: "Primary key. Integer in YYYYMMDD format (e.g., 20240115)."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: date_day
+        description: "The calendar date."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: day_of_week
+        description: "Day of week number (1=Monday, 7=Sunday per ISO standard)."
+
+      - name: day_of_week_name
+        description: "Full day name (Monday, Tuesday, etc.)."
+
+      - name: day_of_month
+        description: "Day of the month (1-31)."
+
+      - name: day_of_year
+        description: "Day of the year (1-366)."
+
+      - name: week_of_year
+        description: "ISO week number (1-53)."
+
+      - name: month_number
+        description: "Month number (1-12)."
+
+      - name: month_name
+        description: "Full month name (January, February, etc.)."
+
+      - name: quarter_number
+        description: "Calendar quarter (1-4)."
+
+      - name: year_number
+        description: "Calendar year (e.g., 2024)."
+
+      - name: fiscal_year
+        description: "Fiscal year (FY starts February 1)."
+
+      - name: fiscal_quarter
+        description: "Fiscal quarter (1-4, based on Feb 1 fiscal year start)."
+
+      - name: is_weekend
+        description: "True if Saturday or Sunday."
+
+      - name: is_holiday
+        description: "True if US federal holiday."
+
+      - name: holiday_name
+        description: "Name of the US federal holiday, or NULL."
+
+  # ========================================================
+  # FACT TABLES
+  # ========================================================
+
+  # --------------------------------------------------------
+  # fct_orders
+  # --------------------------------------------------------
+  - name: fct_orders
+    description: >
+      Order fact table at the order grain. One row per order.
+      Incremental materialization — only new/updated orders are
+      processed on each run. Contains foreign keys to all
+      dimension tables and additive measures for aggregation.
+      This is the primary fact table for order-level analytics.
+    columns:
+      - name: order_id
+        description: "Primary key. Unique order identifier (degenerate dimension)."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_key
+        description: "Foreign key to dim_customers (surrogate key)."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_key
+
+      - name: product_key
+        description: >
+          Foreign key to dim_products. References the first product
+          in the order for simplified star schema join. For full
+          product-level analysis, use the order_items source directly.
+
+      - name: order_date_key
+        description: "Foreign key to dim_dates (integer YYYYMMDD format)."
+        data_tests:
+          - not_null
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+
+      - name: customer_id
+        description: "Natural customer key for convenience."
+
+      - name: order_date
+        description: "When the order was placed."
+
+      - name: order_status
+        description: "Raw order status."
+
+      - name: order_status_category
+        description: "Grouped status: active, completed, cancelled."
+
+      - name: item_count
+        description: "Number of distinct line items in the order."
+
+      - name: total_quantity
+        description: "Total units ordered."
+
+      - name: order_total
+        description: "Order total from source system."
+
+      - name: gross_revenue
+        description: "Gross revenue before discounts."
+
+      - name: discount_total
+        description: "Total discount amount."
+
+      - name: net_revenue
+        description: "Net revenue after discounts."
+
+      - name: payment_amount
+        description: "Amount actually paid via Stripe."
+
+      - name: payment_status
+        description: "Payment status (completed/pending/failed)."
+
+      - name: payment_method
+        description: "Payment method (card, bank_transfer, etc.)."
+
+  # --------------------------------------------------------
+  # fct_daily_revenue
+  # --------------------------------------------------------
+  - name: fct_daily_revenue
+    description: >
+      Pre-aggregated daily revenue fact table. One row per day.
+      Materialized as a full table (not incremental) because it
+      aggregates the entire fct_orders table. Optimized for
+      dashboard queries that need daily KPIs without scanning
+      the full orders fact.
+    columns:
+      - name: date_day
+        description: "Primary key. The calendar date."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: date_key
+        description: "Foreign key to dim_dates."
+        data_tests:
+          - relationships:
+              to: ref('dim_dates')
+              field: date_key
+
+      - name: total_orders
+        description: "Number of orders placed on this day."
+
+      - name: completed_orders
+        description: "Number of completed (non-cancelled) orders."
+
+      - name: total_revenue
+        description: "Total net revenue for the day."
+
+      - name: total_gross_revenue
+        description: "Total gross revenue before discounts."
+
+      - name: total_discounts
+        description: "Total discount amount for the day."
+
+      - name: avg_order_value
+        description: "Average order value (revenue / completed orders)."
+
+      - name: total_items_sold
+        description: "Total items sold across all orders."
+
+      - name: new_customers
+        description: "Number of customers placing their first-ever order today."
+
+      - name: returning_customers
+        description: "Number of customers who have ordered before placing an order today."
+
+      - name: total_customers
+        description: "Total unique customers who ordered today."

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01 — Foundation Setup | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 01</div>
+  <div class="pb"><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1>Foundation Setup</h1>
+  <div class="st">Databases &bull; Warehouses &bull; Roles</div>
+  <p style="font-size:20px;">The architecture every production Snowflake environment needs — built in 25 minutes.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: What We're Building -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; Foundation</div>
+  <h2>What We're Building</h2>
+  <div style="display:flex;gap:60px;margin-top:40px;justify-content:center;">
+    <div style="text-align:center;"><div class="bn">4</div><div class="sl">Databases</div></div>
+    <div style="text-align:center;"><div class="bn">4</div><div class="sl">Warehouses</div></div>
+    <div style="text-align:center;"><div class="bn">5</div><div class="sl">Roles</div></div>
+    <div style="text-align:center;"><div class="bn">2</div><div class="sl">Resource Monitors</div></div>
+  </div>
+  <p style="text-align:center;margin-top:40px;font-size:22px;">All with proper naming conventions, comments, and least-privilege security.</p>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: Database Architecture -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; Databases</div>
+  <h2>Multi-Layer Database Architecture</h2>
+  <div class="ab" style="margin-top:20px;font-size:14px;">
+  MDF_CONTROL_DB              (Framework Brain)
+  +-- CONFIG                  Config tables, registries
+  +-- AUDIT                   Run history, error logs
+  +-- PROCEDURES              All stored procedures
+  +-- MONITORING              Dashboard views
+
+  MDF_RAW_DB                  (Landing Zone - Immutable)
+  +-- &lt;CLIENT&gt;_&lt;SOURCE&gt;      Dynamic schemas per source
+
+  MDF_STAGING_DB              (Cleaned & Validated)
+  +-- &lt;CLIENT&gt;_&lt;SOURCE&gt;      Mirrors raw with quality checks
+
+  MDF_CURATED_DB              (Business-Ready)
+  +-- &lt;CLIENT&gt;_&lt;DOMAIN&gt;      Transformed, aggregated
+  </div>
+  <p style="margin-top:16px;font-size:20px;"><span class="hl">Rule:</span> Never transform data in RAW. It's your safety net.</p>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: Why Separate Databases -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; Databases</div>
+  <h2>Why Separate Databases?</h2>
+  <div class="g2" style="margin-top:30px;">
+    <div class="cd">
+      <h3 style="color:var(--green);">Security Isolation</h3>
+      <p>Grant analyst access to CURATED without exposing RAW. Each layer has different RBAC requirements.</p>
+    </div>
+    <div class="cd">
+      <h3 style="color:var(--green);">Data Lineage</h3>
+      <p>Clear path: RAW &rarr; STAGING &rarr; CURATED. You can always trace where data came from.</p>
+    </div>
+    <div class="cd">
+      <h3 style="color:var(--green);">Cost Attribution</h3>
+      <p>Snowflake bills by database. Separate databases = separate cost buckets for finance.</p>
+    </div>
+    <div class="cd">
+      <h3 style="color:var(--green);">Lifecycle Management</h3>
+      <p>Different Time Travel settings per layer. RAW: 1 day. STAGING: 7 days. CURATED: 90 days.</p>
+    </div>
+  </div>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: Warehouses -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; Warehouses</div>
+  <h2>Purpose-Specific Warehouses</h2>
+  <table style="margin-top:24px;">
+    <tr><th>Warehouse</th><th>Size</th><th>Auto-Suspend</th><th>Purpose</th></tr>
+    <tr><td style="color:var(--cyan);">MDF_INGESTION_WH</td><td>SMALL</td><td>60 sec</td><td>COPY INTO operations (I/O heavy)</td></tr>
+    <tr><td style="color:var(--cyan);">MDF_TRANSFORM_WH</td><td>MEDIUM</td><td>120 sec</td><td>Staging transforms (compute heavy)</td></tr>
+    <tr><td style="color:var(--cyan);">MDF_MONITORING_WH</td><td>XSMALL</td><td>60 sec</td><td>Dashboard queries (lightweight)</td></tr>
+    <tr><td style="color:var(--cyan);">MDF_ADMIN_WH</td><td>SMALL</td><td>60 sec</td><td>Procedure execution, maintenance</td></tr>
+  </table>
+  <div class="cd wc" style="margin-top:24px;">
+    <p style="font-size:20px;"><span class="w">Key principle:</span> Never size a warehouse based on your biggest table. Size it based on your query complexity. COPY INTO is I/O bound — SMALL is usually enough.</p>
+  </div>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: Resource Monitors -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; Cost Control</div>
+  <h2>Resource Monitors Are Not Optional</h2>
+  <div class="cb"><span class="kw">CREATE</span> RESOURCE MONITOR MDF_INGESTION_MONITOR
+  <span class="kw">WITH</span>
+    CREDIT_QUOTA = <span class="n">100</span>            <span class="c">-- 100 credits per month</span>
+    FREQUENCY    = <span class="s">MONTHLY</span>
+    TRIGGERS
+      <span class="kw">ON</span> <span class="n">75</span> PERCENT <span class="kw">DO</span> NOTIFY          <span class="c">-- Alert at 75%</span>
+      <span class="kw">ON</span> <span class="n">90</span> PERCENT <span class="kw">DO</span> NOTIFY          <span class="c">-- Alert at 90%</span>
+      <span class="kw">ON</span> <span class="n">100</span> PERCENT <span class="kw">DO</span> SUSPEND        <span class="c">-- Stop at 100%</span>
+      <span class="kw">ON</span> <span class="n">110</span> PERCENT <span class="kw">DO</span> SUSPEND_IMMEDIATE;</div>
+  <p style="font-size:20px;"><span class="d">Without resource monitors:</span> A single misconfigured task can burn through your entire monthly budget overnight. We've seen it happen. Multiple times.</p>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: Role Hierarchy -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; RBAC</div>
+  <h2>Role Hierarchy</h2>
+  <div class="ab" style="margin-top:20px;font-size:16px;">
+                    SYSADMIN
+                       |
+                   MDF_ADMIN
+                  /    |    \
+        MDF_LOADER  MDF_TRANSFORMER  MDF_DEVELOPER
+              \        |
+             MDF_READER
+  </div>
+  <table style="margin-top:20px;">
+    <tr><th>Role</th><th>Can Do</th><th>Cannot Do</th></tr>
+    <tr><td style="color:var(--cyan);">MDF_ADMIN</td><td>Everything in MDF</td><td>Account-level changes</td></tr>
+    <tr><td style="color:var(--cyan);">MDF_LOADER</td><td>COPY INTO RAW, read configs</td><td>Touch STAGING or CURATED</td></tr>
+    <tr><td style="color:var(--cyan);">MDF_TRANSFORMER</td><td>Read RAW, write STAGING/CURATED</td><td>Modify configs or procedures</td></tr>
+    <tr><td style="color:var(--cyan);">MDF_READER</td><td>Read CURATED + monitoring</td><td>Write anything</td></tr>
+  </table>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: Future Grants -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; RBAC</div>
+  <h2>Future Grants — Set Once, Works Forever</h2>
+  <div class="cb"><span class="c">-- Without future grants: every new table needs manual grants</span>
+<span class="kw">GRANT SELECT ON TABLE</span> new_table <span class="kw">TO ROLE</span> MDF_READER;  <span class="c">-- For EVERY new table!</span>
+
+<span class="c">-- With future grants: new objects auto-inherit permissions</span>
+<span class="kw">GRANT SELECT ON FUTURE TABLES IN DATABASE</span> MDF_CURATED_DB
+  <span class="kw">TO ROLE</span> MDF_READER;
+<span class="c">-- ^ Set this ONCE. Every future table gets SELECT automatically.</span></div>
+  <ul style="margin-top:20px;">
+    <li><span class="hl">Functional roles</span> (MDF_LOADER) not user roles (JOHN_ROLE)</li>
+    <li><span class="hl">Future grants</span> prevent permission drift over time</li>
+    <li><span class="hl">Least privilege</span> — LOADER can only write to RAW</li>
+  </ul>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Recap -->
+<div class="slide">
+  <div class="mt">Module 01 &mdash; Recap</div>
+  <h2>What We Built</h2>
+  <div class="g2" style="margin-top:20px;">
+    <div>
+      <h3>Databases (4)</h3>
+      <ul>
+        <li>MDF_CONTROL_DB (4 schemas)</li>
+        <li>MDF_RAW_DB (landing zone)</li>
+        <li>MDF_STAGING_DB (clean data)</li>
+        <li>MDF_CURATED_DB (business-ready)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Warehouses (4)</h3>
+      <ul>
+        <li>Ingestion (SMALL, 60s suspend)</li>
+        <li>Transform (MEDIUM, 120s)</li>
+        <li>Monitoring (XSMALL, 60s)</li>
+        <li>Admin (SMALL, 60s)</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:20px;">
+    <h3>Roles (5) + Resource Monitors (2)</h3>
+    <p>Full RBAC hierarchy with future grants. Budget guardrails on all compute.</p>
+  </div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Next Module -->
+<div class="slide ts">
+  <div class="mt">Up Next</div>
+  <div class="pb"><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1 style="color:var(--cyan);">Module 02</h1>
+  <div class="st">File Formats & Stages</div>
+  <p style="font-size:22px;color:var(--gray);">10 reusable file formats. Internal + external stages.<br>How the framework reads CSV, JSON, Parquet, Avro, and ORC.</p>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+  let c=0;const sl=document.querySelectorAll('.slide'),t=sl.length;
+  function go(n){sl[c].classList.remove('active');c=((n%t)+t)%t;sl[c].classList.add('active');}
+  document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' '||e.key==='Enter'){e.preventDefault();go(c+1);}else if(e.key==='ArrowLeft'||e.key==='Backspace'){e.preventDefault();go(c-1);}});
+  document.addEventListener('click',e=>{e.clientX>window.innerWidth/2?go(c+1):go(c-1);});
+</script>
+</body>
+</html>

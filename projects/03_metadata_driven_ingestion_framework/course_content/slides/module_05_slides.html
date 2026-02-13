@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 05 — CSV Ingestion Lab | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;overflow:auto;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 05</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1>CSV Ingestion Lab</h1>
+  <div class="st">100% Hands-On &bull; End-to-End Pipeline &bull; ~25 Minutes</div>
+  <p style="font-size:20px;">3 CSV sources. Typed target tables. Full audit trail. Idempotent re-runs.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: Lab Scenario -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Lab Scenario</div>
+  <h2>Client: <span class="hl">DEMO</span> &mdash; ERP System</h2>
+  <p style="margin-bottom:10px;">Onboard 3 CSV data sources into the <span class="hl">MDF_RAW_DB.DEMO_ERP</span> schema.</p>
+  <div class="g3">
+    <div class="cd hc">
+      <h3>customers.csv</h3>
+      <div class="bn">15</div>
+      <div class="sl">rows</div>
+      <p style="font-size:16px;margin-top:16px;">Customer master data: names, emails, addresses, segments, registration dates</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">Target: RAW_CUSTOMERS</p>
+    </div>
+    <div class="cd wc">
+      <h3 style="color:var(--orange);">orders.csv</h3>
+      <div class="bn" style="color:var(--orange);">20</div>
+      <div class="sl">rows</div>
+      <p style="font-size:16px;margin-top:16px;">Sales orders: IDs, amounts, statuses, payment methods, shipping details</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">Target: RAW_ORDERS</p>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">products.csv</h3>
+      <div class="bn" style="color:var(--green);">12</div>
+      <div class="sl">rows</div>
+      <p style="font-size:16px;margin-top:16px;">Product catalog: prices, categories, stock quantities, weights, suppliers</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">Target: RAW_PRODUCTS</p>
+    </div>
+  </div>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: Lab Steps Overview -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Lab Flow</div>
+  <h2>9 Steps to Production</h2>
+  <div class="g2">
+    <div>
+      <div class="ab" style="font-size:16px;">
+  <span style="color:var(--cyan);">STEP 1</span>  Set context (role, database, warehouse)
+  <span style="color:var(--cyan);">STEP 2</span>  Create target schema + tables
+  <span style="color:var(--cyan);">STEP 3</span>  Upload CSV files (PUT command)
+  <span style="color:var(--cyan);">STEP 4</span>  Preview staged data
+  <span style="color:var(--orange);">STEP 5</span>  Verify config entries</div>
+    </div>
+    <div>
+      <div class="ab" style="font-size:16px;">
+  <span style="color:var(--orange);">STEP 6</span>  Run SP_GENERIC_INGESTION
+  <span style="color:var(--green);">STEP 7</span>  Check audit log
+  <span style="color:var(--green);">STEP 8</span>  Verify loaded data
+  <span style="color:var(--green);">STEP 9</span>  Test idempotency (re-run)</div>
+      <p style="font-size:16px;margin-top:20px;color:var(--dim);">
+        <span class="hl">Blue</span> = Setup &nbsp;&nbsp;
+        <span class="w">Orange</span> = Execute &nbsp;&nbsp;
+        <span class="g">Green</span> = Verify
+      </p>
+    </div>
+  </div>
+  <div style="margin-top:30px;padding:16px 20px;background:var(--bg2);border-left:4px solid var(--cyan);border-radius:4px;">
+    <p style="font-size:18px;">All infrastructure from Modules 01&ndash;04 is already in place. This lab uses it &mdash; nothing new to create.</p>
+  </div>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: Create Target Tables -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Step 2: Target Tables</div>
+  <h2>Typed Columns + MDF Metadata</h2>
+  <div class="cb" style="font-size:15px;"><span class="kw">CREATE OR REPLACE TABLE</span> MDF_RAW_DB.DEMO_ERP.<span class="fn">RAW_CUSTOMERS</span> (
+    CUSTOMER_ID         <span class="n">NUMBER</span>,
+    CUSTOMER_NAME       <span class="n">VARCHAR(200)</span>,
+    EMAIL               <span class="n">VARCHAR(300)</span>,
+    CITY                <span class="n">VARCHAR(100)</span>,
+    CUSTOMER_SEGMENT    <span class="n">VARCHAR(50)</span>,
+    REGISTRATION_DATE   <span class="n">DATE</span>,
+    IS_ACTIVE           <span class="n">BOOLEAN</span>,
+    <span class="c">-- MDF metadata columns (every raw table gets these)</span>
+    _MDF_FILE_NAME      <span class="n">VARCHAR</span>       <span class="kw">DEFAULT</span> <span class="fn">METADATA$FILENAME</span>,
+    _MDF_FILE_ROW       <span class="n">NUMBER</span>        <span class="kw">DEFAULT</span> <span class="fn">METADATA$FILE_ROW_NUMBER</span>,
+    _MDF_LOADED_AT      <span class="n">TIMESTAMP_LTZ</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>()
+);</div>
+  <div class="g2" style="margin-top:10px;">
+    <div class="cd hc" style="padding:16px 20px;">
+      <p style="font-size:16px;"><span class="hl">METADATA$FILENAME</span> &mdash; auto-populated by COPY INTO with the source file path</p>
+    </div>
+    <div class="cd wc" style="padding:16px 20px;">
+      <p style="font-size:16px;"><span class="w">METADATA$FILE_ROW_NUMBER</span> &mdash; exact row number from the original CSV file</p>
+    </div>
+  </div>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: PUT Command -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Step 3: File Upload</div>
+  <h2>PUT Command &amp; Stage Upload</h2>
+  <div class="cb" style="font-size:16px;"><span class="c">-- Upload CSV files to the internal stage (run in SnowSQL)</span>
+
+<span class="kw">PUT</span> <span class="s">file://C:/sample_data/csv/customers.csv</span>
+    @MDF_CONTROL_DB.CONFIG.MDF_STG_INTERNAL_CSV<span class="fn">/demo/customers/</span>
+    <span class="n">AUTO_COMPRESS=TRUE</span>;
+
+<span class="kw">PUT</span> <span class="s">file://C:/sample_data/csv/orders.csv</span>
+    @MDF_CONTROL_DB.CONFIG.MDF_STG_INTERNAL_CSV<span class="fn">/demo/orders/</span>
+    <span class="n">AUTO_COMPRESS=TRUE</span>;
+
+<span class="kw">PUT</span> <span class="s">file://C:/sample_data/csv/products.csv</span>
+    @MDF_CONTROL_DB.CONFIG.MDF_STG_INTERNAL_CSV<span class="fn">/demo/products/</span>
+    <span class="n">AUTO_COMPRESS=TRUE</span>;
+
+<span class="c">-- Verify files are staged</span>
+<span class="kw">LIST</span> @MDF_CONTROL_DB.CONFIG.MDF_STG_INTERNAL_CSV;</div>
+  <div style="margin-top:10px;padding:16px 20px;background:var(--bg2);border-left:4px solid var(--orange);border-radius:4px;">
+    <p style="font-size:17px;"><span class="w">Note:</span> PUT works in SnowSQL and Snowflake CLI &mdash; not in Snowsight worksheets. Use the Snowsight UI file upload as an alternative.</p>
+  </div>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: Run Ingestion -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Step 6: Execute</div>
+  <h2>Run <span class="hl">SP_GENERIC_INGESTION</span></h2>
+  <div class="cb" style="font-size:16px;"><span class="c">-- One call per source. Reads config, builds COPY INTO, writes audit log.</span>
+
+<span class="kw">CALL</span> MDF_CONTROL_DB.PROCEDURES.<span class="fn">SP_GENERIC_INGESTION</span>(
+    <span class="s">'DEMO_CUSTOMERS_CSV'</span>,  <span class="c">-- source_name from INGESTION_CONFIG</span>
+    <span class="n">FALSE</span>                   <span class="c">-- FALSE = normal mode (skip loaded files)</span>
+);
+
+<span class="kw">CALL</span> MDF_CONTROL_DB.PROCEDURES.<span class="fn">SP_GENERIC_INGESTION</span>(
+    <span class="s">'DEMO_ORDERS_CSV'</span>, <span class="n">FALSE</span>
+);
+
+<span class="kw">CALL</span> MDF_CONTROL_DB.PROCEDURES.<span class="fn">SP_GENERIC_INGESTION</span>(
+    <span class="s">'DEMO_PRODUCTS_CSV'</span>, <span class="n">FALSE</span>
+);</div>
+  <div class="g2" style="margin-top:10px;">
+    <div class="cd hc" style="padding:16px 20px;">
+      <h3 style="font-size:18px;">Parameter 1: SOURCE_NAME</h3>
+      <p style="font-size:16px;">Matches the config table entry. Controls which source gets processed.</p>
+    </div>
+    <div class="cd wc" style="padding:16px 20px;">
+      <h3 style="font-size:18px;color:var(--orange);">Parameter 2: FORCE_RELOAD</h3>
+      <p style="font-size:16px;">FALSE = skip already-loaded files. TRUE = reload everything.</p>
+    </div>
+  </div>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: Audit Log Results -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Step 7: Audit Log</div>
+  <h2>Ingestion Audit Results</h2>
+  <table>
+    <tr>
+      <th>SOURCE_NAME</th>
+      <th>STATUS</th>
+      <th>FILES</th>
+      <th>ROWS</th>
+      <th>FAILED</th>
+      <th>DURATION</th>
+    </tr>
+    <tr>
+      <td><span class="hl">DEMO_CUSTOMERS_CSV</span></td>
+      <td><span class="g">SUCCESS</span></td>
+      <td>1</td>
+      <td>15</td>
+      <td><span class="g">0</span></td>
+      <td>0.4s</td>
+    </tr>
+    <tr>
+      <td><span class="hl">DEMO_ORDERS_CSV</span></td>
+      <td><span class="g">SUCCESS</span></td>
+      <td>1</td>
+      <td>20</td>
+      <td><span class="g">0</span></td>
+      <td>0.3s</td>
+    </tr>
+    <tr>
+      <td><span class="hl">DEMO_PRODUCTS_CSV</span></td>
+      <td><span class="g">SUCCESS</span></td>
+      <td>1</td>
+      <td>12</td>
+      <td><span class="g">0</span></td>
+      <td>0.3s</td>
+    </tr>
+  </table>
+  <div class="cb" style="font-size:15px;margin-top:10px;"><span class="kw">SELECT</span> SOURCE_NAME, RUN_STATUS, FILES_PROCESSED,
+       ROWS_LOADED, ROWS_FAILED, DURATION_SECONDS
+<span class="kw">FROM</span>   MDF_CONTROL_DB.AUDIT.INGESTION_AUDIT_LOG
+<span class="kw">ORDER BY</span> CREATED_AT <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="n">10</span>;</div>
+  <p style="font-size:17px;margin-top:8px;">Every run is logged: <span class="hl">BATCH_ID</span>, files list, the exact <span class="hl">COPY INTO</span> command, and full error details if any.</p>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: Idempotency -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Step 9: Idempotency</div>
+  <h2>Re-Run = <span class="g">Zero Duplicates</span></h2>
+  <p style="margin-bottom:16px;">Run the same procedure again. Snowflake tracks loaded files and skips them automatically.</p>
+  <div class="g2">
+    <div class="cd hc">
+      <h3>First Run</h3>
+      <div class="ab" style="font-size:15px;">
+  SOURCE:  DEMO_CUSTOMERS_CSV
+  STATUS:  <span style="color:var(--green);">SUCCESS</span>
+  FILES:   <span style="color:var(--cyan);">1</span>
+  ROWS:    <span style="color:var(--cyan);">15</span></div>
+    </div>
+    <div class="cd wc">
+      <h3 style="color:var(--orange);">Second Run (same call)</h3>
+      <div class="ab" style="font-size:15px;">
+  SOURCE:  DEMO_CUSTOMERS_CSV
+  STATUS:  <span style="color:var(--green);">SUCCESS</span>
+  FILES:   <span style="color:var(--orange);">0</span>
+  ROWS:    <span style="color:var(--orange);">0</span></div>
+    </div>
+  </div>
+  <div class="cb" style="font-size:15px;margin-top:16px;"><span class="c">-- Same call, same parameters. Files already loaded = skipped.</span>
+<span class="kw">CALL</span> MDF_CONTROL_DB.PROCEDURES.<span class="fn">SP_GENERIC_INGESTION</span>(<span class="s">'DEMO_CUSTOMERS_CSV'</span>, <span class="n">FALSE</span>);
+
+<span class="c">-- Force reload if source data was corrected:</span>
+<span class="kw">CALL</span> MDF_CONTROL_DB.PROCEDURES.<span class="fn">SP_GENERIC_INGESTION</span>(<span class="s">'DEMO_CUSTOMERS_CSV'</span>, <span class="n">TRUE</span>);</div>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Recap -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Recap</div>
+  <h2>What We Proved</h2>
+  <div class="g2">
+    <div>
+      <ul>
+        <li><span class="hl">End-to-end CSV pipeline</span> from file upload to queryable table</li>
+        <li><span class="hl">Typed columns</span> enforce schema at load time &mdash; not everything is VARCHAR</li>
+        <li><span class="hl">_MDF_ metadata columns</span> trace every row to its source file and row number</li>
+        <li><span class="hl">Audit log</span> captures every run: files, rows, duration, exact SQL</li>
+        <li><span class="hl">Idempotency</span> works out of the box &mdash; re-runs never duplicate data</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Row Count Verification</h3>
+      <table style="font-size:16px;">
+        <tr><th>Table</th><th>Rows</th></tr>
+        <tr><td>RAW_CUSTOMERS</td><td><span class="g">15</span></td></tr>
+        <tr><td>RAW_ORDERS</td><td><span class="g">20</span></td></tr>
+        <tr><td>RAW_PRODUCTS</td><td><span class="g">12</span></td></tr>
+      </table>
+      <h3 style="margin-top:20px;">Student Exercises</h3>
+      <ul style="font-size:16px;">
+        <li>Register a new pipe-delimited source</li>
+        <li>Upload a bad CSV &mdash; observe error handling</li>
+        <li>Test TRUNCATE_RELOAD load type</li>
+        <li>Query _MDF_ columns for lineage</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Next Module -->
+<div class="slide">
+  <div class="mt">Module 05 &mdash; Next</div>
+  <h2>Module 05 Complete</h2>
+  <div style="margin-top:30px;padding:24px 28px;background:var(--bg2);border-left:4px solid var(--orange);border-radius:4px;">
+    <p style="font-size:22px;"><span class="w">Next: Module 06</span> &mdash; Semi-Structured Data Ingestion</p>
+    <p style="font-size:17px;color:var(--dim);margin-top:8px;">JSON into VARIANT columns. Parquet with inferred schemas. Same framework, different strategy.</p>
+  </div>
+  <div class="g3" style="margin-top:40px;">
+    <div class="cd hc" style="text-align:center;">
+      <h3>CSV</h3>
+      <p style="font-size:16px;"><span class="g">Done</span></p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">Typed columns, explicit schema</p>
+    </div>
+    <div class="cd wc" style="text-align:center;">
+      <h3 style="color:var(--orange);">JSON</h3>
+      <p style="font-size:16px;"><span class="w">Module 06</span></p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">VARIANT column, FLATTEN for extraction</p>
+    </div>
+    <div class="cd" style="border-color:var(--green);text-align:center;">
+      <h3 style="color:var(--green);">Parquet</h3>
+      <p style="font-size:16px;"><span class="g">Module 06</span></p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">INFER_SCHEMA, self-describing format</p>
+    </div>
+  </div>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+let c=0;const ss=document.querySelectorAll('.slide'),n=ss.length;
+function go(i){if(i>=0&&i<n){ss[c].classList.remove('active');c=i;ss[c].classList.add('active');}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(c+1);if(e.key==='ArrowLeft')go(c-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)go(c+1);else go(c-1);});
+</script>
+</body>
+</html>

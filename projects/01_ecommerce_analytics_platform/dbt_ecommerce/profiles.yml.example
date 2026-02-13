@@ -1,0 +1,88 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# dbt Profiles Configuration (EXAMPLE)
+# ============================================================
+# INSTRUCTIONS:
+#   1. Copy this file to ~/.dbt/profiles.yml
+#   2. Set the environment variables listed below
+#   3. Test with: dbt debug
+#
+# NEVER commit the real profiles.yml to version control.
+# This example file uses env_var() for all sensitive values.
+# ============================================================
+#
+# REQUIRED ENVIRONMENT VARIABLES:
+#   SNOWFLAKE_ACCOUNT    - Snowflake account identifier (e.g., xy12345.us-east-1)
+#   SNOWFLAKE_USER       - Snowflake username
+#   SNOWFLAKE_PASSWORD   - Snowflake password (use key-pair auth in production)
+#   SNOWFLAKE_ROLE       - Snowflake role (default: ECOMMERCE_TRANSFORMER)
+#
+# OPTIONAL ENVIRONMENT VARIABLES:
+#   DBT_TARGET           - Override the default target (dev or prod)
+# ============================================================
+
+ecommerce:
+
+  # Default target. Override with: dbt run --target prod
+  target: dev
+
+  outputs:
+
+    # --------------------------------------------------------
+    # DEV TARGET
+    # --------------------------------------------------------
+    # Writes all models to a personal schema in ECOMMERCE_ANALYTICS.
+    # Safe for development: won't overwrite production tables.
+    # Schema name: dbt_<your_username> (e.g., dbt_jsmith)
+    dev:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'ECOMMERCE_TRANSFORMER') }}"
+      warehouse: TRANSFORMING_WH
+
+      # In dev, all models land in a single personal schema.
+      # This avoids accidentally writing to production schemas.
+      database: ECOMMERCE_ANALYTICS
+      schema: "dbt_{{ env_var('SNOWFLAKE_USER') | lower }}"
+
+      threads: 4
+      client_session_keep_alive: true
+
+      # Query tag helps identify dbt queries in Snowflake query history
+      query_tag: "dbt_ecommerce_dev"
+
+    # --------------------------------------------------------
+    # PROD TARGET
+    # --------------------------------------------------------
+    # Writes to the correct database/schema per model layer.
+    # Used by Airflow service account (SVC_ECOMMERCE_DBT).
+    #
+    # IMPORTANT: The database/schema here is the DEFAULT.
+    # Each model layer overrides via dbt_project.yml +schema config.
+    # With custom schema macro, staging models go to STAGING schema,
+    # intermediate models go to INTERMEDIATE schema, etc.
+    #
+    # Database routing:
+    #   staging models     -> ECOMMERCE_STAGING.STAGING
+    #   intermediate models -> ECOMMERCE_ANALYTICS.INTERMEDIATE
+    #   marts models       -> ECOMMERCE_ANALYTICS.MARTS
+    prod:
+      type: snowflake
+      account: "{{ env_var('SNOWFLAKE_ACCOUNT') }}"
+      user: "{{ env_var('SNOWFLAKE_USER') }}"
+      password: "{{ env_var('SNOWFLAKE_PASSWORD') }}"
+      role: "{{ env_var('SNOWFLAKE_ROLE', 'ECOMMERCE_TRANSFORMER') }}"
+      warehouse: TRANSFORMING_WH
+
+      # Default database for intermediate and mart models.
+      # Staging models override to ECOMMERCE_STAGING via custom schema macro.
+      database: ECOMMERCE_ANALYTICS
+      schema: MARTS
+
+      threads: 8
+      client_session_keep_alive: true
+
+      # Query tag for production runs — filterable in Snowflake query history
+      query_tag: "dbt_ecommerce_prod"

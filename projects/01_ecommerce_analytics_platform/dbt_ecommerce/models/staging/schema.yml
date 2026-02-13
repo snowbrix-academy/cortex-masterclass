@@ -1,0 +1,263 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# Staging Models — Schema Definitions
+# ============================================================
+# Tests and documentation for all staging models.
+# Staging models are views that clean and rename raw data.
+# They are the single entry point for all downstream models.
+# ============================================================
+
+version: 2
+
+models:
+
+  # --------------------------------------------------------
+  # stg_orders
+  # --------------------------------------------------------
+  - name: stg_orders
+    description: >
+      Cleaned orders from the PostgreSQL source. One row per order.
+      Renames columns to consistent conventions, casts types,
+      filters out test data (negative order IDs), and adds an
+      order_status_category column that groups statuses into
+      active, completed, or cancelled buckets.
+    columns:
+      - name: order_id
+        description: "Primary key. Unique order identifier from source system."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Foreign key to stg_customers. The customer who placed this order."
+        data_tests:
+          - not_null
+
+      - name: order_date
+        description: "Date and time the order was placed. Cast to TIMESTAMP_NTZ."
+        data_tests:
+          - not_null
+
+      - name: order_status
+        description: >
+          Raw order status from source system. Values include:
+          completed, shipped, cancelled, pending, pending_review, returned.
+        data_tests:
+          - not_null
+          - accepted_values:
+              values:
+                - 'completed'
+                - 'shipped'
+                - 'cancelled'
+                - 'pending'
+                - 'pending_review'
+                - 'returned'
+
+      - name: order_status_category
+        description: >
+          Grouped status for reporting. Maps raw statuses to three categories:
+          active (pending, pending_review, shipped), completed (completed),
+          cancelled (cancelled, returned).
+        data_tests:
+          - accepted_values:
+              values:
+                - 'active'
+                - 'completed'
+                - 'cancelled'
+
+      - name: order_total
+        description: "Order total amount in USD. NUMBER(12,2)."
+        data_tests:
+          - not_null
+
+      - name: shipping_address
+        description: "Full shipping address string."
+
+      - name: shipping_city
+        description: "Shipping city."
+
+      - name: shipping_state
+        description: "Shipping state/province."
+
+      - name: shipping_country
+        description: "Shipping country."
+
+      - name: shipping_zip
+        description: "Shipping postal/zip code."
+
+      - name: created_at
+        description: "When the order record was created in the source system."
+
+      - name: updated_at
+        description: "When the order record was last updated in the source system."
+
+  # --------------------------------------------------------
+  # stg_customers
+  # --------------------------------------------------------
+  - name: stg_customers
+    description: >
+      Cleaned customers from the PostgreSQL source. One row per
+      unique customer. Deduplicated by email (keeps the most recently
+      updated record). State abbreviations are normalized to two-letter
+      codes (e.g., "California" -> "CA"). NULL phone numbers are
+      preserved (about 30% of records).
+    columns:
+      - name: customer_id
+        description: "Primary key. Unique customer identifier."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: email
+        description: "Customer email address. Lowercased and trimmed."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: first_name
+        description: "Customer first name. Trimmed. May be NULL."
+
+      - name: last_name
+        description: "Customer last name. Trimmed. May be NULL."
+
+      - name: full_name
+        description: "Concatenated first and last name. 'Unknown' if both are NULL."
+
+      - name: phone
+        description: "Customer phone number. Approximately 30% NULL."
+
+      - name: address
+        description: "Street address."
+
+      - name: city
+        description: "City of residence."
+
+      - name: state
+        description: >
+          State abbreviation (2-letter code). Normalized from mixed formats
+          in source data. For example, "California" becomes "CA".
+
+      - name: country
+        description: "Country. Defaults to 'US' if NULL in source."
+
+      - name: zip_code
+        description: "Postal/zip code."
+
+      - name: created_at
+        description: "When the customer record was created in the source system."
+
+      - name: updated_at
+        description: "When the customer record was last updated in the source system."
+
+  # --------------------------------------------------------
+  # stg_payments
+  # --------------------------------------------------------
+  - name: stg_payments
+    description: >
+      Cleaned payment records from Stripe. One row per payment.
+      Key transformations: amount converted from cents to dollars,
+      Stripe statuses mapped to internal statuses, currency codes
+      uppercased. Ready for joining to orders.
+    columns:
+      - name: payment_id
+        description: "Primary key. Stripe charge ID (string, e.g., 'ch_1234...')."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: order_id
+        description: >
+          Foreign key to stg_orders. Extracted from Stripe metadata.
+          May be NULL for payments not associated with an order.
+
+      - name: payment_amount
+        description: >
+          Payment amount in dollars (converted from cents).
+          Original Stripe amount is in smallest currency unit.
+        data_tests:
+          - not_null
+
+      - name: payment_currency
+        description: "Three-letter ISO currency code, uppercased (e.g., 'USD')."
+        data_tests:
+          - not_null
+
+      - name: payment_status
+        description: >
+          Internal payment status. Mapped from Stripe statuses:
+          succeeded -> completed, pending -> pending, failed -> failed.
+        data_tests:
+          - accepted_values:
+              values:
+                - 'completed'
+                - 'pending'
+                - 'failed'
+
+      - name: payment_method
+        description: "Payment method type (e.g., 'card', 'bank_transfer')."
+
+      - name: stripe_charge_id
+        description: "Original Stripe charge identifier for audit trail."
+
+      - name: payment_created_at
+        description: "When the payment was created in Stripe."
+        data_tests:
+          - not_null
+
+  # --------------------------------------------------------
+  # stg_products
+  # --------------------------------------------------------
+  - name: stg_products
+    description: >
+      Cleaned products from the PostgreSQL source. One row per product.
+      Categories are normalized to title case. Products with negative
+      cost values are flagged (has_cost_error = true) and their cost
+      is set to NULL. NULL weights default to 0.
+    columns:
+      - name: product_id
+        description: "Primary key. Unique product identifier."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: product_name
+        description: "Product display name. Trimmed."
+        data_tests:
+          - not_null
+
+      - name: category
+        description: "Top-level product category, normalized to title case."
+
+      - name: subcategory
+        description: "Sub-category within the parent category, normalized to title case."
+
+      - name: price
+        description: "Retail price in USD."
+        data_tests:
+          - not_null
+          - dbt_expectations.expect_column_values_to_be_between:
+              min_value: 0
+              max_value: 100000
+
+      - name: cost
+        description: >
+          Product cost in USD. NULL if the source value was NULL or negative.
+          Negative costs are data entry errors; the has_cost_error flag
+          indicates which products had this issue.
+
+      - name: weight_kg
+        description: "Product weight in kilograms. Defaults to 0 if NULL in source."
+
+      - name: is_active
+        description: "Whether the product is currently active/available for sale."
+
+      - name: has_cost_error
+        description: >
+          Boolean flag. True if the source cost was negative (data entry error).
+          Used for data quality monitoring and reporting.
+
+      - name: created_at
+        description: "When the product was created in the source system."
+
+      - name: updated_at
+        description: "When the product was last updated in the source system."

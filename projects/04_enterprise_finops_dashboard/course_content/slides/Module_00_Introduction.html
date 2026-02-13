@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 00: Course Introduction | Enterprise FinOps Dashboard | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
+  :root {
+    --bg-primary: #1A1A2E;
+    --bg-secondary: #16213E;
+    --bg-card: #0F3460;
+    --cyan: #00D4FF;
+    --orange: #FF6B35;
+    --red: #E63946;
+    --green: #06D6A0;
+    --yellow: #FFC857;
+    --gray: #B0A8A0;
+    --white: #E8E8E8;
+    --dim: #6B7280;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 60px 80px;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+
+  .slide.active { display: flex; }
+
+  .slide-number {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--dim);
+  }
+
+  .module-tag {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .brand-tag {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+  }
+
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    color: var(--cyan);
+  }
+
+  h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    line-height: 1.3;
+    color: var(--white);
+  }
+
+  h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--cyan);
+  }
+
+  p, li {
+    font-size: 22px;
+    line-height: 1.7;
+    color: var(--gray);
+    margin-bottom: 12px;
+  }
+
+  .highlight { color: var(--cyan); font-weight: 600; }
+  .warn { color: var(--orange); font-weight: 600; }
+  .danger { color: var(--red); font-weight: 600; }
+  .success { color: var(--green); font-weight: 600; }
+  .gold { color: var(--yellow); font-weight: 600; }
+
+  ul { list-style: none; padding-left: 0; }
+  ul li {
+    padding: 10px 0;
+    padding-left: 32px;
+    position: relative;
+    font-size: 22px;
+    line-height: 1.6;
+  }
+  ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 24px;
+  }
+
+  .metric-card {
+    background: rgba(15, 52, 96, 0.5);
+    border: 2px solid var(--cyan);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .metric-label {
+    font-size: 18px;
+    color: var(--gray);
+    margin-top: 8px;
+  }
+
+  .tag-badge {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 8px 8px 8px 0;
+  }
+
+  .warning-box {
+    background: rgba(255, 107, 53, 0.1);
+    border-left: 4px solid var(--orange);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  .info-box {
+    background: rgba(0, 212, 255, 0.1);
+    border-left: 4px solid var(--cyan);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  .success-box {
+    background: rgba(6, 214, 160, 0.1);
+    border-left: 4px solid var(--green);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+  }
+
+  th {
+    background: rgba(0, 212, 255, 0.15);
+    color: var(--cyan);
+    padding: 14px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  td {
+    padding: 12px 16px;
+    border: 1px solid rgba(176, 168, 160, 0.2);
+    color: var(--gray);
+  }
+
+  tr:hover {
+    background: rgba(0, 212, 255, 0.05);
+  }
+
+  .nav-hint {
+    position: absolute;
+    bottom: 30px;
+    right: 50%;
+    transform: translateX(50%);
+    font-size: 13px;
+    color: var(--dim);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<section class="slide active">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h1>Enterprise FinOps Dashboard<br>for Snowflake</h1>
+    <p style="font-size: 28px; color: var(--gray); margin-top: 20px;">
+      The $75K-$150K Problem: 30-40% of Snowflake spend is wasted.<br>
+      Build a production-ready framework for real-time cost visibility,<br>
+      automated chargeback, and optimization recommendations.
+    </p>
+    <div style="margin-top: 40px;">
+      <span class="tag-badge">Duration: ~10 minutes</span>
+      <span class="tag-badge">Beginner</span>
+      <span class="tag-badge">10 Modules</span>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy | Production-Grade Data Engineering. No Fluff.</div>
+  <div class="nav-hint">Press → to continue</div>
+  <div class="slide-number">1 / 18</div>
+</section>
+
+<!-- Slide 2: The Problem -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>The $75K-$150K Problem</h2>
+    <div class="warning-box">
+      <p style="font-size: 24px; color: var(--orange); margin-bottom: 16px;"><strong>Typical Scenario:</strong></p>
+      <p>Your Snowflake invoice: <span class="gold">$150,000</span> this month</p>
+      <p>CFO question: <em>"Which teams are responsible for this spend?"</em></p>
+      <p>Your answer: <span class="danger">"I don't know."</span></p>
+    </div>
+    <h3 style="margin-top: 40px;">The Root Causes</h3>
+    <ul>
+      <li>Warehouse costs visible, but <span class="highlight">not attributed</span> to teams/departments</li>
+      <li>Idle warehouses running 24/7 wasting <span class="warn">30-40% of spend</span></li>
+      <li>No real-time budget monitoring → surprise overruns at month-end</li>
+      <li>Finance demands chargeback, but platform teams lack tooling</li>
+      <li>Manual Excel exports from ACCOUNT_USAGE don't scale</li>
+    </ul>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">2 / 18</div>
+</section>
+
+<!-- Slide 3: The ROI -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>The Business Case: ROI Calculation</h2>
+    <div class="two-col">
+      <div class="metric-card">
+        <div class="metric-value">$500K</div>
+        <div class="metric-label">Annual Snowflake Spend<br>(Medium Enterprise)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">35%</div>
+        <div class="metric-label">Typical Waste Rate<br>(Industry Average)</div>
+      </div>
+    </div>
+    <div class="success-box" style="margin-top: 32px;">
+      <p style="font-size: 20px; line-height: 1.8;">
+        <strong>Annual waste:</strong> $500K × 35% = <span class="gold">$175K</span><br>
+        <strong>FinOps framework recovers:</strong> 60% of waste = <span class="highlight">$105K saved/year</span><br>
+        <strong>Framework operating cost:</strong> ~$2K/year (compute + storage)<br>
+        <strong style="font-size: 26px; color: var(--green);">Net savings: $103K/year</strong><br>
+        <strong style="font-size: 32px; color: var(--cyan);">ROI: 5,150%</strong>
+      </p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">3 / 18</div>
+</section>
+
+<!-- Slide 4: The Solution Overview -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>The Solution: Enterprise FinOps Dashboard</h2>
+    <div class="two-col">
+      <div>
+        <h3>Real-Time Cost Collection</h3>
+        <ul style="font-size: 20px;">
+          <li>Warehouse compute (per-minute grain)</li>
+          <li>Query-level costs with attribution</li>
+          <li>Storage (active + time-travel + failsafe)</li>
+          <li>Serverless (tasks, Snowpipe, MVs)</li>
+          <li>Cloud services (10% threshold rule)</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Multi-Dimensional Chargeback</h3>
+        <ul style="font-size: 20px;">
+          <li>Direct attribution (warehouse → team)</li>
+          <li>Proportional (shared warehouses)</li>
+          <li>Tag-based (QUERY_TAG projects)</li>
+          <li>BI tool classification (Power BI, Tableau, dbt)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 32px;">
+      <div>
+        <h3>Automated Budget Controls</h3>
+        <ul style="font-size: 20px;">
+          <li>3-tier alerts (80%, 90%, 100%)</li>
+          <li>Anomaly detection (z-score)</li>
+          <li>Month-end forecasting</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Cost Optimization</h3>
+        <ul style="font-size: 20px;">
+          <li>Idle warehouse detection (>50%)</li>
+          <li>Warehouse sizing recommendations</li>
+          <li>Query optimization candidates</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">4 / 18</div>
+</section>
+
+<!-- Slide 5: Architecture -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Framework Architecture</h2>
+    <div class="info-box">
+      <pre style="font-family: 'Fira Code', monospace; font-size: 16px; color: var(--gray); line-height: 1.6;">
+┌─────────────────────────────────────────────────────────┐
+│  ACCOUNT_USAGE (Snowflake System Views)                 │
+│  • WAREHOUSE_METERING_HISTORY                            │
+│  • QUERY_HISTORY                                         │
+│  • DATABASE_STORAGE_USAGE_HISTORY                        │
+│  • TASK_HISTORY, PIPE_USAGE_HISTORY                      │
+└────────────────┬────────────────────────────────────────┘
+                 │ Collected by stored procedures (hourly/daily)
+                 ▼
+┌─────────────────────────────────────────────────────────┐
+│  FINOPS_CONTROL_DB (Single Source of Truth)             │
+│  ├── CONFIG        → Global settings, credit pricing     │
+│  ├── COST_DATA     → Raw cost facts                      │
+│  ├── CHARGEBACK    → Attribution dimensions (SCD Type 2) │
+│  ├── BUDGET        → Budget definitions, alerts          │
+│  ├── OPTIMIZATION  → Recommendations                     │
+│  ├── PROCEDURES    → Stored procedures (JavaScript)      │
+│  └── MONITORING    → Semantic views (row-level security) │
+└────────────────┬────────────────────────────────────────┘
+                 │ Pre-aggregation for BI tools
+                 ▼
+┌─────────────────────────────────────────────────────────┐
+│  FINOPS_ANALYTICS_DB (Performance Layer)                 │
+│  • Daily/weekly/monthly rollups                          │
+│  • Optimized for Power BI, Tableau, Streamlit           │
+└────────────────┬────────────────────────────────────────┘
+                 │
+                 ▼
+           Streamlit Dashboard (7 pages)
+      </pre>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">5 / 18</div>
+</section>
+
+<!-- Slide 6: Target Audience -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Who This Course Is For</h2>
+    <div class="two-col">
+      <div>
+        <h3>FinOps Teams</h3>
+        <ul style="font-size: 20px;">
+          <li>Responsible for cost management</li>
+          <li>Need automated chargeback tooling</li>
+          <li>Report to finance and business units</li>
+        </ul>
+        <h3 style="margin-top: 32px;">Data Platform Teams</h3>
+        <ul style="font-size: 20px;">
+          <li>Own Snowflake infrastructure</li>
+          <li>Need real-time cost monitoring</li>
+          <li>Implement cost controls</li>
+        </ul>
+      </div>
+      <div>
+        <h3>CFO Organizations</h3>
+        <ul style="font-size: 20px;">
+          <li>Finance analysts (budget tracking)</li>
+          <li>Controllers (cost center attribution)</li>
+          <li>VPs (cost accountability)</li>
+        </ul>
+        <h3 style="margin-top: 32px;">Data Engineers</h3>
+        <ul style="font-size: 20px;">
+          <li>2-7 years experience</li>
+          <li>Learning FinOps skills</li>
+          <li>Building career portfolio</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">6 / 18</div>
+</section>
+
+<!-- Slide 7: Prerequisites -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Prerequisites</h2>
+    <div class="info-box">
+      <h3>Required</h3>
+      <ul>
+        <li>Snowflake account (Enterprise Edition recommended, Standard works)</li>
+        <li>ACCOUNTADMIN or SYSADMIN role access</li>
+        <li>Basic SQL fluency (DDL, DML, joins, aggregations)</li>
+        <li>Understanding of Snowflake cost model (compute credits, storage)</li>
+      </ul>
+    </div>
+    <div class="success-box" style="margin-top: 24px;">
+      <h3>Optional (Helpful but Not Required)</h3>
+      <ul>
+        <li>JavaScript for stored procedures <span class="dim">(we'll teach you)</span></li>
+        <li>Python 3.8+ for Streamlit <span class="dim">(complete code provided)</span></li>
+        <li>Basic statistics <span class="dim">(z-score explained)</span></li>
+      </ul>
+    </div>
+    <div class="warning-box" style="margin-top: 24px;">
+      <p><strong>What you DON'T need:</strong> No external tools, no ML expertise, no DevOps, no advanced math</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">7 / 18</div>
+</section>
+
+<!-- Slide 8: Course Structure Part 1 -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Course Structure: 10 Modules (~4.5 Hours)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Topic</th>
+          <th>Duration</th>
+          <th>Key Deliverables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>01</strong></td>
+          <td>Foundation Setup</td>
+          <td>25 min</td>
+          <td>Databases, warehouses, roles, RBAC</td>
+        </tr>
+        <tr>
+          <td><strong>02</strong></td>
+          <td>Cost Collection</td>
+          <td>35 min</td>
+          <td>4 procedures: warehouse, query, storage, serverless costs</td>
+        </tr>
+        <tr>
+          <td><strong>03</strong></td>
+          <td>Chargeback Attribution</td>
+          <td>40 min</td>
+          <td>SCD Type 2 dimensions, attribution engine</td>
+        </tr>
+        <tr>
+          <td><strong>04</strong></td>
+          <td>Budget Controls</td>
+          <td>30 min</td>
+          <td>3-tier alerts, anomaly detection, forecasting</td>
+        </tr>
+        <tr>
+          <td><strong>05</strong></td>
+          <td>BI Tool Detection</td>
+          <td>25 min</td>
+          <td>Power BI, Tableau, dbt classification</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">8 / 18</div>
+</section>
+
+<!-- Slide 9: Course Structure Part 2 -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Course Structure (Continued)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>Topic</th>
+          <th>Duration</th>
+          <th>Key Deliverables</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>06</strong></td>
+          <td>Optimization Engine</td>
+          <td>30 min</td>
+          <td>6 categories of automated recommendations</td>
+        </tr>
+        <tr>
+          <td><strong>07</strong></td>
+          <td>Monitoring Views</td>
+          <td>35 min</td>
+          <td>10+ views with row-level security</td>
+        </tr>
+        <tr>
+          <td><strong>08</strong></td>
+          <td>Automation with Tasks</td>
+          <td>20 min</td>
+          <td>Scheduled task DAG (hourly/daily)</td>
+        </tr>
+        <tr>
+          <td><strong>09</strong></td>
+          <td>Streamlit Dashboard</td>
+          <td>40 min</td>
+          <td>7-page interactive dashboard</td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td>Production Deployment</td>
+          <td>30 min</td>
+          <td>Advanced scenarios, production checklist</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">9 / 18</div>
+</section>
+
+<!-- Slide 10: Learning Path -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Progressive Learning Path</h2>
+    <div style="margin-top: 40px;">
+      <div class="info-box">
+        <h3>Phase 1: Foundation (Modules 01-02)</h3>
+        <p>Build the skeleton: databases, warehouses, cost collection procedures</p>
+      </div>
+      <div class="success-box" style="margin-top: 20px;">
+        <h3>Phase 2: Attribution (Modules 03-05)</h3>
+        <p>Add intelligence: chargeback attribution, budgets, BI tool classification</p>
+      </div>
+      <div class="warning-box" style="margin-top: 20px;">
+        <h3>Phase 3: Optimization (Modules 06-07)</h3>
+        <p>Drive action: optimization recommendations, monitoring views</p>
+      </div>
+      <div class="info-box" style="margin-top: 20px;">
+        <h3>Phase 4: Automation & Production (Modules 08-10)</h3>
+        <p>Make it real: scheduled tasks, dashboard, production deployment</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">10 / 18</div>
+</section>
+
+<!-- Slide 11: Expected Outcomes -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>What You'll Achieve</h2>
+    <div class="two-col">
+      <div>
+        <h3>Technical Skills</h3>
+        <ul>
+          <li>JavaScript stored procedures (complex logic)</li>
+          <li>SCD Type 2 dimensional modeling</li>
+          <li>Task orchestration with DAG dependencies</li>
+          <li>Row-level security implementation</li>
+          <li>Streamlit + Plotly dashboards</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Business Outcomes</h3>
+        <ul>
+          <li><span class="success">15-30% cost reduction</span></li>
+          <li><span class="highlight">&lt;5% unallocated costs</span></li>
+          <li><span class="success">Zero manual reporting</span></li>
+          <li><span class="highlight">Real-time budget alerts</span></li>
+          <li><span class="success">Self-service visibility</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="success-box" style="margin-top: 40px;">
+      <h3 style="color: var(--green);">Career Impact</h3>
+      <p style="font-size: 20px;">
+        Add to resume: <em>"Built enterprise FinOps framework handling $10M+ annual Snowflake spend for 1000+ users, reducing costs by 20% and achieving complete chargeback attribution."</em>
+      </p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">11 / 18</div>
+</section>
+
+<!-- Slide 12: Framework Features Part 1 -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Framework Feature Highlights (1/2)</h2>
+    <div class="two-col">
+      <div>
+        <div class="metric-card">
+          <div class="metric-value" style="font-size: 36px;">All Components</div>
+          <div class="metric-label">Warehouse, Query, Storage, Serverless, Cloud Services</div>
+        </div>
+        <div class="metric-card" style="margin-top: 20px;">
+          <div class="metric-value" style="font-size: 36px;">Multi-Dimensional</div>
+          <div class="metric-label">Team, Dept, Project, Cost Center, User, Warehouse</div>
+        </div>
+      </div>
+      <div>
+        <div class="metric-card">
+          <div class="metric-value" style="font-size: 36px;">SCD Type 2</div>
+          <div class="metric-label">Handle reorgs without losing history</div>
+        </div>
+        <div class="metric-card" style="margin-top: 20px;">
+          <div class="metric-value" style="font-size: 36px;">Idempotent</div>
+          <div class="metric-label">Re-run procedures safely, no duplicates</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">12 / 18</div>
+</section>
+
+<!-- Slide 13: Framework Features Part 2 -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Framework Feature Highlights (2/2)</h2>
+    <div class="two-col">
+      <div>
+        <div class="metric-card">
+          <div class="metric-value" style="font-size: 36px;">Enterprise Scale</div>
+          <div class="metric-label">1000+ users, 100+ warehouses, millions of queries/day</div>
+        </div>
+        <div class="metric-card" style="margin-top: 20px;">
+          <div class="metric-value" style="font-size: 36px;">Complete Audit</div>
+          <div class="metric-label">Every dollar traced to source ACCOUNT_USAGE</div>
+        </div>
+      </div>
+      <div>
+        <div class="metric-card">
+          <div class="metric-value" style="font-size: 36px;">Cost-Optimized</div>
+          <div class="metric-label">Framework runs on $150/month budget</div>
+        </div>
+        <div class="metric-card" style="margin-top: 20px;">
+          <div class="metric-value" style="font-size: 36px;">Row-Level Security</div>
+          <div class="metric-label">Teams see only their costs</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">13 / 18</div>
+</section>
+
+<!-- Slide 14: Streamlit Dashboard Preview -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Streamlit Dashboard: 7 Pages</h2>
+    <table style="font-size: 19px;">
+      <thead>
+        <tr>
+          <th>Page</th>
+          <th>Audience</th>
+          <th>Key Features</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Executive Summary</strong></td>
+          <td>CFO, VPs</td>
+          <td>KPIs, daily spend trend, top spenders</td>
+        </tr>
+        <tr>
+          <td><strong>2. Warehouse Analytics</strong></td>
+          <td>Platform teams</td>
+          <td>Utilization heatmap, idle time analysis</td>
+        </tr>
+        <tr>
+          <td><strong>3. Query Cost Analysis</strong></td>
+          <td>Engineers</td>
+          <td>Top 20 expensive queries, optimization hints</td>
+        </tr>
+        <tr>
+          <td><strong>4. Chargeback Report</strong></td>
+          <td>Finance</td>
+          <td>Multi-dimensional drill-down, CSV export</td>
+        </tr>
+        <tr>
+          <td><strong>5. Budget Management</strong></td>
+          <td>Finance + FinOps</td>
+          <td>Budget gauges, alerts, month-end forecast</td>
+        </tr>
+        <tr>
+          <td><strong>6. Optimization</strong></td>
+          <td>Platform teams</td>
+          <td>Recommendations by savings potential</td>
+        </tr>
+        <tr>
+          <td><strong>7. Admin / Config</strong></td>
+          <td>FinOps admins</td>
+          <td>Register teams, update pricing, refresh data</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">14 / 18</div>
+</section>
+
+<!-- Slide 15: Getting Started -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Getting Started: Next Steps</h2>
+    <div class="info-box">
+      <h3>1. Access Your Snowflake Account</h3>
+      <ul>
+        <li>ACCOUNTADMIN or SYSADMIN role required</li>
+        <li>Enterprise Edition recommended (Standard works too)</li>
+        <li>Estimate: 50-100 credits (~$150-$300) for setup and testing</li>
+      </ul>
+    </div>
+    <div class="success-box" style="margin-top: 24px;">
+      <h3>2. Download Course Materials</h3>
+      <ul>
+        <li>All SQL scripts (11 modules)</li>
+        <li>Streamlit app code (complete, ready to run)</li>
+        <li>Sample data for testing</li>
+        <li>LAB_GUIDE.md with step-by-step instructions</li>
+      </ul>
+    </div>
+    <div class="warning-box" style="margin-top: 24px;">
+      <h3>3. Set Up Your Environment</h3>
+      <ul>
+        <li>Snowsight web interface (recommended) or SnowSQL CLI</li>
+        <li>Text editor (VS Code, Notepad++)</li>
+        <li>Optional: Python 3.8+ for local Streamlit testing</li>
+      </ul>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">15 / 18</div>
+</section>
+
+<!-- Slide 16: Course Format -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>How to Use This Course</h2>
+    <div style="margin-top: 40px; font-size: 22px; line-height: 1.9;">
+      <p><span class="highlight">Step 1:</span> Watch the video for concept explanation and visual walkthrough</p>
+      <p style="margin-top: 16px;"><span class="highlight">Step 2:</span> Review the SQL script — heavily commented for self-service learning</p>
+      <p style="margin-top: 16px;"><span class="highlight">Step 3:</span> Execute the script in your Snowflake account (copy-paste or upload)</p>
+      <p style="margin-top: 16px;"><span class="highlight">Step 4:</span> Run verification queries to ensure everything works correctly</p>
+      <p style="margin-top: 16px;"><span class="highlight">Step 5:</span> Move to next module once verification passes</p>
+    </div>
+    <div class="success-box" style="margin-top: 40px;">
+      <p><strong>Support:</strong> Each module includes troubleshooting section for common issues. LAB_GUIDE.md provides additional step-by-step instructions.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">16 / 18</div>
+</section>
+
+<!-- Slide 17: Success Metrics -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h2>Measure Your Success</h2>
+    <div class="two-col">
+      <div class="metric-card">
+        <div class="metric-value">15-30%</div>
+        <div class="metric-label">Cost Reduction<br>Within 3 Months</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">&lt; 5%</div>
+        <div class="metric-label">Unallocated Costs<br>Complete Attribution</div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="metric-card">
+        <div class="metric-value">0 Hours</div>
+        <div class="metric-label">Manual Reporting<br>Fully Automated</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">Real-Time</div>
+        <div class="metric-label">Budget Alerts<br>No Surprises</div>
+      </div>
+    </div>
+    <div class="success-box" style="margin-top: 32px;">
+      <p style="font-size: 20px;">
+        <strong>Framework Efficiency:</strong> Processes millions of queries per day, provides chargeback attribution to 1000+ users, costs <$200/month to operate.
+      </p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">17 / 18</div>
+</section>
+
+<!-- Slide 18: Ready to Build -->
+<section class="slide">
+  <div class="module-tag">Module 00 — Introduction</div>
+  <div>
+    <h1 style="font-size: 56px;">Ready to Build?</h1>
+    <div style="margin-top: 48px;">
+      <p style="font-size: 26px; line-height: 1.8; color: var(--gray);">
+        Next up: <span class="highlight">Module 01 — Foundation Setup</span>
+      </p>
+      <p style="font-size: 24px; line-height: 1.8; color: var(--gray); margin-top: 24px;">
+        We'll create the databases, warehouses, and RBAC model<br>
+        that form the backbone of the framework.
+      </p>
+    </div>
+    <div class="success-box" style="margin-top: 56px;">
+      <h3 style="color: var(--green); font-size: 32px;">Production-Grade Data Engineering. No Fluff.</h3>
+      <p style="font-size: 22px; margin-top: 16px;">
+        By the end of Module 01, you'll have a production-ready foundation supporting enterprise scale: 1000+ users, 100+ warehouses, millions of queries per day.
+      </p>
+    </div>
+    <div style="margin-top: 56px; text-align: center;">
+      <p style="font-size: 28px; color: var(--cyan); font-family: 'JetBrains Mono', monospace;">
+        Let's build. →
+      </p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy | snowbrix.academy</div>
+  <div class="slide-number">18 / 18</div>
+</section>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  function showSlide(n) {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (n + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlide + 1);
+    if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+
+  // Touch support
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  document.addEventListener('touchend', (e) => {
+    let touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 50) showSlide(currentSlide + 1);
+    if (touchEndX - touchStartX > 50) showSlide(currentSlide - 1);
+  });
+</script>
+
+</body>
+</html>

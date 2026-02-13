@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 02: Cost Collection | Enterprise FinOps Dashboard | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root { --bg-primary: #1A1A2E; --cyan: #00D4FF; --orange: #FF6B35; --green: #06D6A0; --gray: #B0A8A0; --white: #E8E8E8; --dim: #6B7280; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg-primary); color: var(--white); overflow: hidden; height: 100vh; width: 100vw; }
+  .slide { display: none; width: 100vw; height: 100vh; padding: 60px 80px; flex-direction: column; justify-content: center; position: relative; }
+  .slide.active { display: flex; }
+  .module-tag { position: absolute; top: 30px; left: 40px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--cyan); letter-spacing: 2px; text-transform: uppercase; }
+  .brand-tag { position: absolute; bottom: 30px; left: 40px; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--dim); }
+  .slide-number { position: absolute; bottom: 30px; right: 40px; font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--dim); }
+  h1 { font-family: 'JetBrains Mono', monospace; font-size: 52px; font-weight: 700; line-height: 1.2; margin-bottom: 24px; color: var(--cyan); }
+  h2 { font-family: 'JetBrains Mono', monospace; font-size: 40px; font-weight: 700; margin-bottom: 32px; color: var(--white); }
+  h3 { font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; margin-bottom: 20px; color: var(--cyan); }
+  p, li { font-size: 22px; line-height: 1.7; color: var(--gray); margin-bottom: 12px; }
+  .highlight { color: var(--cyan); font-weight: 600; }
+  .warn { color: var(--orange); font-weight: 600; }
+  .success { color: var(--green); font-weight: 600; }
+  ul { list-style: none; padding-left: 0; }
+  ul li { padding: 10px 0; padding-left: 32px; position: relative; }
+  ul li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); font-weight: 700; }
+  .info-box { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--cyan); padding: 20px 24px; margin: 20px 0; border-radius: 6px; }
+  .warning-box { background: rgba(255, 107, 53, 0.1); border-left: 4px solid var(--orange); padding: 20px 24px; margin: 20px 0; border-radius: 6px; }
+  .code-block { background: #0D1117; border: 1px solid #30363D; border-radius: 8px; padding: 20px 24px; font-family: 'Fira Code', monospace; font-size: 16px; line-height: 1.7; color: #C9D1D9; margin: 20px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 18px; }
+  th { background: rgba(0, 212, 255, 0.15); color: var(--cyan); padding: 14px 16px; text-align: left; font-family: 'JetBrains Mono', monospace; font-weight: 600; border: 1px solid rgba(0, 212, 255, 0.3); }
+  td { padding: 12px 16px; border: 1px solid rgba(176, 168, 160, 0.2); color: var(--gray); }
+  .metric-card { background: rgba(15, 52, 96, 0.5); border: 2px solid var(--cyan); border-radius: 12px; padding: 28px; text-align: center; }
+  .metric-value { font-size: 48px; font-weight: 700; color: var(--cyan); font-family: 'JetBrains Mono', monospace; }
+  .metric-label { font-size: 18px; color: var(--gray); margin-top: 8px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 24px; }
+</style>
+</head>
+<body>
+
+<section class="slide active">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h1>Cost Collection Procedures</h1>
+    <p style="font-size: 28px; color: var(--gray); margin-top: 20px;">Collect every Snowflake cost component: warehouse compute, query-level costs,<br>storage, and serverless features — with idempotent processing and latency handling.</p>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">1 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>Four Cost Components to Collect</h2>
+    <div class="two-col">
+      <div class="metric-card">
+        <div class="metric-value">60-75%</div>
+        <div class="metric-label">Warehouse Compute<br>(WAREHOUSE_METERING_HISTORY)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">15-25%</div>
+        <div class="metric-label">Storage Costs<br>(Active + Time-Travel + Failsafe)</div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="metric-card">
+        <div class="metric-value">0-10%</div>
+        <div class="metric-label">Cloud Services<br>(Only if >10% of daily compute)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">5-15%</div>
+        <div class="metric-label">Serverless Features<br>(Tasks, Snowpipe, MVs)</div>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">2 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>ACCOUNT_USAGE Latency: The Data Gap</h2>
+    <table>
+      <thead>
+        <tr><th>View</th><th>Typical Latency</th><th>Retention</th><th>Use Case</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>QUERY_HISTORY</td><td class="warn">45 min - 3 hours</td><td>1 year</td><td>Cost analysis</td></tr>
+        <tr><td>WAREHOUSE_METERING_HISTORY</td><td class="warn">45 minutes</td><td>1 year</td><td>Warehouse costs</td></tr>
+        <tr><td>STORAGE_USAGE</td><td class="warn">~24 hours</td><td>1 year</td><td>Storage costs</td></tr>
+      </tbody>
+    </table>
+    <div class="warning-box" style="margin-top: 32px;">
+      <p><strong>Critical:</strong> Always respect 2-3 hour lookback buffer. Collecting "yesterday's" data at midnight only gets data up to ~9 PM.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">3 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>SP_COLLECT_WAREHOUSE_COSTS</h2>
+    <h3>What It Does</h3>
+    <ul>
+      <li>Queries <span class="highlight">WAREHOUSE_METERING_HISTORY</span> for per-minute credit consumption</li>
+      <li>Retrieves credit price from <span class="highlight">CONFIG.GLOBAL_SETTINGS</span></li>
+      <li>Calculates USD cost: <code class="highlight">credits_used × credit_price</code></li>
+      <li>Calculates cost per second for query attribution</li>
+      <li>Merges into <span class="highlight">FACT_WAREHOUSE_COST_HISTORY</span> (idempotent)</li>
+    </ul>
+    <div class="info-box" style="margin-top: 32px;">
+      <p><strong>Why MERGE instead of INSERT?</strong> Safe to re-run for same date range. Won't create duplicates. Handles late-arriving data.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">4 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>Query Cost Calculation Formula</h2>
+    <div class="code-block">
+// Query execution time in hours
+execution_time_hours = EXECUTION_TIME_MS / 3600000
+
+// Warehouse size in credits per hour
+// XSMALL=1, SMALL=2, MEDIUM=4, LARGE=8, XLARGE=16, etc.
+warehouse_size_credits = getWarehouseCreditsPerHour(WAREHOUSE_SIZE)
+
+// Credits consumed by this query
+credits_used = execution_time_hours * warehouse_size_credits
+
+// Cost in USD
+cost_usd = credits_used * credit_price_usd
+    </div>
+    <div class="warning-box">
+      <p><strong>Important:</strong> This is an <span class="warn">estimated cost</span> based on execution time. Actual warehouse cost from WAREHOUSE_METERING_HISTORY is authoritative.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">5 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>SP_COLLECT_QUERY_COSTS</h2>
+    <h3>Attribution Dimensions Captured</h3>
+    <div class="two-col">
+      <div>
+        <ul>
+          <li><span class="highlight">USER_NAME</span> (who ran it)</li>
+          <li><span class="highlight">ROLE_NAME</span> (active role)</li>
+          <li><span class="highlight">WAREHOUSE_NAME</span> (execution warehouse)</li>
+          <li><span class="highlight">QUERY_TAG</span> (user-set tag)</li>
+          <li><span class="highlight">QUERY_TYPE</span> (SELECT, INSERT, etc.)</li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <li><span class="highlight">DATABASE_NAME</span> (context)</li>
+          <li><span class="highlight">SCHEMA_NAME</span> (context)</li>
+          <li><span class="highlight">BYTES_SCANNED</span> (optimization)</li>
+          <li><span class="highlight">ROWS_PRODUCED</span> (output)</li>
+          <li><span class="highlight">EXECUTION_TIME</span> (performance)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">6 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>QUERY_TAG Parsing for Attribution</h2>
+    <div class="info-box">
+      <p style="font-size: 20px;"><strong>Users can set tags to attribute queries to projects:</strong></p>
+      <div class="code-block" style="margin-top: 16px;">
+ALTER SESSION SET QUERY_TAG = 'PROJECT:CUSTOMER360|TEAM:DATA_ENG|DEPT:ENGINEERING';
+      </div>
+    </div>
+    <h3 style="margin-top: 32px;">Parsing Logic</h3>
+    <div class="code-block">
+function parseQueryTag(queryTag) {
+    var tags = {};
+    if (queryTag) {
+        var parts = queryTag.split('|');
+        parts.forEach(function(part) {
+            var kv = part.split(':');
+            if (kv.length === 2) {
+                tags[kv[0].toUpperCase()] = kv[1];
+            }
+        });
+    }
+    return tags;
+}
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">7 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>Storage Cost Collection</h2>
+    <h3>Three Types of Storage</h3>
+    <table>
+      <thead>
+        <tr><th>Type</th><th>Description</th><th>Pricing</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Active Storage</strong></td>
+          <td>Current data in tables</td>
+          <td>$23/TB-month (AWS US-EAST-1)</td>
+        </tr>
+        <tr>
+          <td><strong>Time-Travel</strong></td>
+          <td>Historical versions (0-90 days retention)</td>
+          <td>Same as active</td>
+        </tr>
+        <tr>
+          <td><strong>Failsafe</strong></td>
+          <td>7-day disaster recovery (not accessible)</td>
+          <td>Same as active</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="warning-box" style="margin-top: 24px;">
+      <p><strong>Cost Formula:</strong> <code>(bytes / 1TB) × storage_price_per_tb × days_in_month / 30</code></p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">8 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>Serverless Features Tracked</h2>
+    <div class="two-col">
+      <div class="info-box">
+        <h3 style="font-size: 24px;">5 Serverless Features</h3>
+        <ul style="font-size: 20px;">
+          <li>Snowflake Tasks</li>
+          <li>Snowpipe (continuous ingestion)</li>
+          <li>Materialized View refreshes</li>
+          <li>Automatic Clustering</li>
+          <li>Search Optimization Service</li>
+        </ul>
+      </div>
+      <div class="warning-box">
+        <h3 style="font-size: 24px;">Why It Matters</h3>
+        <p style="font-size: 20px;">Even with no warehouses running, serverless features can consume <span class="warn">10-20%</span> of total Snowflake spend. Many teams forget to monitor these.</p>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">9 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>Hands-On Lab Overview</h2>
+    <div class="info-box">
+      <h3>Lab Steps</h3>
+      <ul>
+        <li><strong>Step 1:</strong> Configure credit pricing in GLOBAL_SETTINGS (e.g., $3.00/credit)</li>
+        <li><strong>Step 2:</strong> Create cost tables (FACT_WAREHOUSE_COST_HISTORY, etc.)</li>
+        <li><strong>Step 3:</strong> Create stored procedures (SP_COLLECT_*)</li>
+        <li><strong>Step 4:</strong> Collect last 7 days of warehouse costs</li>
+        <li><strong>Step 5:</strong> Collect query costs</li>
+        <li><strong>Step 6:</strong> Collect storage costs</li>
+        <li><strong>Step 7:</strong> Verify data with queries</li>
+      </ul>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">10 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h2>Expected Runtime & Performance</h2>
+    <table>
+      <thead>
+        <tr><th>Procedure</th><th>Runtime (24 hrs data)</th><th>Table Size</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>SP_COLLECT_WAREHOUSE_COSTS</strong></td>
+          <td class="success">10-30 seconds</td>
+          <td>~1,000 rows/warehouse/day</td>
+        </tr>
+        <tr>
+          <td><strong>SP_COLLECT_QUERY_COSTS</strong></td>
+          <td class="warn">1-3 minutes</td>
+          <td>Millions of rows (high query volume)</td>
+        </tr>
+        <tr>
+          <td><strong>SP_COLLECT_STORAGE_COSTS</strong></td>
+          <td class="success">10-20 seconds</td>
+          <td>~1 row/database/day (small)</td>
+        </tr>
+        <tr>
+          <td><strong>SP_COLLECT_SERVERLESS_COSTS</strong></td>
+          <td class="success">20-40 seconds</td>
+          <td>Hundreds to thousands of rows</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">11 / 12</div>
+</section>
+
+<section class="slide">
+  <div class="module-tag">Module 02 — Cost Collection</div>
+  <div>
+    <h1>Cost Collection Complete ✓</h1>
+    <div style="margin-top: 48px;">
+      <p style="font-size: 26px; line-height: 1.8; color: var(--gray);">
+        You've built the cost collection engine with accurate, complete<br>
+        data flowing from all Snowflake cost components.
+      </p>
+      <p style="font-size: 24px; line-height: 1.8; color: var(--gray); margin-top: 32px;">
+        Next up: <span class="highlight">Module 03 — Chargeback Attribution</span>
+      </p>
+      <p style="font-size: 22px; line-height: 1.8; color: var(--gray); margin-top: 24px;">
+        We'll map these costs to teams, departments, projects, and cost centers<br>
+        using SCD Type 2 dimensions and multi-dimensional attribution logic.
+      </p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">12 / 12</div>
+</section>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  function showSlide(n) { slides[currentSlide].classList.remove('active'); currentSlide = (n + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlide + 1); if (e.key === 'ArrowLeft') showSlide(currentSlide - 1); if (e.key === 'Home') showSlide(0); if (e.key === 'End') showSlide(slides.length - 1); });
+</script>
+
+</body>
+</html>

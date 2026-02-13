@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 01: Foundation Setup | Enterprise FinOps Dashboard | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+
+  :root {
+    --bg-primary: #1A1A2E;
+    --bg-secondary: #16213E;
+    --bg-card: #0F3460;
+    --cyan: #00D4FF;
+    --orange: #FF6B35;
+    --red: #E63946;
+    --green: #06D6A0;
+    --yellow: #FFC857;
+    --gray: #B0A8A0;
+    --white: #E8E8E8;
+    --dim: #6B7280;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg-primary);
+    color: var(--white);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 60px 80px;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+  }
+
+  .slide.active { display: flex; }
+
+  .slide-number {
+    position: absolute;
+    bottom: 30px;
+    right: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--dim);
+  }
+
+  .module-tag {
+    position: absolute;
+    top: 30px;
+    left: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .brand-tag {
+    position: absolute;
+    bottom: 30px;
+    left: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--dim);
+  }
+
+  h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 24px;
+    color: var(--cyan);
+  }
+
+  h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    line-height: 1.3;
+    color: var(--white);
+  }
+
+  h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--cyan);
+  }
+
+  p, li {
+    font-size: 22px;
+    line-height: 1.7;
+    color: var(--gray);
+    margin-bottom: 12px;
+  }
+
+  .highlight { color: var(--cyan); font-weight: 600; }
+  .warn { color: var(--orange); font-weight: 600; }
+  .danger { color: var(--red); font-weight: 600; }
+  .success { color: var(--green); font-weight: 600; }
+  .gold { color: var(--yellow); font-weight: 600; }
+
+  ul { list-style: none; padding-left: 0; }
+  ul li {
+    padding: 10px 0;
+    padding-left: 32px;
+    position: relative;
+    font-size: 22px;
+    line-height: 1.6;
+  }
+  ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--cyan);
+    font-weight: 700;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 24px;
+  }
+
+  .metric-card {
+    background: rgba(15, 52, 96, 0.5);
+    border: 2px solid var(--cyan);
+    border-radius: 12px;
+    padding: 28px;
+    text-align: center;
+  }
+
+  .metric-value {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--cyan);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .metric-label {
+    font-size: 18px;
+    color: var(--gray);
+    margin-top: 8px;
+  }
+
+  .tag-badge {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.15);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    margin: 8px 8px 8px 0;
+  }
+
+  .warning-box {
+    background: rgba(255, 107, 53, 0.1);
+    border-left: 4px solid var(--orange);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  .info-box {
+    background: rgba(0, 212, 255, 0.1);
+    border-left: 4px solid var(--cyan);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  .success-box {
+    background: rgba(6, 214, 160, 0.1);
+    border-left: 4px solid var(--green);
+    padding: 20px 24px;
+    margin: 20px 0;
+    border-radius: 6px;
+  }
+
+  .code-block {
+    background: #0D1117;
+    border: 1px solid #30363D;
+    border-radius: 8px;
+    padding: 20px 24px;
+    font-family: 'Fira Code', monospace;
+    font-size: 17px;
+    line-height: 1.7;
+    color: #C9D1D9;
+    margin: 20px 0;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 18px;
+  }
+
+  th {
+    background: rgba(0, 212, 255, 0.15);
+    color: var(--cyan);
+    padding: 14px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+  }
+
+  td {
+    padding: 12px 16px;
+    border: 1px solid rgba(176, 168, 160, 0.2);
+    color: var(--gray);
+  }
+
+  tr:hover {
+    background: rgba(0, 212, 255, 0.05);
+  }
+
+</style>
+</head>
+<body>
+
+<!-- Slide 1: Title -->
+<section class="slide active">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h1>Foundation Setup</h1>
+    <p style="font-size: 28px; color: var(--gray); margin-top: 20px;">
+      Build the architectural backbone: two databases, three warehouses,<br>
+      four-role RBAC model, and resource monitors to cap framework costs.
+    </p>
+    <div style="margin-top: 40px;">
+      <span class="tag-badge">Duration: ~25 minutes</span>
+      <span class="tag-badge">Beginner</span>
+      <span class="tag-badge">3 SQL Scripts</span>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">1 / 15</div>
+</section>
+
+<!-- Slide 2: Learning Objectives -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Learning Objectives</h2>
+    <ul>
+      <li>Understand the <span class="highlight">two-database architecture</span> (CONTROL + ANALYTICS)</li>
+      <li>Design warehouse sizing strategy for FinOps workloads</li>
+      <li>Implement <span class="highlight">resource monitors</span> to cap framework costs at $150/month</li>
+      <li>Build <span class="highlight">four-role RBAC model</span> with least-privilege access</li>
+      <li>Configure <span class="highlight">future grants</span> for dynamic object creation</li>
+    </ul>
+    <div class="info-box" style="margin-top: 48px;">
+      <p><strong>By the end of this module:</strong> You'll have a production-ready foundation supporting enterprise scale — 1000+ users, 100+ warehouses, millions of queries per day.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">2 / 15</div>
+</section>
+
+<!-- Slide 3: Two-Database Architecture -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Two-Database Architecture</h2>
+    <div class="two-col">
+      <div class="info-box">
+        <h3 style="font-size: 24px;">FINOPS_CONTROL_DB</h3>
+        <p style="font-size: 20px; line-height: 1.7;">
+          <strong>Single Source of Truth</strong><br><br>
+          • Raw cost facts from ACCOUNT_USAGE<br>
+          • Stored procedures & business logic<br>
+          • Chargeback attribution dimensions<br>
+          • Budget definitions & alerts<br>
+          • Configuration & metadata
+        </p>
+      </div>
+      <div class="success-box">
+        <h3 style="font-size: 24px;">FINOPS_ANALYTICS_DB</h3>
+        <p style="font-size: 20px; line-height: 1.7;">
+          <strong>Performance Layer</strong><br><br>
+          • Pre-aggregated metrics (daily/weekly/monthly)<br>
+          • Optimized for BI tool consumption<br>
+          • Prevents expensive ad-hoc queries<br>
+          • Different retention policies<br>
+          • Independent scaling
+        </p>
+      </div>
+    </div>
+    <div class="warning-box" style="margin-top: 32px;">
+      <p><strong>Why separate?</strong> BI tools query ANALYTICS_DB (fast, pre-aggregated) while procedures write to CONTROL_DB (isolated, no contention).</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">3 / 15</div>
+</section>
+
+<!-- Slide 4: Schema Design -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>CONTROL_DB: 7 Schemas</h2>
+    <div class="code-block">
+FINOPS_CONTROL_DB
+├── CONFIG              → Global settings, credit pricing, tag taxonomy
+├── COST_DATA           → Raw cost facts (warehouse, query, storage, serverless)
+├── CHARGEBACK          → Attribution dimensions (SCD Type 2), attributed costs
+├── BUDGET              → Budget definitions, vs actual, alerts, forecasts
+├── OPTIMIZATION        → Recommendations, idle warehouse logs
+├── PROCEDURES          → All stored procedures (JavaScript)
+└── MONITORING          → Semantic views for reporting (row-level security)
+    </div>
+    <div class="info-box">
+      <p><strong>Schema Separation Benefits:</strong> Clear boundaries, easier security grants, logical organization for 50+ tables/views/procedures.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">4 / 15</div>
+</section>
+
+<!-- Slide 5: Warehouse Sizing Strategy -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Three Warehouses: Sized Correctly</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Warehouse</th>
+          <th>Size</th>
+          <th>Auto-Suspend</th>
+          <th>Purpose</th>
+          <th>Est. Cost/Month</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>FINOPS_WH_ADMIN</strong></td>
+          <td>XSMALL (1 cr/hr)</td>
+          <td>300s (5 min)</td>
+          <td>Admin tasks, manual queries</td>
+          <td class="success">$10-20</td>
+        </tr>
+        <tr>
+          <td><strong>FINOPS_WH_ETL</strong></td>
+          <td>SMALL (2 cr/hr)</td>
+          <td>60s (1 min)</td>
+          <td>Cost collection procedures (tasks)</td>
+          <td class="success">$50-80</td>
+        </tr>
+        <tr>
+          <td><strong>FINOPS_WH_REPORTING</strong></td>
+          <td>SMALL (2 cr/hr)<br>Multi-cluster: 1-3</td>
+          <td>180s (3 min)</td>
+          <td>BI tools, Streamlit, ad-hoc queries</td>
+          <td class="success">$60-100</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="success-box">
+      <p style="font-size: 20px;"><strong>Total framework cost: $120-200/month</strong> depending on usage. Resource monitor caps at <span class="gold">$150/month</span>.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">5 / 15</div>
+</section>
+
+<!-- Slide 6: Warehouse Sizing Principles -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Warehouse Sizing Principles</h2>
+    <div class="two-col">
+      <div>
+        <h3>Best Practices</h3>
+        <ul>
+          <li><span class="success">Start small</span> — XSMALL/SMALL first</li>
+          <li><span class="success">Aggressive auto-suspend</span> for batch workloads (60s)</li>
+          <li><span class="success">Multi-cluster for concurrency</span>, not speed</li>
+          <li><span class="success">Separate concerns</span> — ETL vs reporting</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Common Mistakes</h3>
+        <ul style="color: var(--orange);">
+          <li><span class="danger">Starting with LARGE</span> — 8x waste</li>
+          <li><span class="danger">Long auto-suspend</span> (10+ minutes)</li>
+          <li><span class="danger">Single warehouse</span> for everything</li>
+          <li><span class="danger">Multi-cluster for batch</span> ETL</li>
+        </ul>
+      </div>
+    </div>
+    <div class="info-box" style="margin-top: 40px;">
+      <p><strong>Sizing Rule:</strong> Monitor query queue time. If consistently <1 second, warehouse is right-sized or oversized. If >5 seconds, consider upsize.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">6 / 15</div>
+</section>
+
+<!-- Slide 7: Resource Monitor -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Resource Monitor: Framework Cost Cap</h2>
+    <div class="metric-card" style="max-width: 600px; margin: 32px auto;">
+      <div class="metric-value">50 Credits</div>
+      <div class="metric-label">Monthly Quota (~$150 at $3/credit)</div>
+    </div>
+    <h3 style="margin-top: 40px;">3-Tier Alert System</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Threshold</th>
+          <th>Action</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>80%</strong> (40 credits)</td>
+          <td>Email notification to FinOps admin</td>
+          <td class="warn">Soft Warning</td>
+        </tr>
+        <tr>
+          <td><strong>90%</strong> (45 credits)</td>
+          <td>Email + Slack alert (critical)</td>
+          <td class="danger">Critical Warning</td>
+        </tr>
+        <tr>
+          <td><strong>100%</strong> (50 credits)</td>
+          <td>SUSPEND all framework warehouses</td>
+          <td class="danger">Hard Block</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">7 / 15</div>
+</section>
+
+<!-- Slide 8: RBAC Model Overview -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Four-Role RBAC Model</h2>
+    <div class="code-block">
+ACCOUNTADMIN (Snowflake built-in)
+    └── SYSADMIN (Snowflake built-in)
+        └── FINOPS_ADMIN_ROLE (full framework access)
+            ├── FINOPS_ANALYST_ROLE (read-only all data)
+            ├── FINOPS_TEAM_LEAD_ROLE (read-only team data)
+            └── FINOPS_EXECUTIVE_ROLE (read-only summary)
+    </div>
+    <div class="warning-box" style="margin-top: 32px;">
+      <p><strong>Least-Privilege Principle:</strong> Assign users to the lowest-privilege role that meets their needs. Review role membership quarterly.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">8 / 15</div>
+</section>
+
+<!-- Slide 9: RBAC Permissions Matrix -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Role Permissions Matrix</h2>
+    <table style="font-size: 17px;">
+      <thead>
+        <tr>
+          <th>Role</th>
+          <th>Permissions</th>
+          <th>Use Case</th>
+          <th>Users</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>FINOPS_ADMIN_ROLE</strong></td>
+          <td>Full R/W on all schemas, execute procedures</td>
+          <td>FinOps team, platform admins</td>
+          <td class="highlight">2-5</td>
+        </tr>
+        <tr>
+          <td><strong>FINOPS_ANALYST_ROLE</strong></td>
+          <td>Read-only all views/tables, export data</td>
+          <td>Finance analysts, data governance</td>
+          <td class="highlight">5-20</td>
+        </tr>
+        <tr>
+          <td><strong>FINOPS_TEAM_LEAD_ROLE</strong></td>
+          <td>Read-only own team via row-level security</td>
+          <td>Engineering team leads, PMs</td>
+          <td class="highlight">10-50</td>
+        </tr>
+        <tr>
+          <td><strong>FINOPS_EXECUTIVE_ROLE</strong></td>
+          <td>Read-only executive summary views only</td>
+          <td>CFO, VP Finance, executives</td>
+          <td class="highlight">5-10</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">9 / 15</div>
+</section>
+
+<!-- Slide 10: Hands-On Lab Overview -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Hands-On Lab: Execute Foundation Scripts</h2>
+    <div class="info-box">
+      <h3>Step 1: Create Databases & Schemas</h3>
+      <p style="font-size: 20px;"><strong>Script:</strong> <code>module_01_foundation_setup/01_databases_and_schemas.sql</code></p>
+      <p>Creates: FINOPS_CONTROL_DB, FINOPS_ANALYTICS_DB, and 10 schemas</p>
+    </div>
+    <div class="success-box" style="margin-top: 20px;">
+      <h3>Step 2: Create Warehouses & Resource Monitor</h3>
+      <p style="font-size: 20px;"><strong>Script:</strong> <code>module_01_foundation_setup/02_warehouses.sql</code></p>
+      <p>Creates: 3 warehouses (ADMIN, ETL, REPORTING), resource monitor with 50 credit cap</p>
+    </div>
+    <div class="info-box" style="margin-top: 20px;">
+      <h3>Step 3: Create Roles & Grants</h3>
+      <p style="font-size: 20px;"><strong>Script:</strong> <code>module_01_foundation_setup/03_roles_and_grants.sql</code></p>
+      <p>Creates: 4 roles, grants database/schema/warehouse access, configures future grants</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">10 / 15</div>
+</section>
+
+<!-- Slide 11: Verification Queries -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Verification: Check Your Work</h2>
+    <div class="code-block">
+-- Verify databases
+SHOW DATABASES LIKE 'FINOPS_%';
+-- Expected: FINOPS_CONTROL_DB, FINOPS_ANALYTICS_DB
+
+-- Verify schemas
+SHOW SCHEMAS IN DATABASE FINOPS_CONTROL_DB;
+-- Expected: 7 schemas (CONFIG, COST_DATA, CHARGEBACK, BUDGET, OPTIMIZATION, PROCEDURES, MONITORING)
+
+-- Verify warehouses
+SHOW WAREHOUSES LIKE 'FINOPS_%';
+-- Expected: 3 warehouses, all SUSPENDED initially
+
+-- Verify resource monitor
+SHOW RESOURCE MONITORS LIKE 'FINOPS_%';
+-- Expected: FINOPS_FRAMEWORK_MONITOR with 50 credit quota
+
+-- Verify roles
+SHOW ROLES LIKE 'FINOPS_%';
+-- Expected: 4 roles
+
+-- Verify grants
+SHOW GRANTS TO ROLE FINOPS_ADMIN_ROLE;
+-- Expected: database, schema, warehouse grants
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">11 / 15</div>
+</section>
+
+<!-- Slide 12: Troubleshooting -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Troubleshooting Common Issues</h2>
+    <div class="warning-box">
+      <h3>Error: "Insufficient privileges"</h3>
+      <p><strong>Cause:</strong> Not using ACCOUNTADMIN role for initial setup</p>
+      <p><strong>Solution:</strong> <code>USE ROLE ACCOUNTADMIN;</code> before running scripts</p>
+    </div>
+    <div class="info-box" style="margin-top: 20px;">
+      <h3>Error: "Object already exists"</h3>
+      <p><strong>Cause:</strong> Re-running scripts in same account</p>
+      <p><strong>Solution:</strong> Safe to ignore — IF NOT EXISTS clauses prevent errors</p>
+    </div>
+    <div class="warning-box" style="margin-top: 20px;">
+      <h3>Warehouses not showing MIN_CLUSTER_COUNT</h3>
+      <p><strong>Cause:</strong> Only multi-cluster warehouses have this property</p>
+      <p><strong>Solution:</strong> Normal — only FINOPS_WH_REPORTING is multi-cluster</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">12 / 15</div>
+</section>
+
+<!-- Slide 13: Best Practices -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>Foundation Best Practices</h2>
+    <div class="two-col">
+      <div>
+        <h3>Database Design</h3>
+        <ul>
+          <li>Separate control from analytics (performance)</li>
+          <li>Logical schema boundaries (security)</li>
+          <li>Future grants for automation</li>
+        </ul>
+        <h3 style="margin-top: 32px;">Warehouse Design</h3>
+        <ul>
+          <li>Start small, scale if needed</li>
+          <li>Aggressive auto-suspend for batch</li>
+          <li>Multi-cluster for concurrency only</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Security Design</h3>
+        <ul>
+          <li>Least-privilege role assignment</li>
+          <li>Role hierarchy for inheritance</li>
+          <li>Quarterly access reviews</li>
+        </ul>
+        <h3 style="margin-top: 32px;">Cost Control</h3>
+        <ul>
+          <li>Resource monitor before resuming</li>
+          <li>Conservative initial quota (50 credits)</li>
+          <li>Monitor and adjust monthly</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">13 / 15</div>
+</section>
+
+<!-- Slide 14: What You Built -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h2>What You Built</h2>
+    <div class="two-col">
+      <div class="metric-card">
+        <div class="metric-value">2</div>
+        <div class="metric-label">Databases<br>(CONTROL + ANALYTICS)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">10</div>
+        <div class="metric-label">Schemas<br>(7 Control + 3 Analytics)</div>
+      </div>
+    </div>
+    <div class="two-col" style="margin-top: 24px;">
+      <div class="metric-card">
+        <div class="metric-value">3</div>
+        <div class="metric-label">Warehouses<br>(ADMIN, ETL, REPORTING)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value">4</div>
+        <div class="metric-label">Roles<br>(ADMIN, ANALYST, TEAM LEAD, EXECUTIVE)</div>
+      </div>
+    </div>
+    <div class="success-box" style="margin-top: 32px;">
+      <p style="font-size: 20px;"><strong>Framework Cost Cap:</strong> 50 credits/month (~$150). <strong>Foundation ready for enterprise scale:</strong> 1000+ users, 100+ warehouses, millions of queries/day.</p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy</div>
+  <div class="slide-number">14 / 15</div>
+</section>
+
+<!-- Slide 15: Next Module -->
+<section class="slide">
+  <div class="module-tag">Module 01 — Foundation Setup</div>
+  <div>
+    <h1>Foundation Complete ✓</h1>
+    <div style="margin-top: 48px;">
+      <p style="font-size: 26px; line-height: 1.8; color: var(--gray);">
+        You've built the architectural backbone:<br>
+        databases, warehouses, RBAC, and resource monitors.
+      </p>
+      <p style="font-size: 24px; line-height: 1.8; color: var(--gray); margin-top: 32px;">
+        Next up: <span class="highlight">Module 02 — Cost Collection Procedures</span>
+      </p>
+      <p style="font-size: 22px; line-height: 1.8; color: var(--gray); margin-top: 24px;">
+        We'll build stored procedures to collect warehouse credits,<br>
+        query-level costs, storage costs, and serverless features<br>
+        from ACCOUNT_USAGE views.
+      </p>
+    </div>
+    <div class="info-box" style="margin-top: 56px;">
+      <p style="font-size: 20px;">
+        <strong>What's Next:</strong> Data starts flowing. Cost collection with proper handling of ACCOUNT_USAGE latency, idempotent MERGE patterns, and credit-to-dollar conversion.
+      </p>
+    </div>
+  </div>
+  <div class="brand-tag">Snowbrix Academy | snowbrix.academy</div>
+  <div class="slide-number">15 / 15</div>
+</section>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+
+  function showSlide(n) {
+    slides[currentSlide].classList.remove('active');
+    currentSlide = (n + slides.length) % slides.length;
+    slides[currentSlide].classList.add('active');
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlide + 1);
+    if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+    if (e.key === 'Home') showSlide(0);
+    if (e.key === 'End') showSlide(slides.length - 1);
+  });
+
+  let touchStartX = 0;
+  document.addEventListener('touchstart', (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+  });
+  document.addEventListener('touchend', (e) => {
+    let touchEndX = e.changedTouches[0].screenX;
+    if (touchStartX - touchEndX > 50) showSlide(currentSlide + 1);
+    if (touchEndX - touchStartX > 50) showSlide(currentSlide - 1);
+  });
+</script>
+
+</body>
+</html>

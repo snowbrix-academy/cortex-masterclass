@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 07 — Error Handling & Audit | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;overflow:auto;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 07</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1>Error Handling & Audit</h1>
+  <div class="st">Detection &bull; Diagnosis &bull; Recovery</div>
+  <p style="font-size:20px;">Validation procedures. Retry mechanisms. Error forensics.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: Error Philosophy -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Philosophy</div>
+  <h2>The Production Reality</h2>
+  <div style="background:var(--bg2);border-left:4px solid var(--orange);border-radius:4px;padding:28px 32px;margin:24px 0;">
+    <p style="font-size:28px;color:var(--orange);font-family:'JetBrains Mono',monospace;font-weight:700;margin-bottom:8px;">"Errors are expected.</p>
+    <p style="font-size:28px;color:var(--red);font-family:'JetBrains Mono',monospace;font-weight:700;">Undetected errors are the problem."</p>
+  </div>
+  <div class="g2" style="margin-top:32px;">
+    <div class="cd" style="border-color:var(--red);">
+      <h3 style="color:var(--red);">Without This Module</h3>
+      <ul>
+        <li>Failures discovered days later</li>
+        <li>Manual log scraping to find root cause</li>
+        <li>No retry &mdash; rebuild from scratch</li>
+        <li>"It broke" is the entire diagnosis</li>
+      </ul>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">With This Module</h3>
+      <ul>
+        <li>Failures detected in seconds</li>
+        <li>Error details captured per row/file</li>
+        <li>Automatic retry with limits</li>
+        <li>Exact file, row, column, and value</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: SP_VALIDATE_LOAD — 5 Checks -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Validation</div>
+  <h2>SP_VALIDATE_LOAD <span style="font-size:22px;color:var(--dim);">&mdash; 5 Post-Load Checks</span></h2>
+  <table style="margin-top:16px;">
+    <tr><th>#</th><th>Check</th><th>What It Does</th><th>On Fail</th></tr>
+    <tr><td><span class="hl">1</span></td><td><span class="hl">Table Exists</span></td><td>Verifies target table is accessible</td><td><span class="d">FAIL + stop</span></td></tr>
+    <tr><td><span class="hl">2</span></td><td><span class="hl">Row Count Threshold</span></td><td>Checks rows > 0 and above configured minimum</td><td><span class="w">WARNING</span></td></tr>
+    <tr><td><span class="hl">3</span></td><td><span class="hl">Null Checks</span></td><td>Scans specified columns for unexpected NULLs</td><td><span class="w">WARNING</span></td></tr>
+    <tr><td><span class="hl">4</span></td><td><span class="hl">Duplicate Detection</span></td><td>Compares row count vs distinct file+row combos</td><td><span class="w">WARNING</span></td></tr>
+    <tr><td><span class="hl">5</span></td><td><span class="hl">Data Freshness</span></td><td>Reports latest _MDF_LOADED_AT timestamp</td><td><span class="g">INFO</span></td></tr>
+  </table>
+  <div class="cb" style="font-size:15px;margin-top:12px;"><span class="c">-- Run after every successful load</span>
+<span class="kw">CALL</span> <span class="fn">SP_VALIDATE_LOAD</span>(<span class="s">'batch-uuid'</span>, <span class="n">1</span>, <span class="s">'DEMO_CUSTOMERS_CSV'</span>);
+<span class="c">-- Returns: { overall_status: "PASSED", checks: [...] }</span></div>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: SP_RETRY_FAILED_LOADS -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Retry</div>
+  <h2>SP_RETRY_FAILED_LOADS</h2>
+  <p style="margin-bottom:20px;">Automatic recovery with guardrails. Finds failures, respects limits, retries or escalates.</p>
+  <div class="g2">
+    <div class="cd hc">
+      <h3>Parameters</h3>
+      <div class="cb" style="font-size:15px;"><span class="kw">CALL</span> <span class="fn">SP_RETRY_FAILED_LOADS</span>(
+  P_HOURS_LOOKBACK =&gt; <span class="n">24</span>,
+  P_MAX_RETRIES    =&gt; <span class="n">3</span>
+);
+
+<span class="c">-- Lookback: how far back to search</span>
+<span class="c">-- Max retries: stop after N attempts</span></div>
+    </div>
+    <div class="cd wc">
+      <h3>Logic Flow</h3>
+      <ul>
+        <li>Query audit log for recent failures</li>
+        <li>Get latest failure per source</li>
+        <li>Check failure count vs max retries</li>
+        <li>If under limit &rarr; call SP_GENERIC_INGESTION</li>
+        <li>If over limit &rarr; skip + log reason</li>
+        <li>Return JSON summary of all actions</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:20px;"><span class="w">Key design:</span> Retry uses the <span class="hl">same ingestion path</span> as a normal load. No special retry mode. Same validation, same audit logging.</p>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: Error Log Table Structure -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Error Log</div>
+  <h2>INGESTION_ERROR_LOG</h2>
+  <p style="margin-bottom:12px;">Per-row, per-file error forensics. Every rejection captured with full context.</p>
+  <table>
+    <tr><th>Column</th><th>Type</th><th>Purpose</th></tr>
+    <tr><td><span class="hl">SOURCE_NAME</span></td><td>VARCHAR</td><td>Links to config + audit log</td></tr>
+    <tr><td><span class="hl">BATCH_ID</span></td><td>VARCHAR</td><td>Ties to specific load run</td></tr>
+    <tr><td><span class="hl">FILE_NAME</span></td><td>VARCHAR</td><td>Which file caused the error</td></tr>
+    <tr><td><span class="hl">ROW_NUMBER</span></td><td>NUMBER</td><td>Exact line in the source file</td></tr>
+    <tr><td><span class="hl">COLUMN_NAME</span></td><td>VARCHAR</td><td>Which column triggered the error</td></tr>
+    <tr><td><span class="w">ERROR_CODE</span></td><td>VARCHAR</td><td>Snowflake error classification</td></tr>
+    <tr><td><span class="w">ERROR_MESSAGE</span></td><td>VARCHAR</td><td>Human-readable error description</td></tr>
+    <tr><td><span class="d">REJECTED_RECORD</span></td><td>VARCHAR</td><td>The actual raw data that failed</td></tr>
+    <tr><td>CREATED_AT</td><td>TIMESTAMP</td><td>When the error was logged</td></tr>
+  </table>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: Error Analysis Queries -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Analysis</div>
+  <h2>4 Essential Error Queries</h2>
+  <div class="g2">
+    <div class="cd hc">
+      <h3>1. Failures Last 24h</h3>
+      <div class="cb" style="font-size:13px;padding:16px;"><span class="kw">SELECT</span> SOURCE_NAME, ERROR_MESSAGE,
+       FILES_FAILED, ROWS_FAILED
+<span class="kw">FROM</span> INGESTION_AUDIT_LOG
+<span class="kw">WHERE</span> RUN_STATUS <span class="kw">IN</span> (<span class="s">'FAILED'</span>,<span class="s">'PARTIAL_SUCCESS'</span>)
+  <span class="kw">AND</span> CREATED_AT &gt;= <span class="fn">DATEADD</span>(<span class="s">HOUR</span>,<span class="n">-24</span>,<span class="fn">CURRENT_TIMESTAMP</span>());</div>
+    </div>
+    <div class="cd wc">
+      <h3>2. Error Frequency by Source</h3>
+      <div class="cb" style="font-size:13px;padding:16px;"><span class="kw">SELECT</span> SOURCE_NAME,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> TOTAL_RUNS,
+  <span class="fn">ROUND</span>(FAILURES*<span class="n">100.0</span>/<span class="fn">COUNT</span>(*),<span class="n">1</span>)
+    <span class="kw">AS</span> FAILURE_RATE_PCT
+<span class="kw">FROM</span> INGESTION_AUDIT_LOG
+<span class="kw">WHERE</span> CREATED_AT &gt;= <span class="fn">DATEADD</span>(<span class="s">DAY</span>,<span class="n">-7</span>,<span class="fn">CURRENT_TIMESTAMP</span>())
+<span class="kw">GROUP BY</span> SOURCE_NAME;</div>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3>3. Detailed Error Log</h3>
+      <div class="cb" style="font-size:13px;padding:16px;"><span class="kw">SELECT</span> FILE_NAME, ROW_NUMBER,
+  COLUMN_NAME, ERROR_MESSAGE,
+  <span class="fn">LEFT</span>(REJECTED_RECORD,<span class="n">200</span>)
+<span class="kw">FROM</span> INGESTION_ERROR_LOG
+<span class="kw">ORDER BY</span> CREATED_AT <span class="kw">DESC</span> <span class="kw">LIMIT</span> <span class="n">20</span>;</div>
+    </div>
+    <div class="cd" style="border-color:var(--red);">
+      <h3>4. Error Patterns</h3>
+      <div class="cb" style="font-size:13px;padding:16px;"><span class="kw">SELECT</span> ERROR_CODE,
+  <span class="fn">LEFT</span>(ERROR_MESSAGE,<span class="n">100</span>) <span class="kw">AS</span> PATTERN,
+  <span class="fn">COUNT</span>(*) <span class="kw">AS</span> OCCURRENCES,
+  <span class="fn">COUNT</span>(<span class="kw">DISTINCT</span> SOURCE_NAME) <span class="kw">AS</span> SOURCES
+<span class="kw">FROM</span> INGESTION_ERROR_LOG
+<span class="kw">GROUP BY</span> <span class="n">1</span>,<span class="n">2</span> <span class="kw">ORDER BY</span> <span class="n">3</span> <span class="kw">DESC</span>;</div>
+    </div>
+  </div>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: Error Severity Classification -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Severity</div>
+  <h2>Error Severity Classification</h2>
+  <p style="margin-bottom:16px;">Not all errors are equal. Severity drives the response.</p>
+  <table>
+    <tr><th>Severity</th><th>Examples</th><th>Response</th><th>Action</th></tr>
+    <tr>
+      <td><span style="background:#3a1a1a;color:var(--red);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;">CRITICAL</span></td>
+      <td>Table missing, config not found, procedure crash</td>
+      <td>Immediate alert</td>
+      <td>Page on-call engineer</td>
+    </tr>
+    <tr>
+      <td><span style="background:#3a2a1a;color:var(--orange);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;">ERROR</span></td>
+      <td>Load failed, zero rows, file not found</td>
+      <td>Auto-retry</td>
+      <td>Retry up to MAX_RETRIES</td>
+    </tr>
+    <tr>
+      <td><span style="background:#1a2a3a;color:var(--cyan);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;">WARNING</span></td>
+      <td>Row count low, nulls detected, partial success</td>
+      <td>Dashboard flag</td>
+      <td>Review in morning standup</td>
+    </tr>
+    <tr>
+      <td><span style="background:#1a3a1a;color:var(--green);padding:4px 12px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:600;">INFO</span></td>
+      <td>Load succeeded, validation passed</td>
+      <td>Log only</td>
+      <td>Archive for audit trail</td>
+    </tr>
+  </table>
+  <p style="margin-top:20px;"><span class="w">Rule:</span> Don't wake someone up at 3 AM for a <span class="hl">WARNING</span>. Do wake them up for a <span class="d">CRITICAL</span>.</p>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: Retry Flow Diagram -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Retry Flow</div>
+  <h2>Retry Decision Flow</h2>
+  <div class="ab" style="font-size:15px;margin-top:16px;">
+  <span style="color:var(--cyan);">SP_RETRY_FAILED_LOADS(24, 3)</span>
+  <span style="color:var(--dim);">|</span>
+  <span style="color:var(--dim);">v</span>
+  Query AUDIT_LOG for failures in last 24h
+  <span style="color:var(--dim);">|</span>
+  <span style="color:var(--dim);">v</span>
+  QUALIFY ROW_NUMBER() &mdash; latest failure per source
+  <span style="color:var(--dim);">|</span>
+  <span style="color:var(--dim);">v</span>
+  For each failed source:
+  <span style="color:var(--dim);">|</span>
+  <span style="color:var(--dim);">+--</span> failure_count &gt;= 3?  <span style="color:var(--red);">&mdash;&mdash; YES &rarr; SKIP (log reason, alert human)</span>
+  <span style="color:var(--dim);">|</span>
+  <span style="color:var(--dim);">+--</span> failure_count &lt;  3?  <span style="color:var(--green);">&mdash;&mdash; YES &rarr; CALL SP_GENERIC_INGESTION</span>
+  <span style="color:var(--dim);">                              |</span>
+  <span style="color:var(--dim);">                              v</span>
+                        <span style="color:var(--green);">Success?</span> &rarr; Log RETRIED + result
+                        <span style="color:var(--red);">Failed?</span>  &rarr; Log RETRY_FAILED + error
+  <span style="color:var(--dim);">|</span>
+  <span style="color:var(--dim);">v</span>
+  Return JSON: { retries_attempted: N, results: [...] }</div>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Recap -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Recap</div>
+  <h2>Module 07 Complete</h2>
+  <div class="g2">
+    <div>
+      <h3>What We Built</h3>
+      <ul>
+        <li>SP_VALIDATE_LOAD &mdash; 5 post-load checks</li>
+        <li>SP_RETRY_FAILED_LOADS &mdash; auto recovery</li>
+        <li>INGESTION_ERROR_LOG table</li>
+        <li>4 error analysis queries</li>
+        <li>Error severity classification</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Key Takeaways</h3>
+      <ul>
+        <li>Errors are expected &mdash; build for them</li>
+        <li>Validate after every load, not when users complain</li>
+        <li>Retry with limits, not forever</li>
+        <li>Capture rejected records for forensics</li>
+        <li>Severity drives response &mdash; not all errors are equal</li>
+      </ul>
+    </div>
+  </div>
+  <div style="display:flex;gap:60px;margin-top:36px;justify-content:center;">
+    <div style="text-align:center;"><div class="bn">5</div><div class="sl">Validation Checks</div></div>
+    <div style="text-align:center;"><div class="bn">2</div><div class="sl">Procedures</div></div>
+    <div style="text-align:center;"><div class="bn">4</div><div class="sl">Analysis Queries</div></div>
+    <div style="text-align:center;"><div class="bn">4</div><div class="sl">Severity Levels</div></div>
+  </div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Next Module -->
+<div class="slide">
+  <div class="mt">Module 07 &mdash; Next</div>
+  <h2>Up Next</h2>
+  <div style="margin-top:40px;padding:28px 32px;background:var(--bg2);border-left:4px solid var(--orange);border-radius:4px;">
+    <p style="font-size:26px;color:var(--orange);font-family:'JetBrains Mono',monospace;font-weight:700;margin-bottom:8px;">Module 08 &mdash; Automation: Tasks & Streams</p>
+    <p style="font-size:18px;color:var(--gray);">Scheduled ingestion. Event-driven processing. The framework runs itself.</p>
+  </div>
+  <div style="margin-top:40px;">
+    <h3>What Changes</h3>
+    <ul>
+      <li>Snowflake Tasks &mdash; scheduled procedure execution</li>
+      <li>Streams &mdash; change data capture on staging tables</li>
+      <li>Task graphs &mdash; orchestrated multi-step pipelines</li>
+      <li>No more manual CALL statements &mdash; fully automated</li>
+    </ul>
+  </div>
+  <p style="margin-top:32px;font-size:18px;text-align:center;color:var(--dim);">Scripts in the course repository &bull; Link in description &bull; Run them before Module 08</p>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+let c=0;const ss=document.querySelectorAll('.slide'),n=ss.length;
+function go(i){if(i>=0&&i<n){ss[c].classList.remove('active');c=i;ss[c].classList.add('active');}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(c+1);if(e.key==='ArrowLeft')go(c-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)go(c+1);else go(c-1);});
+</script>
+</body>
+</html>

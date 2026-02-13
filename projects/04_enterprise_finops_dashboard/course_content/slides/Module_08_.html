@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Module 08: Automation Tasks | Snowbrix Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--bg:#1A1A2E;--cyan:#00D4FF;--gray:#B0A8A0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#E8E8E8;overflow:hidden;height:100vh}
+.slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative}
+.slide.active{display:flex}
+.tag{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono';font-size:13px;color:var(--cyan);text-transform:uppercase}
+.brand{position:absolute;bottom:30px;left:40px;font-size:12px;color:#6B7280}
+.num{position:absolute;bottom:30px;right:40px;font-size:14px;color:#6B7280}
+h1{font-family:'JetBrains Mono';font-size:52px;color:var(--cyan);margin-bottom:24px}
+h2{font-family:'JetBrains Mono';font-size:40px;margin-bottom:32px}
+p,li{font-size:22px;line-height:1.7;color:var(--gray)}
+.box{background:rgba(0,212,255,0.1);border-left:4px solid var(--cyan);padding:20px 24px;margin:20px 0}
+ul{list-style:none}
+ul li{padding:8px 0 8px 28px;position:relative}
+ul li::before{content:'▸';position:absolute;left:0;color:var(--cyan)}
+.hi{color:var(--cyan);font-weight:600}
+</style></head><body>
+
+<section class="slide active">
+<div class="tag">Module 08 — Automation Tasks</div>
+<div><h1>Automation Tasks</h1>
+<p style="font-size:28px;margin-top:20px">Module 08 content - see video script for full details</p></div>
+<div class="brand">Snowbrix Academy</div><div class="num">1/6</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 08 — Automation Tasks</div>
+<div><h2>Key Concepts</h2>
+<ul>
+<li>Production-grade implementation</li>
+<li>Enterprise scale considerations</li>
+<li>Best practices and patterns</li>
+<li>Hands-on lab exercises</li>
+</ul>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">2/6</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 08 — Automation Tasks</div>
+<div><h1>Module Complete ✓</h1>
+<div style="margin-top:48px">
+<p style="font-size:26px;line-height:1.8">Module 08: Automation Tasks completed successfully.</p>
+<p style="font-size:24px;margin-top:32px">Next up: <span class="hi">Module 09 — Streamlit Dashboard</span></p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">6/6</div>
+</section>
+
+<script>
+let c=0;const s=document.querySelectorAll('.slide');
+function show(n){s[c].classList.remove('active');c=(n+s.length)%s.length;s[c].classList.add('active')}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(c+1);if(e.key==='ArrowLeft')show(c-1)});
+</script>
+</body></html>

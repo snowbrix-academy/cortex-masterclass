@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Module 06: Optimization | Snowbrix Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--bg:#1A1A2E;--cyan:#00D4FF;--orange:#FF6B35;--green:#06D6A0;--gray:#B0A8A0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#E8E8E8;overflow:hidden;height:100vh}
+.slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative}
+.slide.active{display:flex}
+.tag{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono';font-size:13px;color:var(--cyan);text-transform:uppercase}
+.brand{position:absolute;bottom:30px;left:40px;font-size:12px;color:#6B7280}
+.num{position:absolute;bottom:30px;right:40px;font-size:14px;color:#6B7280}
+h1{font-family:'JetBrains Mono';font-size:52px;color:var(--cyan);margin-bottom:24px}
+h2{font-family:'JetBrains Mono';font-size:40px;margin-bottom:32px}
+h3{font-size:28px;color:var(--cyan);margin-bottom:20px}
+p,li{font-size:22px;line-height:1.7;color:var(--gray)}
+.box{background:rgba(0,212,255,0.1);border-left:4px solid var(--cyan);padding:20px 24px;margin:20px 0}
+ul{list-style:none}
+ul li{padding:8px 0 8px 28px;position:relative}
+ul li::before{content:'▸';position:absolute;left:0;color:var(--cyan)}
+.hi{color:var(--cyan);font-weight:600}
+.warn{color:var(--orange);font-weight:600}
+.success{color:var(--green);font-weight:600}
+</style></head><body>
+
+<section class="slide active">
+<div class="tag">Module 06 — Optimization</div>
+<div><h1>Cost Optimization Engine</h1>
+<p style="font-size:28px;margin-top:20px">Automated detection of idle warehouses, sizing issues,<br>query problems, and storage waste — prioritized by savings.</p></div>
+<div class="brand">Snowbrix Academy</div><div class="num">1/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h2>6 Recommendation Categories</h2>
+<ul>
+<li><span class="hi">1. Idle Warehouse Detection</span> — >50% unused time = waste</li>
+<li><span class="hi">2. Auto-Suspend Tuning</span> — Match timeout to query cadence</li>
+<li><span class="hi">3. Warehouse Sizing</span> — Too large or too small</li>
+<li><span class="hi">4. Query Optimization</span> — Expensive queries with hints</li>
+<li><span class="hi">5. Storage Waste</span> — Stale tables, excessive time-travel</li>
+<li><span class="hi">6. Clustering Keys</span> — Add clustering for large tables</li>
+</ul>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">2/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h2>Idle Warehouse Detection</h2>
+<h3>Criteria</h3>
+<ul>
+<li>Warehouse utilization <span class="warn"><50%</span> over last 7 days</li>
+<li>Idle time calculation: <code>(total_time - active_time) / total_time</code></li>
+<li>Waste amount: <code>idle_time_pct × total_cost</code></li>
+</ul>
+<div class="box" style="margin-top:32px">
+<p><strong>Example:</strong> WH runs 24/7 but only executes queries 30% of time. 70% idle = <span class="warn">$5,000/month wasted</span>. Recommendation: Reduce auto-suspend from 10 min to 3 min.</p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">3/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h2>Query Optimization Candidates</h2>
+<p style="font-size:24px;margin-bottom:24px"><strong>Flags queries with:</strong></p>
+<ul>
+<li>Execution time <span class="warn">>5 minutes</span></li>
+<li>Bytes scanned <span class="warn">>100GB</span></li>
+<li>Partitions scanned <span class="warn">>1000</span></li>
+<li>Spillage to remote storage (performance issue)</li>
+</ul>
+<div class="box" style="margin-top:32px">
+<p><strong>Recommendations:</strong> Add filters, create materialized views, add clustering keys, optimize joins</p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">4/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h2>Storage Waste Identification</h2>
+<ul>
+<li>Tables not queried in <span class="warn">90+ days</span> (archive or drop)</li>
+<li>High time-travel storage cost (reduce retention period)</li>
+<li>Databases with >500GB time-travel (review data retention policy)</li>
+<li>Zero-row tables consuming storage (cleanup)</li>
+</ul>
+<div class="box" style="margin-top:40px">
+<p><strong>Typical Savings:</strong> 10-20% of storage costs by archiving stale tables and reducing time-travel retention</p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">5/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h2>SP_GENERATE_RECOMMENDATIONS</h2>
+<h3>What It Does</h3>
+<ul>
+<li>Analyzes last 7-30 days of warehouse/query/storage data</li>
+<li>Generates recommendations across all 6 categories</li>
+<li>Calculates potential savings per recommendation</li>
+<li>Ranks by savings potential (high → low)</li>
+<li>Stores in <span class="hi">OPTIMIZATION_RECOMMENDATIONS</span> table</li>
+<li>Status tracking: OPEN → IN_PROGRESS → IMPLEMENTED → DISMISSED</li>
+</ul>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">6/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h2>Hands-On Lab</h2>
+<ul>
+<li>Create optimization tables</li>
+<li>Run SP_GENERATE_RECOMMENDATIONS for last 7 days</li>
+<li>View top 10 recommendations by potential savings</li>
+<li>Implement one recommendation (e.g., reduce auto-suspend on idle warehouse)</li>
+<li>Mark recommendation as IMPLEMENTED with notes</li>
+</ul>
+<div class="box" style="margin-top:32px">
+<p><strong>Expected Outcome:</strong> Identify <span class="success">$5K-$20K/month</span> in optimization opportunities</p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">7/8</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 06 — Optimization</div>
+<div><h1>Optimization Engine Complete ✓</h1>
+<div style="margin-top:48px">
+<p style="font-size:26px;line-height:1.8">Automated recommendations drive <span class="success">15-30% cost reduction</span><br>with prioritized, actionable insights.</p>
+<p style="font-size:24px;margin-top:32px">Next up: <span class="hi">Module 07 — Monitoring Views</span></p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">8/8</div>
+</section>
+
+<script>
+let c=0;const s=document.querySelectorAll('.slide');
+function show(n){s[c].classList.remove('active');c=(n+s.length)%s.length;s[c].classList.add('active')}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(c+1);if(e.key==='ArrowLeft')show(c-1)});
+</script>
+</body></html>

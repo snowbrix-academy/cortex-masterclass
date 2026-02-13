@@ -1,0 +1,30 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM — Airflow Container Dependencies
+# ============================================================
+# These are installed inside the Airflow Docker image.
+# Pinned versions for reproducibility.
+# ============================================================
+
+# --- dbt (transformation engine) ---
+dbt-core==1.7.8
+dbt-snowflake==1.7.3
+
+# --- Snowflake (direct connector for ingestion scripts) ---
+snowflake-connector-python==3.6.0
+
+# --- Source database (PostgreSQL extraction) ---
+psycopg2-binary==2.9.9
+
+# --- Stripe API (payment data extraction) ---
+stripe==8.0.0
+
+# --- HTTP / Retry ---
+requests==2.31.0
+tenacity==8.2.3
+
+# --- Data Processing ---
+pandas==2.2.0
+pyarrow==15.0.0
+
+# --- Configuration ---
+python-dotenv==1.0.0

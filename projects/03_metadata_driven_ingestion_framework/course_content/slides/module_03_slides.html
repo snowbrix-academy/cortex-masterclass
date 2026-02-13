@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 03 — Config Tables | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;overflow:auto;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 03</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1>Config Tables: The Brain</h1>
+  <div class="st">The Single Source of Truth for Every Data Source</div>
+  <p style="font-size:20px;">6 metadata tables. 5 sample configs. 30+ columns driving the entire framework.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: What We're Building -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Overview</div>
+  <h2>What We're Building</h2>
+  <div style="display:flex;gap:60px;margin-top:40px;justify-content:center;">
+    <div style="text-align:center;"><div class="bn">6</div><div class="sl">Metadata Tables</div></div>
+    <div style="text-align:center;"><div class="bn">5</div><div class="sl">Sample Configs</div></div>
+    <div style="text-align:center;"><div class="bn">30+</div><div class="sl">Config Columns</div></div>
+    <div style="text-align:center;"><div class="bn">3</div><div class="sl">File Types Covered</div></div>
+  </div>
+  <div style="margin-top:50px;">
+    <table>
+      <tr><th>Table</th><th>Schema</th><th>Purpose</th></tr>
+      <tr><td><span class="hl">INGESTION_CONFIG</span></td><td>CONFIG</td><td>Master config &mdash; one row per data source</td></tr>
+      <tr><td><span class="hl">INGESTION_AUDIT_LOG</span></td><td>AUDIT</td><td>Black box recorder for every run</td></tr>
+      <tr><td><span class="hl">INGESTION_ERROR_LOG</span></td><td>AUDIT</td><td>Detailed row/file-level errors</td></tr>
+      <tr><td><span class="hl">FILE_FORMAT_REGISTRY</span></td><td>CONFIG</td><td>Queryable file format metadata</td></tr>
+      <tr><td><span class="hl">STAGE_REGISTRY</span></td><td>CONFIG</td><td>Queryable stage metadata</td></tr>
+      <tr><td><span class="hl">NOTIFICATION_CONFIG</span></td><td>CONFIG</td><td>Alert routing rules</td></tr>
+    </table>
+  </div>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: Traditional vs Metadata-Driven -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Why Metadata-Driven</div>
+  <h2>Traditional vs. Metadata-Driven</h2>
+  <div class="g2">
+    <div class="cd" style="border-color:var(--red);">
+      <h3 style="color:var(--red);">Traditional Approach</h3>
+      <ul>
+        <li>1 script per source</li>
+        <li>100 sources = <span class="d">100 scripts</span></li>
+        <li>Change = edit code + deploy</li>
+        <li>Risk = code deployment</li>
+        <li>New source = new code review</li>
+      </ul>
+      <div class="cb" style="font-size:14px;margin-top:16px;"><span class="c">-- load_customers.sql</span>
+<span class="kw">COPY INTO</span> raw_db.sales.customers ...
+<span class="c">-- load_orders.sql</span>
+<span class="kw">COPY INTO</span> raw_db.sales.orders ...
+<span class="c">-- load_products.sql</span>
+<span class="kw">COPY INTO</span> raw_db.sales.products ...
+<span class="c">-- ...98 more scripts</span></div>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">Metadata-Driven (MDF)</h3>
+      <ul>
+        <li>1 generic procedure</li>
+        <li>100 sources = <span class="g">100 config rows</span></li>
+        <li>Change = UPDATE a column</li>
+        <li>Risk = config change only</li>
+        <li>New source = INSERT statement</li>
+      </ul>
+      <div class="cb" style="font-size:14px;margin-top:16px;"><span class="c">-- One procedure reads config</span>
+<span class="kw">CALL</span> <span class="fn">SP_GENERIC_INGESTION</span>(
+  <span class="s">'DEMO_CUSTOMERS_CSV'</span>
+);
+<span class="c">-- Same procedure, any source</span>
+<span class="kw">CALL</span> <span class="fn">SP_GENERIC_INGESTION</span>(
+  <span class="s">'DEMO_EVENTS_JSON'</span>
+);</div>
+    </div>
+  </div>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: INGESTION_CONFIG Column Groups -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; INGESTION_CONFIG</div>
+  <h2>INGESTION_CONFIG &mdash; Column Groups</h2>
+  <div class="g3">
+    <div class="cd hc">
+      <h3>Source Identity</h3>
+      <p style="font-size:16px;">CONFIG_ID, SOURCE_NAME,<br>CLIENT_NAME, SOURCE_SYSTEM,<br>SOURCE_TYPE, SOURCE_DESCRIPTION</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;"><span class="hl">What</span> is this data?</p>
+    </div>
+    <div class="cd" style="border-color:var(--orange);">
+      <h3 style="color:var(--orange);">Stage &amp; Format</h3>
+      <p style="font-size:16px;">STAGE_NAME, FILE_PATTERN,<br>SUB_DIRECTORY,<br>FILE_FORMAT_NAME</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;"><span class="w">Where</span> and <span class="w">how</span> to read it?</p>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">Target</h3>
+      <p style="font-size:16px;">TARGET_DATABASE,<br>TARGET_SCHEMA, TARGET_TABLE,<br>AUTO_CREATE_TARGET</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;"><span class="g">Where</span> does it land?</p>
+    </div>
+    <div class="cd" style="border-color:#D2A8FF;">
+      <h3 style="color:#D2A8FF;">Load Behavior</h3>
+      <p style="font-size:16px;">LOAD_TYPE, ON_ERROR,<br>PURGE_FILES, FORCE_RELOAD,<br>MATCH_BY_COLUMN_NAME</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">How to handle the load?</p>
+    </div>
+    <div class="cd" style="border-color:#79C0FF;">
+      <h3 style="color:#79C0FF;">Scheduling</h3>
+      <p style="font-size:16px;">IS_ACTIVE, LOAD_FREQUENCY,<br>CRON_EXPRESSION,<br>LOAD_PRIORITY</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">When and in what order?</p>
+    </div>
+    <div class="cd" style="border-color:var(--red);">
+      <h3 style="color:var(--red);">Quality &amp; Alerts</h3>
+      <p style="font-size:16px;">ENABLE_VALIDATION,<br>ROW_COUNT_THRESHOLD,<br>NOTIFY_ON_FAILURE, TAGS</p>
+      <p style="font-size:14px;color:var(--dim);margin-top:8px;">How to validate and alert?</p>
+    </div>
+  </div>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: Audit Log Structure -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Audit Log</div>
+  <h2>INGESTION_AUDIT_LOG</h2>
+  <p style="margin-bottom:16px;">The <span class="w">black box recorder</span> &mdash; every ingestion run creates a record here.</p>
+  <div class="g2">
+    <div>
+      <table>
+        <tr><th colspan="2">Identifiers &amp; Execution</th></tr>
+        <tr><td><span class="hl">BATCH_ID</span></td><td>UUID grouping related loads</td></tr>
+        <tr><td><span class="hl">CONFIG_ID</span></td><td>FK to INGESTION_CONFIG</td></tr>
+        <tr><td><span class="hl">RUN_STATUS</span></td><td>STARTED | SUCCESS | PARTIAL_SUCCESS | FAILED | SKIPPED</td></tr>
+        <tr><td><span class="hl">START_TIME / END_TIME</span></td><td>Execution window</td></tr>
+        <tr><td><span class="hl">DURATION_SECONDS</span></td><td>Computed runtime</td></tr>
+      </table>
+    </div>
+    <div>
+      <table>
+        <tr><th colspan="2">Metrics &amp; Diagnostics</th></tr>
+        <tr><td><span class="hl">FILES_PROCESSED</span></td><td>Total files handled</td></tr>
+        <tr><td><span class="hl">ROWS_LOADED / FAILED</span></td><td>Row-level counts</td></tr>
+        <tr><td><span class="hl">BYTES_LOADED</span></td><td>Data volume</td></tr>
+        <tr><td><span class="hl">COPY_COMMAND_EXECUTED</span></td><td>Exact SQL that ran</td></tr>
+        <tr><td><span class="hl">VALIDATION_STATUS</span></td><td>Post-load check results</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="cb" style="font-size:14px;margin-top:16px;"><span class="c">-- Clustering key for fast queries</span>
+<span class="kw">ALTER TABLE</span> INGESTION_AUDIT_LOG <span class="kw">CLUSTER BY</span> (CREATED_AT, SOURCE_NAME);
+<span class="c">-- "Show me recent failures" + "Show me all runs for source X" = fast</span></div>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: Supporting Tables -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Supporting Tables</div>
+  <h2>Supporting Tables</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-top:20px;">
+    <div class="cd hc">
+      <h3>FILE_FORMAT_REGISTRY</h3>
+      <p style="font-size:17px;">Queryable metadata layer on top of Snowflake file format objects.</p>
+      <ul style="margin-top:12px;">
+        <li style="font-size:17px;">10 formats registered</li>
+        <li style="font-size:17px;">FORMAT_OPTIONS as JSON</li>
+        <li style="font-size:17px;">JOIN-able with config table</li>
+      </ul>
+    </div>
+    <div class="cd wc">
+      <h3 style="color:var(--orange);">STAGE_REGISTRY</h3>
+      <p style="font-size:17px;">Tracks all stages &mdash; internal and external &mdash; used by the framework.</p>
+      <ul style="margin-top:12px;">
+        <li style="font-size:17px;">4 internal stages registered</li>
+        <li style="font-size:17px;">Cloud provider &amp; integration refs</li>
+        <li style="font-size:17px;">IS_ACTIVE toggle per stage</li>
+      </ul>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">NOTIFICATION_CONFIG</h3>
+      <p style="font-size:17px;">Alert routing &mdash; who gets notified, on what events, at what severity.</p>
+      <ul style="margin-top:12px;">
+        <li style="font-size:17px;">Email, Slack, Teams, Snowflake</li>
+        <li style="font-size:17px;">MIN_SEVERITY filter</li>
+        <li style="font-size:17px;">Per-channel success/failure flags</li>
+      </ul>
+    </div>
+    <div class="cd" style="border-color:#D2A8FF;">
+      <h3 style="color:#D2A8FF;">SCHEMA_EVOLUTION_CONFIG</h3>
+      <p style="font-size:17px;">Rules for handling source schema changes automatically.</p>
+      <ul style="margin-top:12px;">
+        <li style="font-size:17px;">ADD_COLUMNS | FULL | SNAPSHOT</li>
+        <li style="font-size:17px;">MAX_NEW_COLUMNS safety valve</li>
+        <li style="font-size:17px;">Schema hash change detection</li>
+      </ul>
+    </div>
+  </div>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: Sample Config INSERTs -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Sample Configs</div>
+  <h2>5 Sample Configurations</h2>
+  <table style="font-size:16px;">
+    <tr><th>Source Name</th><th>Type</th><th>Load Type</th><th>Frequency</th><th>Priority</th><th>Key Feature</th></tr>
+    <tr><td><span class="hl">DEMO_CUSTOMERS_CSV</span></td><td><span class="g">CSV</span></td><td>APPEND</td><td>DAILY</td><td>10</td><td>NULL_CHECK_COLUMNS, PII tag</td></tr>
+    <tr><td><span class="hl">DEMO_ORDERS_CSV</span></td><td><span class="g">CSV</span></td><td>APPEND</td><td>DAILY</td><td>20</td><td>ROW_COUNT_THRESHOLD = 100</td></tr>
+    <tr><td><span class="hl">DEMO_PRODUCTS_CSV</span></td><td><span class="g">CSV</span></td><td>TRUNCATE_RELOAD</td><td>WEEKLY</td><td>50</td><td>Full refresh pattern</td></tr>
+    <tr><td><span class="hl">DEMO_EVENTS_JSON</span></td><td><span style="color:var(--cyan);">JSON</span></td><td>APPEND</td><td>HOURLY</td><td>5</td><td>FLATTEN_PATH = 'events'</td></tr>
+    <tr><td><span class="hl">DEMO_SENSORS_PARQUET</span></td><td><span style="color:#D2A8FF;">PARQUET</span></td><td>APPEND</td><td>HOURLY</td><td>15</td><td>SCHEMA_EVOLUTION = TRUE</td></tr>
+  </table>
+  <div class="cb" style="font-size:14px;margin-top:16px;"><span class="c">-- Adding a new source to the framework:</span>
+<span class="kw">INSERT INTO</span> INGESTION_CONFIG (
+    SOURCE_NAME, CLIENT_NAME, SOURCE_TYPE, STAGE_NAME,
+    FILE_FORMAT_NAME, TARGET_DATABASE, TARGET_SCHEMA, TARGET_TABLE,
+    LOAD_TYPE, LOAD_FREQUENCY, LOAD_PRIORITY
+) <span class="kw">VALUES</span> (
+    <span class="s">'ACME_INVOICES_CSV'</span>, <span class="s">'ACME'</span>, <span class="s">'CSV'</span>,
+    <span class="s">'@MDF_CONTROL_DB.CONFIG.MDF_STG_INTERNAL_CSV'</span>,
+    <span class="s">'MDF_CONTROL_DB.CONFIG.MDF_FF_CSV_STANDARD'</span>,
+    <span class="s">'MDF_RAW_DB'</span>, <span class="s">'ACME_FINANCE'</span>, <span class="s">'RAW_INVOICES'</span>,
+    <span class="s">'APPEND'</span>, <span class="s">'DAILY'</span>, <span class="n">30</span>
+);
+<span class="c">-- That's it. No new script. No deployment. One INSERT.</span></div>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: How Tables Relate -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Architecture</div>
+  <h2>How the Tables Connect</h2>
+  <div class="ab" style="font-size:15px;line-height:1.8;">
+                    <span style="color:var(--cyan);">INGESTION_CONFIG</span>              <span style="color:var(--dim);">(The Brain)</span>
+                           |
+              drives        |        references
+         +-----------------+-----------------+
+         |                 |                 |
+         v                 v                 v
+  <span style="color:var(--green);">FILE_FORMAT</span>       <span style="color:var(--orange);">STAGE</span>         <span style="color:#D2A8FF;">NOTIFICATION</span>
+  <span style="color:var(--green);">_REGISTRY</span>         <span style="color:var(--orange);">_REGISTRY</span>       <span style="color:#D2A8FF;">_CONFIG</span>
+                           |
+                   reads config
+                           |
+                           v
+                  <span style="color:var(--orange);">SP_GENERIC_INGESTION</span>         <span style="color:var(--dim);">(Module 04)</span>
+                           |
+                    writes results
+                           |
+              +------------+------------+
+              |                         |
+              v                         v
+    <span style="color:var(--red);">INGESTION_AUDIT_LOG</span>     <span style="color:var(--red);">INGESTION_ERROR_LOG</span>
+    <span style="color:var(--dim);">(1 row per run)</span>          <span style="color:var(--dim);">(1 row per error)</span>
+                           |
+                   monitors changes
+                           |
+                           v
+                  <span style="color:#D2A8FF;">SCHEMA_EVOLUTION_CONFIG</span></div>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Recap -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Recap</div>
+  <h2>Module 03 Complete</h2>
+  <div class="g2">
+    <div>
+      <h3>What We Built</h3>
+      <ul>
+        <li>INGESTION_CONFIG &mdash; 30+ column master table</li>
+        <li>INGESTION_AUDIT_LOG &mdash; black box recorder</li>
+        <li>INGESTION_ERROR_LOG &mdash; row-level error detail</li>
+        <li>FILE_FORMAT_REGISTRY &mdash; 10 formats registered</li>
+        <li>STAGE_REGISTRY &mdash; 4 stages registered</li>
+        <li>NOTIFICATION_CONFIG &amp; SCHEMA_EVOLUTION_CONFIG</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Key Takeaways</h3>
+      <ul>
+        <li>100 sources = 100 config rows, not 100 scripts</li>
+        <li>IS_ACTIVE is a one-column kill switch</li>
+        <li>Audit log = flight recorder for every run</li>
+        <li>Registry tables enable SQL-based lookups</li>
+        <li>VARIANT columns future-proof the schema</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cb" style="font-size:15px;margin-top:24px;"><span class="c">-- The power of metadata-driven:</span>
+<span class="c">-- New source?</span>     <span class="kw">INSERT INTO</span> INGESTION_CONFIG ...
+<span class="c">-- Disable?</span>       <span class="kw">UPDATE</span> INGESTION_CONFIG <span class="kw">SET</span> IS_ACTIVE = <span class="n">FALSE</span> ...
+<span class="c">-- Change freq?</span>   <span class="kw">UPDATE</span> INGESTION_CONFIG <span class="kw">SET</span> LOAD_FREQUENCY = <span class="s">'HOURLY'</span> ...
+<span class="c">-- No code. No deploy. No risk.</span></div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Next Module Preview -->
+<div class="slide">
+  <div class="mt">Module 03 &mdash; Next</div>
+  <h2>Next: Module 04</h2>
+  <h1 style="color:var(--orange);font-size:44px;margin-bottom:16px;">Core Stored Procedures</h1>
+  <p style="font-size:22px;margin-bottom:30px;">The config tables are the <span class="hl">brain</span>. The stored procedures are the <span class="w">hands</span>.</p>
+  <div class="g2" style="margin-top:10px;">
+    <div class="cd hc">
+      <h3>What We'll Build</h3>
+      <ul>
+        <li style="font-size:18px;">SP_GENERIC_INGESTION &mdash; the engine</li>
+        <li style="font-size:18px;">Dynamic COPY INTO construction</li>
+        <li style="font-size:18px;">Automatic audit logging</li>
+        <li style="font-size:18px;">Error capture and notification</li>
+      </ul>
+    </div>
+    <div class="cd wc">
+      <h3 style="color:var(--orange);">Why It Matters</h3>
+      <ul>
+        <li style="font-size:18px;">One procedure handles every source type</li>
+        <li style="font-size:18px;">Reads config, executes, logs results</li>
+        <li style="font-size:18px;">No hardcoded SQL anywhere</li>
+        <li style="font-size:18px;">Production-grade error handling</li>
+      </ul>
+    </div>
+  </div>
+  <div style="margin-top:40px;padding:20px;background:var(--bg2);border-left:4px solid var(--cyan);border-radius:4px;">
+    <p style="font-size:18px;color:var(--dim);">SQL scripts for Module 03 are in the course repository. Run them yourself before Module 04.</p>
+  </div>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+let c=0;const ss=document.querySelectorAll('.slide'),n=ss.length;
+function go(i){if(i>=0&&i<n){ss[c].classList.remove('active');c=i;ss[c].classList.add('active');}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(c+1);if(e.key==='ArrowLeft')go(c-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)go(c+1);else go(c-1);});
+</script>
+</body>
+</html>

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 04 — Core Stored Procedures | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;overflow:auto;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:30px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 04</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1>Core Stored Procedures</h1>
+  <div class="st">The Engine That Drives the Framework</div>
+  <p style="font-size:20px;">5 procedures. Dynamic SQL. One CALL to load everything.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: What We're Building -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Overview</div>
+  <h2>What We're Building</h2>
+  <div style="display:flex;gap:60px;margin-top:40px;justify-content:center;">
+    <div style="text-align:center;"><div class="bn">5</div><div class="sl">Procedures</div></div>
+    <div style="text-align:center;"><div class="bn">1</div><div class="sl">Engine</div></div>
+    <div style="text-align:center;"><div class="bn">5</div><div class="sl">File Types</div></div>
+    <div style="text-align:center;"><div class="bn">8</div><div class="sl">Exec Steps</div></div>
+  </div>
+  <div class="ab" style="font-size:15px;margin-top:40px;">
+  SP_GENERATE_BATCH_ID        UUID for run correlation
+  SP_LOG_INGESTION            Audit log: start + end records
+  SP_LOG_ERROR                Granular error capture per file/row
+  <span style="color:var(--cyan);font-weight:700;">SP_GENERIC_INGESTION        THE ENGINE &mdash; reads config, builds COPY INTO, executes, logs</span>
+  SP_REGISTER_SOURCE          10-param onboarding interface</div>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: Why JavaScript -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Language Choice</div>
+  <h2>Why JavaScript for Stored Procedures?</h2>
+  <div class="g2" style="margin-top:20px;">
+    <div class="cd" style="border-color:var(--red);">
+      <h3 style="color:var(--red);">SQL Script</h3>
+      <ul>
+        <li>DECLARE variables in BEGIN block</li>
+        <li>Exception handlers (less flexible)</li>
+        <li>String building with CONCAT/||</li>
+        <li>Returns scalar types</li>
+        <li>Limited control flow</li>
+      </ul>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">JavaScript (MDF Choice)</h3>
+      <ul>
+        <li>try/catch with error objects</li>
+        <li>Native string concatenation</li>
+        <li>Objects &amp; arrays for JSON</li>
+        <li>Returns VARIANT (structured JSON)</li>
+        <li>EXECUTE AS CALLER = RBAC-safe</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cb" style="font-size:15px;"><span class="c">// JavaScript: natural JSON return</span>
+<span class="kw">var</span> summary = {
+    batch_id: batchId,
+    overall_status: <span class="s">'SUCCESS'</span>,
+    sources_processed: <span class="n">3</span>,
+    details: results   <span class="c">// array of per-source objects</span>
+};
+<span class="kw">return</span> summary;  <span class="c">// Caller gets queryable VARIANT</span></div>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: Execution Flow -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Execution Flow</div>
+  <h2>SP_GENERIC_INGESTION &mdash; 8 Steps</h2>
+  <div class="ab" style="font-size:15px;margin-top:16px;">
+  <span style="color:var(--cyan);">CALL SP_GENERIC_INGESTION('ALL', FALSE)</span>
+                        |
+          +-------------+-------------+
+          |                           |
+     Single Source              All Active Sources
+          |                    (ORDER BY LOAD_PRIORITY)
+          |                           |
+          +-------------+-------------+
+                        |
+   <span style="color:var(--cyan);">1.</span> Read Config     &mdash;  Query INGESTION_CONFIG for source(s)
+   <span style="color:var(--cyan);">2.</span> Validate         &mdash;  Stage exists? Format exists? Config complete?
+   <span style="color:var(--cyan);">3.</span> Auto-Create      &mdash;  CREATE SCHEMA/TABLE IF NOT EXISTS
+   <span style="color:var(--cyan);">4.</span> Handle Load Type &mdash;  TRUNCATE if TRUNCATE_RELOAD
+   <span style="color:var(--orange);">5.</span> Generate SQL     &mdash;  Build COPY INTO dynamically from config
+   <span style="color:var(--orange);">6.</span> Execute          &mdash;  Run the generated COPY INTO
+   <span style="color:var(--green);">7.</span> Capture Results  &mdash;  files loaded/skipped/failed, rows, bytes
+   <span style="color:var(--green);">8.</span> Log &amp; Return    &mdash;  Audit log + JSON summary to caller</div>
+  <p style="margin-top:16px;"><span class="w">Key principle:</span> Each source runs independently. One failure does not stop the batch.</p>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: Audit Logging Procedures -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Audit Logging</div>
+  <h2>Audit &amp; Logging Procedures</h2>
+  <div class="g3">
+    <div class="cd hc">
+      <h3>SP_LOG_INGESTION</h3>
+      <p style="font-size:16px;margin-bottom:12px;">Writes to <span class="hl">INGESTION_AUDIT_LOG</span></p>
+      <ul style="font-size:16px;">
+        <li>START: INSERT new record</li>
+        <li>END: UPDATE with metrics</li>
+        <li>Duration auto-calculated</li>
+        <li>COPY command stored</li>
+        <li>Result JSON captured</li>
+      </ul>
+    </div>
+    <div class="cd wc">
+      <h3 style="color:var(--orange);">SP_LOG_ERROR</h3>
+      <p style="font-size:16px;margin-bottom:12px;">Writes to <span class="w">INGESTION_ERROR_LOG</span></p>
+      <ul style="font-size:16px;">
+        <li>Per-file error details</li>
+        <li>Row number + column</li>
+        <li>Error code + message</li>
+        <li>Rejected record stored</li>
+        <li>Feeds error dashboard</li>
+      </ul>
+    </div>
+    <div class="cd" style="border-color:var(--green);">
+      <h3 style="color:var(--green);">SP_GENERATE_BATCH_ID</h3>
+      <p style="font-size:16px;margin-bottom:12px;">Returns <span class="g">UUID_STRING()</span></p>
+      <ul style="font-size:16px;">
+        <li>Unique per run</li>
+        <li>Correlation key</li>
+        <li>Links all audit records</li>
+        <li>Links all error records</li>
+        <li>One ID = full story</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top:20px;text-align:center;">Batch ID is the <span class="hl">thread</span> that connects every log entry across every table.</p>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: Dynamic SQL by File Type -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Dynamic SQL</div>
+  <h2>SP_GENERIC_INGESTION &mdash; Dynamic SQL</h2>
+  <p style="margin-bottom:12px;">One function builds the COPY INTO. The <span class="hl">source type</span> determines the strategy:</p>
+  <table>
+    <tr><th>Source Type</th><th>Table Creation</th><th>COPY Strategy</th><th>MATCH_BY_COLUMN</th></tr>
+    <tr><td><span class="hl">CSV</span></td><td>Manual (typed columns)</td><td>Direct COPY INTO</td><td>NONE</td></tr>
+    <tr><td><span class="hl">JSON</span></td><td>VARIANT + _MDF_ metadata</td><td>COPY INTO VARIANT</td><td>Optional</td></tr>
+    <tr><td><span class="hl">PARQUET</span></td><td>INFER_SCHEMA + USING TEMPLATE</td><td>COPY + column match</td><td>CASE_INSENSITIVE</td></tr>
+    <tr><td><span class="hl">AVRO</span></td><td>INFER_SCHEMA + USING TEMPLATE</td><td>COPY + column match</td><td>CASE_INSENSITIVE</td></tr>
+    <tr><td><span class="hl">ORC</span></td><td>INFER_SCHEMA + USING TEMPLATE</td><td>COPY + column match</td><td>CASE_INSENSITIVE</td></tr>
+  </table>
+  <p style="margin-top:16px;font-size:18px;"><span class="w">Common options added to all:</span> FILE_PATTERN, ON_ERROR, SIZE_LIMIT, PURGE, FORCE</p>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: COPY INTO Generation Examples -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Generated SQL</div>
+  <h2>COPY INTO &mdash; What Gets Generated</h2>
+  <div class="g2">
+    <div>
+      <h3>CSV</h3>
+      <div class="cb" style="font-size:13px;padding:16px 20px;"><span class="kw">COPY INTO</span> MDF_RAW_DB.ACME.RAW_SALES
+  <span class="kw">FROM</span> @MDF_STG_INTERNAL_CSV/acme/sales/
+  <span class="kw">FILE_FORMAT</span> = (<span class="kw">FORMAT_NAME</span> = <span class="s">'MDF_FF_CSV_STANDARD'</span>)
+  <span class="kw">PATTERN</span> = <span class="s">'.*sales.*[.]csv'</span>
+  <span class="kw">ON_ERROR</span> = <span class="s">CONTINUE</span>;</div>
+    </div>
+    <div>
+      <h3 style="color:var(--orange);">JSON</h3>
+      <div class="cb" style="font-size:13px;padding:16px 20px;"><span class="kw">COPY INTO</span> MDF_RAW_DB.PARTNER.RAW_EVENTS
+  <span class="kw">FROM</span> @MDF_STG_INTERNAL_JSON/partner/events/
+  <span class="kw">FILE_FORMAT</span> = (<span class="kw">FORMAT_NAME</span> = <span class="s">'MDF_FF_JSON_STANDARD'</span>)
+  <span class="kw">PATTERN</span> = <span class="s">'.*events.*[.]json'</span>
+  <span class="kw">ON_ERROR</span> = <span class="s">CONTINUE</span>;</div>
+    </div>
+  </div>
+  <div>
+    <h3 style="color:var(--green);">Parquet / Avro / ORC</h3>
+    <div class="cb" style="font-size:13px;padding:16px 20px;"><span class="kw">COPY INTO</span> MDF_RAW_DB.VENDOR.RAW_TRANSACTIONS
+  <span class="kw">FROM</span> @MDF_STG_INTERNAL_PARQUET/vendor/txn/
+  <span class="kw">FILE_FORMAT</span> = (<span class="kw">FORMAT_NAME</span> = <span class="s">'MDF_FF_PARQUET_STANDARD'</span>)
+  <span class="kw">MATCH_BY_COLUMN_NAME</span> = <span class="s">CASE_INSENSITIVE</span>
+  <span class="kw">ON_ERROR</span> = <span class="s">CONTINUE</span>;</div>
+  </div>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: SP_REGISTER_SOURCE -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Source Onboarding</div>
+  <h2>SP_REGISTER_SOURCE</h2>
+  <p style="margin-bottom:8px;"><span class="hl">Convention over Configuration</span> &mdash; 10 parameters fill 30+ config columns</p>
+  <div class="g2">
+    <div>
+      <h3 style="color:var(--green);">Required (5)</h3>
+      <div class="cb" style="font-size:14px;padding:16px 20px;"><span class="fn">CALL</span> SP_REGISTER_SOURCE(
+  <span class="s">'ACME_SALES_CSV'</span>,     <span class="c">-- source name</span>
+  <span class="s">'ACME'</span>,               <span class="c">-- client</span>
+  <span class="s">'CSV'</span>,                <span class="c">-- type</span>
+  <span class="s">'RAW_SALES'</span>,          <span class="c">-- target table</span>
+  <span class="s">'.*sales.*[.]csv'</span>    <span class="c">-- file pattern</span>
+);</div>
+    </div>
+    <div>
+      <h3 style="color:var(--dim);">Optional (5) &mdash; All Have Defaults</h3>
+      <div class="cb" style="font-size:14px;padding:16px 20px;"><span class="c">-- SUB_DIRECTORY   = NULL</span>
+<span class="c">-- LOAD_TYPE       = 'APPEND'</span>
+<span class="c">-- LOAD_FREQUENCY  = 'DAILY'</span>
+<span class="c">-- SOURCE_SYSTEM   = NULL</span>
+<span class="c">-- DESCRIPTION     = auto-generated</span></div>
+    </div>
+  </div>
+  <div class="ab" style="font-size:14px;margin-top:16px;">
+  Auto-derived:  File Format  &rarr;  MDF_FF_CSV_STANDARD       (from source type)
+                 Stage        &rarr;  @MDF_STG_INTERNAL_CSV     (from source type)
+                 Target DB    &rarr;  MDF_RAW_DB                (always)
+                 Target Schema &rarr; ACME                      (from client name)
+                 Column Match &rarr;  NONE / CASE_INSENSITIVE   (from source type)</div>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Recap -->
+<div class="slide">
+  <div class="mt">Module 04 &mdash; Recap</div>
+  <h2>Module 04 Complete</h2>
+  <div class="g2">
+    <div>
+      <h3>What We Built</h3>
+      <ul>
+        <li>SP_GENERATE_BATCH_ID (UUID correlation)</li>
+        <li>SP_LOG_INGESTION (start/end audit)</li>
+        <li>SP_LOG_ERROR (granular error capture)</li>
+        <li>SP_GENERIC_INGESTION (the engine)</li>
+        <li>SP_REGISTER_SOURCE (easy onboarding)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Key Takeaways</h3>
+      <ul>
+        <li>JavaScript for try/catch + VARIANT return</li>
+        <li>Dynamic SQL from config &mdash; zero hard-coding</li>
+        <li>Different table strategy per file type</li>
+        <li>Error isolation: one source fails, rest continue</li>
+        <li>Convention over configuration for onboarding</li>
+      </ul>
+    </div>
+  </div>
+  <div class="cb" style="font-size:16px;margin-top:24px;"><span class="c">-- The entire framework in one line:</span>
+<span class="fn">CALL</span> SP_GENERIC_INGESTION(<span class="s">'ALL'</span>, <span class="n">FALSE</span>);
+<span class="c">-- Reads config. Builds SQL. Loads data. Logs everything. Returns JSON.</span></div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Next Module -->
+<div class="slide ts">
+  <div class="mt">Up Next</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s cur"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div><div class="s"></div></div>
+  <h1 style="color:var(--cyan);">Module 05</h1>
+  <div class="st">Structured Data Ingestion &mdash; CSV Hands-On Lab</div>
+  <p style="font-size:22px;color:var(--gray);">Register a source. Upload CSV files. Call the engine.<br>End-to-end ingestion with typed tables, audit logs, and error handling.</p>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+let c=0;const ss=document.querySelectorAll('.slide'),n=ss.length;
+function go(i){if(i>=0&&i<n){ss[c].classList.remove('active');c=i;ss[c].classList.add('active');}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(c+1);if(e.key==='ArrowLeft')go(c-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)go(c+1);else go(c-1);});
+</script>
+</body>
+</html>

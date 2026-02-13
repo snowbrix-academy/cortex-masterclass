@@ -1,0 +1,42 @@
+# Environment
+.env
+*.env.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# dbt
+dbt_ecommerce/target/
+dbt_ecommerce/dbt_packages/
+dbt_ecommerce/logs/
+dbt_ecommerce/profiles.yml
+
+# Airflow
+airflow/logs/
+*.pid
+
+# Data files (never commit source data)
+*.csv
+!dbt_ecommerce/seeds/*.csv
+*.parquet
+*.json.gz
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml

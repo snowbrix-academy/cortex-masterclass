@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 10 — Schema Evolution & Advanced Topics | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Fira+Code:wght@400;500&display=swap');
+  :root{--bg:#1A1A2E;--bg2:#16213E;--card:#0F3460;--cyan:#00D4FF;--orange:#FF6B35;--red:#E63946;--green:#06D6A0;--gray:#B0A8A0;--white:#E8E8E8;--dim:#6B7280;}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);overflow:hidden;height:100vh;width:100vw;}
+  .slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative;}
+  .slide.active{display:flex;}
+  .sn{position:absolute;bottom:30px;right:40px;font-family:'JetBrains Mono',monospace;font-size:14px;color:var(--dim);}
+  .mt{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+  .bt{position:absolute;bottom:30px;left:40px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--dim);}
+  h1{font-family:'JetBrains Mono',monospace;font-size:48px;font-weight:700;line-height:1.2;margin-bottom:24px;}
+  h2{font-family:'JetBrains Mono',monospace;font-size:36px;font-weight:700;margin-bottom:20px;line-height:1.3;}
+  h3{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:600;margin-bottom:16px;color:var(--cyan);}
+  p,li{font-size:22px;line-height:1.6;color:var(--gray);}
+  .hl{color:var(--cyan);} .w{color:var(--orange);} .d{color:var(--red);} .g{color:var(--green);}
+  ul{list-style:none;padding-left:0;} ul li{padding:8px 0;padding-left:30px;position:relative;}
+  ul li::before{content:'>';position:absolute;left:0;color:var(--cyan);font-family:'JetBrains Mono',monospace;font-weight:700;}
+  .cb{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:24px 28px;font-family:'Fira Code',monospace;font-size:17px;line-height:1.7;color:#C9D1D9;margin:20px 0;white-space:pre;overflow:auto;}
+  .cb .kw{color:#FF7B72;} .cb .s{color:#A5D6FF;} .cb .c{color:#8B949E;} .cb .fn{color:#D2A8FF;} .cb .n{color:#79C0FF;}
+  .g2{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:20px;}
+  .cd{background:var(--bg2);border:1px solid #30363D;border-radius:12px;padding:28px;}
+  .cd.hc{border-color:var(--cyan);} .cd.wc{border-color:var(--orange);}
+  .bn{font-family:'JetBrains Mono',monospace;font-size:72px;font-weight:700;color:var(--cyan);line-height:1;}
+  .sl{font-size:18px;color:var(--dim);margin-top:8px;}
+  .ab{background:#0D1117;border:1px solid #30363D;border-radius:8px;padding:30px;font-family:'Fira Code',monospace;font-size:15px;line-height:1.6;color:var(--gray);white-space:pre;}
+  .ts{text-align:center;justify-content:center;align-items:center;} .ts h1{font-size:52px;margin-bottom:16px;}
+  .st{font-size:24px;color:var(--cyan);font-family:'JetBrains Mono',monospace;margin-bottom:40px;}
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:18px;}
+  th{text-align:left;padding:12px 16px;background:var(--card);color:var(--cyan);font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:600;border-bottom:2px solid var(--cyan);}
+  td{padding:10px 16px;border-bottom:1px solid #30363D;color:var(--gray);}
+  .pb{display:flex;gap:4px;margin:20px 0;} .pb .s{flex:1;height:6px;background:#30363D;border-radius:3px;} .pb .s.done{background:var(--cyan);} .pb .s.cur{background:var(--orange);}
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide ts active">
+  <div class="mt">Module 10</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s cur"></div></div>
+  <h1>Schema Evolution &<br>Advanced Topics</h1>
+  <div class="st">Detect Drift &bull; Evolve Safely &bull; Onboard at Scale</div>
+  <p style="font-size:20px;">Schema change detection. Multi-client onboarding. Dynamic Tables. Production deployment.</p>
+  <div class="sn">1 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 2: The Schema Drift Problem -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; The Problem</div>
+  <h2>Schema Drift Is Inevitable</h2>
+  <p style="margin-bottom:24px;">Source systems change. Your framework must <span class="hl">adapt without breaking</span>.</p>
+  <div class="ab" style="font-size:15px;">
+  THREE SCENARIOS:
+
+  <span style="color:var(--cyan);">SCENARIO 1: New Column</span>
+  File adds "LOYALTY_TIER" column            <span style="color:var(--green);">&#10140; Detect, ADD COLUMN, reload</span>
+
+  <span style="color:var(--orange);">SCENARIO 2: Type Change</span>
+  "AMOUNT" changes NUMBER &#10140; VARCHAR       <span style="color:var(--green);">&#10140; Detect, widen type, alert</span>
+
+  <span style="color:var(--red);">SCENARIO 3: Column Removed</span>
+  File drops "FAX_NUMBER" column             <span style="color:var(--green);">&#10140; Detect, keep column (NULL), alert</span>
+
+  &#9888; GOLDEN RULE: Never drop columns. Only add or widen.</div>
+  <div class="sn">2 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 3: SP_DETECT_SCHEMA_CHANGES -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; Detection</div>
+  <h2>SP_DETECT_SCHEMA_CHANGES</h2>
+  <p style="margin-bottom:16px;"><span class="g">Read-only.</span> Safe to run anytime. Compares file schema vs table schema.</p>
+  <div class="g2">
+    <div>
+      <div class="cb" style="font-size:15px;"><span class="kw">CALL</span> <span class="fn">SP_DETECT_SCHEMA_CHANGES</span>(
+  <span class="s">'DEMO_CUSTOMERS_CSV'</span>
+);
+
+<span class="c">-- Uses INFER_SCHEMA internally</span>
+<span class="c">-- Reads file headers / metadata</span>
+<span class="c">-- Compares against DESCRIBE TABLE</span>
+<span class="c">-- Returns JSON report</span></div>
+    </div>
+    <div>
+      <h3>Return Value (JSON)</h3>
+      <div class="cb" style="font-size:14px;">{
+  <span class="s">"source_name"</span>: <span class="s">"DEMO_CUSTOMERS_CSV"</span>,
+  <span class="s">"status"</span>: <span class="s">"CHECKED"</span>,
+  <span class="s">"changes_detected"</span>: <span class="n">true</span>,
+  <span class="s">"new_columns"</span>: [
+    {<span class="s">"column"</span>: <span class="s">"LOYALTY_TIER"</span>,
+     <span class="s">"file_type"</span>: <span class="s">"VARCHAR"</span>}
+  ],
+  <span class="s">"type_changes"</span>: [],
+  <span class="s">"missing_columns"</span>: []
+}</div>
+    </div>
+  </div>
+  <div class="sn">3 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 4: SP_APPLY_SCHEMA_EVOLUTION -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; Evolution</div>
+  <h2>SP_APPLY_SCHEMA_EVOLUTION</h2>
+  <p style="margin-bottom:16px;">Two modes: <span class="hl">DRY_RUN = TRUE</span> (preview) and <span class="w">DRY_RUN = FALSE</span> (apply).</p>
+  <div class="g2">
+    <div class="cd hc">
+      <h3>Dry Run (Default)</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">CALL</span> <span class="fn">SP_APPLY_SCHEMA_EVOLUTION</span>(
+  <span class="s">'DEMO_CUSTOMERS_CSV'</span>,
+  <span class="n">TRUE</span>   <span class="c">-- dry run</span>
+);
+
+<span class="c">-- Shows what WOULD happen</span>
+<span class="c">-- No changes applied</span>
+<span class="c">-- Review before committing</span></div>
+    </div>
+    <div class="cd wc">
+      <h3>Apply Changes</h3>
+      <div class="cb" style="font-size:14px;"><span class="kw">CALL</span> <span class="fn">SP_APPLY_SCHEMA_EVOLUTION</span>(
+  <span class="s">'DEMO_CUSTOMERS_CSV'</span>,
+  <span class="n">FALSE</span>  <span class="c">-- apply</span>
+);
+
+<span class="c">-- Runs ALTER TABLE ADD COLUMN</span>
+<span class="c">-- Never drops columns</span>
+<span class="c">-- MAX_NEW_COLUMNS safety limit</span></div>
+    </div>
+  </div>
+  <div style="margin-top:20px;padding:16px 24px;background:var(--bg2);border-left:4px solid var(--red);border-radius:4px;">
+    <p style="font-size:18px;"><span class="d">Safety:</span> If new columns exceed <span class="hl">MAX_NEW_COLUMNS</span> (default 10), the procedure <span class="d">blocks</span> and requires manual review.</p>
+  </div>
+  <div class="sn">4 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 5: Multi-Client Architecture -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; Multi-Client</div>
+  <h2>Multi-Client Architecture</h2>
+  <p style="margin-bottom:20px;">Schema-per-client isolation. RBAC grants at schema level.</p>
+  <div class="ab" style="font-size:14px;">
+  MDF_RAW_DB                    MDF_STAGING_DB                MDF_CURATED_DB
+  &#9500;&#9472;&#9472; ACME_CORP/                  &#9500;&#9472;&#9472; ACME_CORP/                  &#9500;&#9472;&#9472; ACME_CORP/
+  &#9474;   &#9500;&#9472;&#9472; RAW_SALES             &#9474;   &#9500;&#9472;&#9472; STG_SALES             &#9474;   &#9500;&#9472;&#9472; DIM_CUSTOMERS
+  &#9474;   &#9500;&#9472;&#9472; RAW_EVENTS            &#9474;   &#9500;&#9472;&#9472; STG_EVENTS            &#9474;   &#9492;&#9472;&#9472; FACT_SALES
+  &#9474;   &#9492;&#9472;&#9472; RAW_METRICS           &#9474;   &#9492;&#9472;&#9472; STG_METRICS           &#9474;
+  &#9474;                               &#9474;                               &#9474;
+  &#9492;&#9472;&#9472; GLOBEX_INC/                  &#9492;&#9472;&#9472; GLOBEX_INC/                  &#9492;&#9472;&#9472; GLOBEX_INC/
+      &#9500;&#9472;&#9472; RAW_ORDERS                &#9500;&#9472;&#9472; STG_ORDERS                &#9500;&#9472;&#9472; DIM_PRODUCTS
+      &#9492;&#9472;&#9472; RAW_INVENTORY             &#9492;&#9472;&#9472; STG_INVENTORY             &#9492;&#9472;&#9472; FACT_ORDERS
+
+  <span style="color:var(--cyan);">&#10003; Client A cannot see Client B's data</span>
+  <span style="color:var(--cyan);">&#10003; One framework, unlimited clients</span>
+  <span style="color:var(--cyan);">&#10003; CONFIG table filtered by CLIENT_NAME</span></div>
+  <div class="sn">5 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 6: SP_ONBOARD_CLIENT -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; Onboarding</div>
+  <h2>SP_ONBOARD_CLIENT</h2>
+  <p style="margin-bottom:12px;">One call. Multiple sources. Full client registration.</p>
+  <div class="cb" style="font-size:15px;"><span class="kw">CALL</span> <span class="fn">SP_ONBOARD_CLIENT</span>(
+  <span class="s">'NEWCLIENT'</span>,
+  <span class="fn">PARSE_JSON</span>(<span class="s">'[
+    {"name": "INVOICES",  "type": "CSV",     "table": "RAW_INVOICES",  "pattern": ".*invoices.*[.]csv"},
+    {"name": "PAYMENTS",  "type": "JSON",    "table": "RAW_PAYMENTS",  "pattern": ".*payments.*[.]json"},
+    {"name": "METRICS",   "type": "PARQUET", "table": "RAW_METRICS",   "pattern": ".*metrics.*[.]parquet"}
+  ]'</span>)
+);
+
+<span class="c">-- Result: { "sources_registered": 3, "sources_failed": 0, "status": "SUCCESS" }</span>
+<span class="c">-- Creates: NEWCLIENT_INVOICES, NEWCLIENT_PAYMENTS, NEWCLIENT_METRICS</span>
+<span class="c">-- Calls SP_REGISTER_SOURCE internally for each source</span></div>
+  <div class="sn">6 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 7: Dynamic Tables Preview -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; Advanced</div>
+  <h2>Dynamic Tables <span style="font-size:20px;color:var(--dim);">(Preview)</span></h2>
+  <p style="margin-bottom:12px;">Automatic staging transforms. No tasks. No streams. Snowflake manages the refresh.</p>
+  <div class="cb" style="font-size:15px;"><span class="c">-- Replace manual task-based ETL with declarative transforms</span>
+<span class="kw">CREATE OR REPLACE DYNAMIC TABLE</span> MDF_STAGING_DB.DEMO_WEB.DT_EVENTS_FLATTENED
+    <span class="fn">TARGET_LAG</span> = <span class="s">'5 MINUTES'</span>         <span class="c">-- max staleness guarantee</span>
+    <span class="fn">WAREHOUSE</span>  = MDF_TRANSFORM_WH
+<span class="kw">AS</span>
+<span class="kw">SELECT</span>
+    RAW_DATA:<span class="n">event_id</span>::<span class="kw">VARCHAR</span>        <span class="kw">AS</span> EVENT_ID,
+    RAW_DATA:<span class="n">event_type</span>::<span class="kw">VARCHAR</span>      <span class="kw">AS</span> EVENT_TYPE,
+    RAW_DATA:<span class="n">user_id</span>::<span class="kw">VARCHAR</span>        <span class="kw">AS</span> USER_ID,
+    RAW_DATA:<span class="n">timestamp</span>::<span class="kw">TIMESTAMP_TZ</span> <span class="kw">AS</span> EVENT_TIMESTAMP,
+    RAW_DATA:<span class="n">device</span>.<span class="n">type</span>::<span class="kw">VARCHAR</span>    <span class="kw">AS</span> DEVICE_TYPE,
+    RAW_DATA:<span class="n">geo</span>.<span class="n">country</span>::<span class="kw">VARCHAR</span>    <span class="kw">AS</span> COUNTRY
+<span class="kw">FROM</span> MDF_RAW_DB.DEMO_WEB.RAW_EVENTS;</div>
+  <p style="font-size:18px;margin-top:8px;"><span class="w">Trade-off:</span> Shorter TARGET_LAG = fresher data = higher compute cost.</p>
+  <div class="sn">7 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 8: Production Checklist -->
+<div class="slide">
+  <div class="mt">Module 10 &mdash; Production</div>
+  <h2>Production Deployment Checklist</h2>
+  <table>
+    <tr><th>#</th><th>Item</th><th>Why It Matters</th></tr>
+    <tr><td><span class="hl">1</span></td><td>Resource monitors on every warehouse</td><td>Prevents runaway compute costs overnight</td></tr>
+    <tr><td><span class="hl">2</span></td><td>Network policies configured</td><td>Restricts account access to known IPs</td></tr>
+    <tr><td><span class="hl">3</span></td><td>Alert integrations (Slack / PagerDuty / email)</td><td>Dashboards nobody checks are decoration</td></tr>
+    <tr><td><span class="hl">4</span></td><td>INGESTION_CONFIG backup strategy</td><td>The config table is the brain &mdash; protect it</td></tr>
+    <tr><td><span class="hl">5</span></td><td>Source documentation in DESCRIPTION column</td><td>Future team members need context, not guesswork</td></tr>
+  </table>
+  <div style="margin-top:24px;padding:16px 24px;background:var(--bg2);border-left:4px solid var(--green);border-radius:4px;">
+    <p style="font-size:18px;"><span class="g">Also consider:</span> Time Travel retention (90 days for critical tables), Fail-safe awareness, cross-region replication for DR.</p>
+  </div>
+  <div class="sn">8 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 9: Course Complete — All 10 Modules -->
+<div class="slide">
+  <div class="mt">Course Complete</div>
+  <h2>What You Built <span style="font-size:20px;color:var(--dim);">&mdash; 10 Modules</span></h2>
+  <div class="g2" style="gap:20px;">
+    <div>
+      <table style="font-size:16px;">
+        <tr><th>Module</th><th>Deliverable</th></tr>
+        <tr><td><span class="hl">01</span> Foundation</td><td>4 DBs, 4 WHs, 5 RBAC roles</td></tr>
+        <tr><td><span class="hl">02</span> Formats & Stages</td><td>10 file formats, 4 stages</td></tr>
+        <tr><td><span class="hl">03</span> Config Tables</td><td>INGESTION_CONFIG &mdash; the brain</td></tr>
+        <tr><td><span class="hl">04</span> Core Procedures</td><td>Register, Ingest, Validate SPs</td></tr>
+        <tr><td><span class="hl">05</span> CSV Ingestion</td><td>End-to-end structured data loads</td></tr>
+      </table>
+    </div>
+    <div>
+      <table style="font-size:16px;">
+        <tr><th>Module</th><th>Deliverable</th></tr>
+        <tr><td><span class="hl">06</span> Semi-Structured</td><td>JSON flattening, Parquet loads</td></tr>
+        <tr><td><span class="hl">07</span> Error Handling</td><td>Audit logs, error recovery, retries</td></tr>
+        <tr><td><span class="hl">08</span> Automation</td><td>Tasks, streams, scheduled ingestion</td></tr>
+        <tr><td><span class="hl">09</span> Monitoring</td><td>Dashboards, health views, alerts</td></tr>
+        <tr><td><span class="w">10</span> Schema Evolution</td><td>Drift detection, multi-client, DTs</td></tr>
+      </table>
+    </div>
+  </div>
+  <div style="margin-top:24px;padding:16px 24px;background:var(--bg2);border-left:4px solid var(--cyan);border-radius:4px;">
+    <p style="font-size:18px;"><span class="hl">Result:</span> A production-grade, metadata-driven ingestion framework that handles structured + semi-structured data, monitors itself, recovers from errors, and adapts to schema changes.</p>
+  </div>
+  <div class="sn">9 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<!-- SLIDE 10: Final — Snowbrix Academy -->
+<div class="slide ts">
+  <div class="mt">Snowbrix Academy</div>
+  <div class="pb"><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div><div class="s done"></div></div>
+  <h1 style="margin-bottom:12px;">Course <span class="hl">Complete</span></h1>
+  <div class="st">Metadata-Driven Ingestion Framework</div>
+  <div style="display:flex;gap:60px;justify-content:center;margin-bottom:40px;">
+    <div style="text-align:center;"><div class="bn">10</div><div class="sl">Modules</div></div>
+    <div style="text-align:center;"><div class="bn" style="color:var(--orange);">15+</div><div class="sl">Stored Procedures</div></div>
+    <div style="text-align:center;"><div class="bn" style="color:var(--green);">1</div><div class="sl">Production Framework</div></div>
+  </div>
+  <ul style="display:inline-block;text-align:left;">
+    <li>All SQL scripts available in the course repository</li>
+    <li>Run it yourself &mdash; every module builds on the last</li>
+    <li>Deploy it &mdash; this is production architecture, not a toy</li>
+  </ul>
+  <p style="margin-top:32px;font-size:20px;color:var(--dim);">snowbrix.academy &bull; Go build something production-ready.</p>
+  <div class="sn">10 / 10</div><div class="bt">snowbrix.academy</div>
+</div>
+
+<script>
+let c=0;const ss=document.querySelectorAll('.slide'),n=ss.length;
+function go(i){if(i>=0&&i<n){ss[c].classList.remove('active');c=i;ss[c].classList.add('active');}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(c+1);if(e.key==='ArrowLeft')go(c-1);});
+document.addEventListener('click',e=>{if(e.clientX>window.innerWidth/2)go(c+1);else go(c-1);});
+</script>
+</body>
+</html>

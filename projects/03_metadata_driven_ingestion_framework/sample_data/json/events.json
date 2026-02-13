@@ -1,0 +1,228 @@
+[
+  {
+    "event_id": "EVT-001",
+    "event_type": "PAGE_VIEW",
+    "user_id": "USR-1001",
+    "session_id": "SES-AAA-001",
+    "timestamp": "2025-02-01T10:30:00Z",
+    "page_url": "/products/enterprise-platform",
+    "referrer": "https://google.com/search?q=data+platform",
+    "device": {
+      "type": "DESKTOP",
+      "os": "Windows 11",
+      "browser": "Chrome 120"
+    },
+    "geo": {
+      "country": "US",
+      "state": "NY",
+      "city": "New York"
+    },
+    "metadata": {
+      "campaign": "google_ads_q1",
+      "medium": "cpc"
+    }
+  },
+  {
+    "event_id": "EVT-002",
+    "event_type": "BUTTON_CLICK",
+    "user_id": "USR-1001",
+    "session_id": "SES-AAA-001",
+    "timestamp": "2025-02-01T10:31:15Z",
+    "page_url": "/products/enterprise-platform",
+    "element_id": "btn-request-demo",
+    "element_text": "Request Demo",
+    "device": {
+      "type": "DESKTOP",
+      "os": "Windows 11",
+      "browser": "Chrome 120"
+    },
+    "geo": {
+      "country": "US",
+      "state": "NY",
+      "city": "New York"
+    }
+  },
+  {
+    "event_id": "EVT-003",
+    "event_type": "FORM_SUBMIT",
+    "user_id": "USR-1001",
+    "session_id": "SES-AAA-001",
+    "timestamp": "2025-02-01T10:33:45Z",
+    "page_url": "/demo-request",
+    "form_data": {
+      "company_size": "500-1000",
+      "industry": "Technology",
+      "use_case": "Data Migration"
+    },
+    "device": {
+      "type": "DESKTOP",
+      "os": "Windows 11",
+      "browser": "Chrome 120"
+    },
+    "geo": {
+      "country": "US",
+      "state": "NY",
+      "city": "New York"
+    }
+  },
+  {
+    "event_id": "EVT-004",
+    "event_type": "PAGE_VIEW",
+    "user_id": "USR-1002",
+    "session_id": "SES-BBB-002",
+    "timestamp": "2025-02-01T11:00:00Z",
+    "page_url": "/pricing",
+    "referrer": "https://linkedin.com/feed",
+    "device": {
+      "type": "MOBILE",
+      "os": "iOS 17",
+      "browser": "Safari 17"
+    },
+    "geo": {
+      "country": "US",
+      "state": "CA",
+      "city": "San Francisco"
+    },
+    "metadata": {
+      "campaign": "linkedin_awareness",
+      "medium": "social"
+    }
+  },
+  {
+    "event_id": "EVT-005",
+    "event_type": "PAGE_VIEW",
+    "user_id": "USR-1003",
+    "session_id": "SES-CCC-003",
+    "timestamp": "2025-02-01T14:22:30Z",
+    "page_url": "/blog/snowflake-cost-optimization",
+    "referrer": "https://google.com/search?q=snowflake+cost+savings",
+    "device": {
+      "type": "DESKTOP",
+      "os": "macOS 14",
+      "browser": "Firefox 122"
+    },
+    "geo": {
+      "country": "UK",
+      "state": null,
+      "city": "London"
+    },
+    "metadata": {
+      "campaign": "organic_search",
+      "medium": "organic"
+    }
+  },
+  {
+    "event_id": "EVT-006",
+    "event_type": "VIDEO_PLAY",
+    "user_id": "USR-1003",
+    "session_id": "SES-CCC-003",
+    "timestamp": "2025-02-01T14:23:10Z",
+    "page_url": "/blog/snowflake-cost-optimization",
+    "video_id": "VID-2025-001",
+    "video_title": "The $40K/Month Snowflake Query Nobody Caught",
+    "video_duration_seconds": 600,
+    "playback_position_seconds": 0,
+    "device": {
+      "type": "DESKTOP",
+      "os": "macOS 14",
+      "browser": "Firefox 122"
+    },
+    "geo": {
+      "country": "UK",
+      "state": null,
+      "city": "London"
+    }
+  },
+  {
+    "event_id": "EVT-007",
+    "event_type": "VIDEO_COMPLETE",
+    "user_id": "USR-1003",
+    "session_id": "SES-CCC-003",
+    "timestamp": "2025-02-01T14:33:15Z",
+    "page_url": "/blog/snowflake-cost-optimization",
+    "video_id": "VID-2025-001",
+    "video_title": "The $40K/Month Snowflake Query Nobody Caught",
+    "video_duration_seconds": 600,
+    "watch_time_seconds": 580,
+    "completion_rate": 0.97,
+    "device": {
+      "type": "DESKTOP",
+      "os": "macOS 14",
+      "browser": "Firefox 122"
+    },
+    "geo": {
+      "country": "UK",
+      "state": null,
+      "city": "London"
+    }
+  },
+  {
+    "event_id": "EVT-008",
+    "event_type": "SIGNUP",
+    "user_id": "USR-1004",
+    "session_id": "SES-DDD-004",
+    "timestamp": "2025-02-02T09:15:00Z",
+    "page_url": "/signup",
+    "referrer": "/products/enterprise-platform",
+    "signup_method": "EMAIL",
+    "plan_selected": "TRIAL",
+    "device": {
+      "type": "DESKTOP",
+      "os": "Windows 11",
+      "browser": "Edge 120"
+    },
+    "geo": {
+      "country": "DE",
+      "state": null,
+      "city": "Berlin"
+    }
+  },
+  {
+    "event_id": "EVT-009",
+    "event_type": "API_CALL",
+    "user_id": "USR-1002",
+    "session_id": "SES-EEE-005",
+    "timestamp": "2025-02-02T10:00:00Z",
+    "endpoint": "/api/v2/query",
+    "method": "POST",
+    "status_code": 200,
+    "response_time_ms": 245,
+    "request_size_bytes": 1024,
+    "response_size_bytes": 8192,
+    "device": {
+      "type": "SERVER",
+      "os": "Linux",
+      "browser": null
+    },
+    "geo": {
+      "country": "US",
+      "state": "VA",
+      "city": "Ashburn"
+    }
+  },
+  {
+    "event_id": "EVT-010",
+    "event_type": "PURCHASE",
+    "user_id": "USR-1001",
+    "session_id": "SES-FFF-006",
+    "timestamp": "2025-02-03T16:45:00Z",
+    "page_url": "/checkout/complete",
+    "order_id": "ORD-10016",
+    "total_amount": 340.50,
+    "currency": "USD",
+    "items": [
+      {"product_id": "PROD-009", "quantity": 1, "price": 500.00},
+      {"product_id": "PROD-003", "quantity": 1, "price": 2500.00}
+    ],
+    "device": {
+      "type": "DESKTOP",
+      "os": "Windows 11",
+      "browser": "Chrome 120"
+    },
+    "geo": {
+      "country": "US",
+      "state": "NY",
+      "city": "New York"
+    }
+  }
+]

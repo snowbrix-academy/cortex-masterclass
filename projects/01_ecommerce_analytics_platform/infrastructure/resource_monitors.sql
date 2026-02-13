@@ -1,0 +1,67 @@
+-- ============================================================
+-- SNOWBRIX E-COMMERCE PLATFORM
+-- Resource Monitors (Cost Control)
+-- ============================================================
+
+USE ROLE ACCOUNTADMIN;  -- Resource monitors require ACCOUNTADMIN
+
+-- ============================================================
+-- PER-WAREHOUSE MONITORS
+-- ============================================================
+
+-- LOADING_WH: 50 credits/month (~$150 at $3/credit)
+CREATE RESOURCE MONITOR IF NOT EXISTS LOADING_MONITOR
+    WITH CREDIT_QUOTA = 50
+    FREQUENCY = MONTHLY
+    START_TIMESTAMP = IMMEDIATELY
+    TRIGGERS
+        ON 75 PERCENT DO NOTIFY
+        ON 90 PERCENT DO NOTIFY
+        ON 100 PERCENT DO SUSPEND;
+
+ALTER WAREHOUSE LOADING_WH SET RESOURCE_MONITOR = LOADING_MONITOR;
+
+-- TRANSFORMING_WH: 100 credits/month (~$300)
+CREATE RESOURCE MONITOR IF NOT EXISTS TRANSFORMING_MONITOR
+    WITH CREDIT_QUOTA = 100
+    FREQUENCY = MONTHLY
+    START_TIMESTAMP = IMMEDIATELY
+    TRIGGERS
+        ON 75 PERCENT DO NOTIFY
+        ON 90 PERCENT DO NOTIFY
+        ON 100 PERCENT DO SUSPEND;
+
+ALTER WAREHOUSE TRANSFORMING_WH SET RESOURCE_MONITOR = TRANSFORMING_MONITOR;
+
+-- REPORTING_WH: 75 credits/month (~$225)
+CREATE RESOURCE MONITOR IF NOT EXISTS REPORTING_MONITOR
+    WITH CREDIT_QUOTA = 75
+    FREQUENCY = MONTHLY
+    START_TIMESTAMP = IMMEDIATELY
+    TRIGGERS
+        ON 75 PERCENT DO NOTIFY
+        ON 90 PERCENT DO NOTIFY
+        ON 100 PERCENT DO SUSPEND_IMMEDIATE;
+
+ALTER WAREHOUSE REPORTING_WH SET RESOURCE_MONITOR = REPORTING_MONITOR;
+
+-- ============================================================
+-- ACCOUNT-LEVEL MONITOR (safety net)
+-- ============================================================
+
+CREATE RESOURCE MONITOR IF NOT EXISTS ACCOUNT_MONITOR
+    WITH CREDIT_QUOTA = 300
+    FREQUENCY = MONTHLY
+    START_TIMESTAMP = IMMEDIATELY
+    TRIGGERS
+        ON 80 PERCENT DO NOTIFY
+        ON 95 PERCENT DO NOTIFY
+        ON 100 PERCENT DO SUSPEND;
+
+ALTER ACCOUNT SET RESOURCE_MONITOR = ACCOUNT_MONITOR;
+
+-- ============================================================
+-- VERIFICATION
+-- ============================================================
+
+SHOW RESOURCE MONITORS;

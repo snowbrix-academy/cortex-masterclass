@@ -1,0 +1,130 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM — Local Development Environment
+# ============================================================
+# Starts: PostgreSQL (source database) + Airflow (orchestration)
+# Usage: docker-compose up -d
+# ============================================================
+
+version: '3.8'
+
+x-airflow-common: &airflow-common
+  build:
+    context: ./airflow
+    dockerfile: Dockerfile
+  environment:
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres-airflow:5432/airflow
+    AIRFLOW__CORE__FERNET_KEY: ${AIRFLOW__CORE__FERNET_KEY:-}
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+    # Pass through Snowflake + Stripe credentials
+    SNOWFLAKE_ACCOUNT: ${SNOWFLAKE_ACCOUNT}
+    SNOWFLAKE_USER: ${SNOWFLAKE_USER}
+    SNOWFLAKE_PASSWORD: ${SNOWFLAKE_PASSWORD}
+    SNOWFLAKE_ROLE: ${SNOWFLAKE_ROLE}
+    SNOWFLAKE_WAREHOUSE: ${SNOWFLAKE_WAREHOUSE}
+    STRIPE_API_KEY: ${STRIPE_API_KEY}
+    SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL}
+  volumes:
+    - ./airflow/dags:/opt/airflow/dags
+    - ./airflow/plugins:/opt/airflow/plugins
+    - ./airflow/logs:/opt/airflow/logs
+    - ./ingestion:/opt/airflow/ingestion
+    - ./dbt_ecommerce:/opt/airflow/dbt_ecommerce
+  depends_on:
+    postgres-airflow:
+      condition: service_healthy
+
+services:
+  # ──────────────────────────────────────────────
+  # SOURCE DATABASE: E-Commerce PostgreSQL
+  # ──────────────────────────────────────────────
+  postgres-source:
+    image: postgres:15
+    container_name: ecommerce-source-db
+    environment:
+      POSTGRES_DB: ecommerce_source
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_source_data:/var/lib/postgresql/data
+      - ./ingestion/seed/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # AIRFLOW METADATA DATABASE
+  # ──────────────────────────────────────────────
+  postgres-airflow:
+    image: postgres:15
+    container_name: airflow-metadata-db
+    environment:
+      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_airflow_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U airflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # AIRFLOW WEBSERVER
+  # ──────────────────────────────────────────────
+  airflow-webserver:
+    <<: *airflow-common
+    container_name: airflow-webserver
+    command: webserver
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # AIRFLOW SCHEDULER
+  # ──────────────────────────────────────────────
+  airflow-scheduler:
+    <<: *airflow-common
+    container_name: airflow-scheduler
+    command: scheduler
+    healthcheck:
+      test: ["CMD-SHELL", "airflow jobs check --job-type SchedulerJob --hostname $(hostname)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ──────────────────────────────────────────────
+  # AIRFLOW INIT (runs once on first startup)
+  # ──────────────────────────────────────────────
+  airflow-init:
+    <<: *airflow-common
+    container_name: airflow-init
+    entrypoint: /bin/bash
+    command:
+      - -c
+      - |
+        airflow db init
+        airflow users create \
+          --username admin \
+          --password admin \
+          --firstname Admin \
+          --lastname User \
+          --role Admin \
+          --email admin@snowbrix.dev
+    restart: "no"
+
+volumes:
+  postgres_source_data:
+  postgres_airflow_data:

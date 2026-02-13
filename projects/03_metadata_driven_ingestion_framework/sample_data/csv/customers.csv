@@ -1,0 +1,16 @@
+CUSTOMER_ID,CUSTOMER_NAME,EMAIL,PHONE,ADDRESS,CITY,STATE,COUNTRY,POSTAL_CODE,CUSTOMER_SEGMENT,REGISTRATION_DATE,IS_ACTIVE
+1001,Alice Johnson,alice.johnson@email.com,+1-555-0101,123 Oak Street,New York,NY,US,10001,ENTERPRISE,2024-01-15,TRUE
+1002,Bob Smith,bob.smith@email.com,+1-555-0102,456 Pine Avenue,Los Angeles,CA,US,90001,SMB,2024-02-20,TRUE
+1003,Charlie Brown,charlie.brown@email.com,+1-555-0103,789 Maple Drive,Chicago,IL,US,60601,ENTERPRISE,2024-03-10,TRUE
+1004,Diana Prince,diana.prince@email.com,+1-555-0104,321 Elm Street,Houston,TX,US,77001,MID_MARKET,2024-04-05,TRUE
+1005,Edward Norton,edward.norton@email.com,+1-555-0105,654 Cedar Lane,Phoenix,AZ,US,85001,SMB,2024-05-12,TRUE
+1006,Fiona Apple,fiona.apple@email.com,+1-555-0106,987 Birch Road,Philadelphia,PA,US,19101,ENTERPRISE,2024-06-18,FALSE
+1007,George Lucas,george.lucas@email.com,+1-555-0107,147 Walnut Way,San Antonio,TX,US,78201,MID_MARKET,2024-07-22,TRUE
+1008,Hannah Montana,hannah.montana@email.com,+1-555-0108,258 Spruce Circle,San Diego,CA,US,92101,SMB,2024-08-30,TRUE
+1009,Ivan Drago,ivan.drago@email.com,+1-555-0109,369 Ash Boulevard,Dallas,TX,US,75201,ENTERPRISE,2024-09-14,TRUE
+1010,Julia Roberts,julia.roberts@email.com,+1-555-0110,741 Poplar Street,San Jose,CA,US,95101,MID_MARKET,2024-10-25,TRUE
+1011,Kevin Hart,kevin.hart@email.com,+1-555-0111,852 Cherry Lane,Austin,TX,US,78701,SMB,2024-11-08,TRUE
+1012,Laura Croft,laura.croft@email.com,+1-555-0112,963 Willow Drive,Jacksonville,FL,US,32099,ENTERPRISE,2024-12-01,TRUE
+1013,Michael Scott,michael.scott@email.com,+1-555-0113,174 Hickory Road,Fort Worth,TX,US,76101,SMB,2025-01-10,TRUE
+1014,Nancy Drew,nancy.drew@email.com,+1-555-0114,285 Magnolia Ave,Columbus,OH,US,43004,MID_MARKET,2025-01-20,FALSE
+1015,Oscar Wilde,oscar.wilde@email.com,+1-555-0115,396 Redwood Path,Charlotte,NC,US,28201,ENTERPRISE,2025-02-14,TRUE

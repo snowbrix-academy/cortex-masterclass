@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"><title>Module 05: BI Tool Detection | Snowbrix Academy</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap');
+:root{--bg:#1A1A2E;--cyan:#00D4FF;--gray:#B0A8A0}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:#E8E8E8;overflow:hidden;height:100vh}
+.slide{display:none;width:100vw;height:100vh;padding:60px 80px;flex-direction:column;justify-content:center;position:relative}
+.slide.active{display:flex}
+.tag{position:absolute;top:30px;left:40px;font-family:'JetBrains Mono';font-size:13px;color:var(--cyan);text-transform:uppercase}
+.brand{position:absolute;bottom:30px;left:40px;font-size:12px;color:#6B7280}
+.num{position:absolute;bottom:30px;right:40px;font-size:14px;color:#6B7280}
+h1{font-family:'JetBrains Mono';font-size:52px;color:var(--cyan);margin-bottom:24px}
+h2{font-family:'JetBrains Mono';font-size:40px;margin-bottom:32px}
+p,li{font-size:22px;line-height:1.7;color:var(--gray)}
+.box{background:rgba(0,212,255,0.1);border-left:4px solid var(--cyan);padding:20px 24px;margin:20px 0}
+ul{list-style:none}
+ul li{padding:8px 0 8px 28px;position:relative}
+ul li::before{content:'▸';position:absolute;left:0;color:var(--cyan)}
+.hi{color:var(--cyan);font-weight:600}
+table{width:100%;border-collapse:collapse;margin:20px 0}
+th{background:rgba(0,212,255,0.15);color:var(--cyan);padding:12px}
+td{padding:12px;border:1px solid rgba(176,168,160,0.2)}
+</style></head><body>
+
+<section class="slide active">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h1>BI Tool Cost Detection</h1>
+<p style="font-size:28px;margin-top:20px">Classify Power BI, Tableau, dbt, Airflow costs for tool-level chargeback</p></div>
+<div class="brand">Snowbrix Academy</div><div class="num">1/7</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h2>BI Tool Classification Methods</h2>
+<table>
+<tr><th>Tool</th><th>Detection Method</th><th>Pattern</th></tr>
+<tr><td><strong>Power BI</strong></td><td>APPLICATION_NAME</td><td>'%PowerBI%' or 'MicrosoftPBIService'</td></tr>
+<tr><td><strong>Tableau</strong></td><td>APPLICATION_NAME</td><td>'%Tableau%'</td></tr>
+<tr><td><strong>dbt</strong></td><td>APPLICATION_NAME</td><td>= 'dbt'</td></tr>
+<tr><td><strong>Airflow</strong></td><td>Service account</td><td>SVC_AIRFLOW_* or SA_AIRFLOW_*</td></tr>
+<tr><td><strong>Looker</strong></td><td>APPLICATION_NAME</td><td>'%Looker%'</td></tr>
+</table>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">2/7</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h2>User Classification: Human vs Service Account</h2>
+<ul>
+<li><span class="hi">Human Users:</span> Email-pattern usernames (jane.doe@company.com)</li>
+<li><span class="hi">Service Accounts:</span> Naming convention (SVC_*, SA_*, uppercase patterns)</li>
+<li><span class="hi">System Queries:</span> USER_NAME = 'SNOWFLAKE' (exclude from chargeback)</li>
+</ul>
+<div class="box" style="margin-top:40px">
+<p><strong>SP_CLASSIFY_BI_CHANNELS:</strong> Procedure classifies all queries and calculates cost by tool</p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">3/7</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h2>Warehouse Isolation Strategy</h2>
+<p style="font-size:24px;margin-bottom:24px"><strong>Recommended Patterns:</strong></p>
+<ul>
+<li><span class="hi">Dedicated warehouses:</span> WH_POWERBI_PROD, WH_TABLEAU_PROD (clear attribution)</li>
+<li><span class="hi">Shared with QUERY_TAG:</span> Enforce tag-based attribution for mixed tools</li>
+<li><span class="hi">Anti-pattern:</span> BI tools sharing ETL warehouses (attribution impossible)</li>
+</ul>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">4/7</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h2>Cost per Report Analysis</h2>
+<ul>
+<li>Track query count and total cost per BI tool</li>
+<li>Calculate average cost per query by tool</li>
+<li>Identify expensive reports (drill-down from tool to specific queries)</li>
+<li>Enable "cost per dashboard" or "cost per user" analysis</li>
+</ul>
+<div class="box" style="margin-top:40px">
+<p><strong>Business Value:</strong> BI teams can optimize expensive reports, finance can chargeback by tool license group</p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">5/7</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h2>Hands-On Lab</h2>
+<ul>
+<li>Create user classification table and BI tool mapping table</li>
+<li>Run SP_CLASSIFY_BI_CHANNELS for last 7 days</li>
+<li>View BI tool costs breakdown (query count, total cost, avg cost per query)</li>
+<li>Identify top expensive BI queries</li>
+</ul>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">6/7</div>
+</section>
+
+<section class="slide">
+<div class="tag">Module 05 — BI Tool Detection</div>
+<div><h1>BI Tool Detection Complete ✓</h1>
+<div style="margin-top:48px">
+<p style="font-size:26px;line-height:1.8">Tool-level cost visibility enables BI tool optimization<br>and license-group chargeback.</p>
+<p style="font-size:24px;margin-top:32px">Next up: <span class="hi">Module 06 — Optimization Recommendations</span></p>
+</div>
+</div>
+<div class="brand">Snowbrix Academy</div><div class="num">7/7</div>
+</section>
+
+<script>
+let c=0;const s=document.querySelectorAll('.slide');
+function show(n){s[c].classList.remove('active');c=(n+s.length)%s.length;s[c].classList.add('active')}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')show(c+1);if(e.key==='ArrowLeft')show(c-1)});
+</script>
+</body></html>

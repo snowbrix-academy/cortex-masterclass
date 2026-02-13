@@ -1,0 +1,147 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# Intermediate Models — Schema Definitions
+# ============================================================
+# Tests and documentation for intermediate models.
+# Intermediate models join staging models with business logic
+# and serve as reusable building blocks for the mart layer.
+# ============================================================
+
+version: 2
+
+models:
+
+  # --------------------------------------------------------
+  # int_order_items_enriched
+  # --------------------------------------------------------
+  - name: int_order_items_enriched
+    description: >
+      Enriched order-level model that combines orders with their
+      line items, products, and payments. One row per order.
+      Aggregates line item details (item count, gross revenue,
+      discount amount) and joins payment information.
+      This is the central order enrichment model used by both
+      the fct_orders fact table and the int_customer_lifetime model.
+    columns:
+      - name: order_id
+        description: "Primary key. Unique order identifier."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: customer_id
+        description: "Foreign key to stg_customers."
+        data_tests:
+          - not_null
+
+      - name: order_date
+        description: "Date and time the order was placed."
+        data_tests:
+          - not_null
+
+      - name: order_status
+        description: "Raw order status from stg_orders."
+
+      - name: order_status_category
+        description: "Grouped order status (active/completed/cancelled)."
+
+      - name: item_count
+        description: "Total number of distinct line items in the order."
+
+      - name: total_quantity
+        description: "Sum of quantities across all line items."
+
+      - name: gross_revenue
+        description: "Sum of line totals before any discounts."
+
+      - name: discount_amount
+        description: "Total discount amount across all line items."
+
+      - name: net_revenue
+        description: "Gross revenue minus discount amount."
+
+      - name: payment_amount
+        description: "Total payment amount from Stripe (in dollars). NULL if no payment found."
+
+      - name: payment_status
+        description: "Payment status from Stripe (completed/pending/failed)."
+
+      - name: payment_method
+        description: "Payment method type (card, bank_transfer, etc.)."
+
+      - name: order_total
+        description: "Order total from the orders table (source-provided total)."
+
+  # --------------------------------------------------------
+  # int_customer_lifetime
+  # --------------------------------------------------------
+  - name: int_customer_lifetime
+    description: >
+      Customer lifetime metrics calculated from order history.
+      One row per customer. Includes lifetime value (total spend),
+      first and last order dates, order frequency, average order
+      value, and recency (days since last order). Used by
+      dim_customers for tier classification.
+    columns:
+      - name: customer_id
+        description: "Primary key. Unique customer identifier."
+        data_tests:
+          - unique
+          - not_null
+
+      - name: email
+        description: "Customer email address."
+        data_tests:
+          - not_null
+
+      - name: first_name
+        description: "Customer first name."
+
+      - name: last_name
+        description: "Customer last name."
+
+      - name: full_name
+        description: "Full name (first + last), or 'Unknown'."
+
+      - name: phone
+        description: "Phone number. May be NULL."
+
+      - name: state
+        description: "Two-letter state abbreviation."
+
+      - name: country
+        description: "Country code."
+
+      - name: customer_created_at
+        description: "When the customer account was created."
+
+      - name: first_order_date
+        description: "Date of the customer's first order. NULL if no orders."
+
+      - name: last_order_date
+        description: "Date of the customer's most recent order. NULL if no orders."
+
+      - name: total_orders
+        description: "Total number of orders placed by this customer."
+
+      - name: total_items_purchased
+        description: "Total number of items purchased across all orders."
+
+      - name: lifetime_value
+        description: >
+          Total net revenue from this customer across all orders.
+          Only includes completed and active orders (excludes cancelled).
+
+      - name: avg_order_value
+        description: "Average order value (lifetime_value / total_orders)."
+
+      - name: days_since_last_order
+        description: "Number of days between today and the last order date."
+
+      - name: order_frequency_days
+        description: >
+          Average number of days between orders. NULL if the customer
+          has fewer than 2 orders.
+
+      - name: is_repeat_customer
+        description: "True if the customer has placed more than one order."

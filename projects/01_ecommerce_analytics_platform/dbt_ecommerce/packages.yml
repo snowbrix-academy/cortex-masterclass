@@ -1,0 +1,30 @@
+# ============================================================
+# SNOWBRIX E-COMMERCE PLATFORM
+# dbt Package Dependencies
+# ============================================================
+# Install with: dbt deps
+#
+# Packages are downloaded to dbt_packages/ (gitignored).
+# Pin to minor versions for stability. Avoid floating majors.
+# ============================================================
+
+packages:
+
+  # dbt-utils: Essential utility macros for dbt projects.
+  # Used for:
+  #   - date_spine: generates the dim_dates date dimension
+  #   - generate_surrogate_key: creates stable hash keys for dimensions
+  #   - star: selects all columns except specified ones
+  #   - safe_add: NULL-safe addition for numeric columns
+  # Docs: https://github.com/dbt-labs/dbt-utils
+  - package: dbt-labs/dbt_utils
+    version: [">=1.1.0", "<2.0.0"]
+
+  # dbt-expectations: Great Expectations-style data quality tests.
+  # Used for:
+  #   - expect_column_values_to_be_between: range validation
+  #   - expect_column_values_to_match_regex: format validation
+  #   - expect_table_row_count_to_be_between: volume anomaly detection
+  # Docs: https://github.com/calogica/dbt-expectations
+  - package: calogica/dbt_expectations
+    version: [">=0.10.0", "<0.11.0"]

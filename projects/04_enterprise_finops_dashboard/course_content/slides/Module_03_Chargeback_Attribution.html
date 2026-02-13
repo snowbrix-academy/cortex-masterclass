@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Module 03: Chargeback Attribution | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
+  :root { --bg: #1A1A2E; --cyan: #00D4FF; --orange: #FF6B35; --green: #06D6A0; --gray: #B0A8A0; --white: #E8E8E8; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--white); overflow: hidden; height: 100vh; }
+  .slide { display: none; width: 100vw; height: 100vh; padding: 60px 80px; flex-direction: column; justify-content: center; position: relative; }
+  .slide.active { display: flex; }
+  .tag { position: absolute; top: 30px; left: 40px; font-family: 'JetBrains Mono'; font-size: 13px; color: var(--cyan); text-transform: uppercase; }
+  .brand { position: absolute; bottom: 30px; left: 40px; font-size: 12px; color: #6B7280; }
+  .num { position: absolute; bottom: 30px; right: 40px; font-size: 14px; color: #6B7280; }
+  h1 { font-family: 'JetBrains Mono'; font-size: 52px; color: var(--cyan); margin-bottom: 24px; }
+  h2 { font-family: 'JetBrains Mono'; font-size: 40px; margin-bottom: 32px; }
+  h3 { font-size: 28px; color: var(--cyan); margin-bottom: 20px; }
+  p, li { font-size: 22px; line-height: 1.7; color: var(--gray); }
+  .box { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--cyan); padding: 20px 24px; margin: 20px 0; border-radius: 6px; }
+  .warn { background: rgba(255, 107, 53, 0.1); border-left: 4px solid var(--orange); }
+  .code { background: #0D1117; border: 1px solid #30363D; padding: 20px; font-family: 'JetBrains Mono'; font-size: 16px; color: #C9D1D9; margin: 20px 0; border-radius: 8px; }
+  ul { list-style: none; }
+  ul li { padding: 8px 0 8px 28px; position: relative; }
+  ul li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); }
+  .hi { color: var(--cyan); font-weight: 600; }
+  .success { color: var(--green); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  th { background: rgba(0, 212, 255, 0.15); color: var(--cyan); padding: 12px; border: 1px solid rgba(0, 212, 255, 0.3); }
+  td { padding: 12px; border: 1px solid rgba(176, 168, 160, 0.2); }
+</style>
+</head>
+<body>
+
+<section class="slide active">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h1>Chargeback Attribution</h1>
+  <p style="font-size: 28px; margin-top: 20px;">Map costs to teams, departments, projects, and cost centers<br>using SCD Type 2 dimensions and multi-dimensional attribution logic.</p></div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">1 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>Three Attribution Methods</h2>
+  <table>
+    <tr><th>Method</th><th>Description</th><th>Use Case</th></tr>
+    <tr><td><strong>1. Direct</strong></td><td>Dedicated warehouse → team (1:1)</td><td class="hi">Preferred (simple, clear)</td></tr>
+    <tr><td><strong>2. Proportional</strong></td><td>Shared warehouse by usage %</td><td>Shared infrastructure</td></tr>
+    <tr><td><strong>3. Tag-Based</strong></td><td>QUERY_TAG overrides warehouse</td><td class="hi">Fine-grained (project-level)</td></tr>
+  </table>
+  <div class="box" style="margin-top: 32px;">
+    <p><strong>Goal:</strong> Keep unallocated costs <span class="success">&lt;5%</span> of total spend</p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">2 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>SCD Type 2: Handling Team Reorgs</h2>
+  <h3>Why SCD Type 2?</h3>
+  <ul>
+    <li>Teams merge, departments reorganize, warehouses get reassigned</li>
+    <li>Need to report costs under <span class="hi">both old and new structure</span> during transitions</li>
+    <li>Audit historical chargeback decisions</li>
+    <li>Handle backfill cost attribution correctly</li>
+  </ul>
+  <div class="code" style="margin-top: 32px; font-size: 15px;">
+CREATE TABLE DIM_COST_CENTER_MAPPING (
+    MAPPING_SK          NUMBER AUTOINCREMENT PRIMARY KEY,
+    WAREHOUSE_NAME      VARCHAR,
+    TEAM                VARCHAR,
+    DEPARTMENT          VARCHAR,
+    COST_CENTER         VARCHAR,
+    EFFECTIVE_FROM      TIMESTAMP_NTZ NOT NULL,
+    EFFECTIVE_TO        TIMESTAMP_NTZ DEFAULT '9999-12-31',
+    IS_CURRENT          BOOLEAN DEFAULT TRUE
+);
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">3 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>Attribution Priority Order</h2>
+  <div class="box">
+    <p style="font-size: 24px; line-height: 2;">
+      <strong>1. QUERY_TAG</strong> (if present) — highest priority<br>
+      <strong>2. Warehouse-to-Team mapping</strong> (if exists)<br>
+      <strong>3. Role-to-Team mapping</strong> (fallback)<br>
+      <strong>4. User-to-Team mapping</strong> (last resort)<br>
+      <strong>5. UNALLOCATED</strong> (if no match)
+    </p>
+  </div>
+  <div class="warn" style="margin-top: 32px;">
+    <p><strong>Common Mistake:</strong> Only checking warehouse mappings. Always fall through the priority chain to minimize unallocated costs.</p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">4 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>SP_CALCULATE_CHARGEBACK Procedure</h2>
+  <h3>What It Does</h3>
+  <ul>
+    <li>Collects all costs for date range (warehouse, query, storage)</li>
+    <li>Applies attribution rules in priority order</li>
+    <li>Handles shared warehouse costs with proportional allocation</li>
+    <li>Aggregates by team, department, project, cost center</li>
+    <li>Stores in <span class="hi">FACT_ATTRIBUTED_COST</span> with attribution method audit trail</li>
+  </ul>
+  <div class="box" style="margin-top: 40px;">
+    <p><strong>Output:</strong> Every dollar attributed to a business entity with full lineage from ACCOUNT_USAGE to chargeback.</p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">5 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>SP_REGISTER_CHARGEBACK_ENTITY</h2>
+  <p style="font-size: 24px; margin-bottom: 24px;">Easy one-call team onboarding</p>
+  <div class="code">
+CALL SP_REGISTER_CHARGEBACK_ENTITY(
+    'DATA_ENGINEERING',      -- p_department
+    'PLATFORM_TEAM',         -- p_team
+    'WH_TRANSFORM_PROD',     -- p_warehouse_name
+    'CC-12345',              -- p_cost_center
+    'PROD'                   -- p_environment
+);
+  </div>
+  <h3 style="margin-top: 32px;">Procedure Benefits</h3>
+  <ul>
+    <li>Validates warehouse exists</li>
+    <li>Handles SCD Type 2 (closes old mapping if warehouse reassigned)</li>
+    <li>Inserts new mapping with effective dates</li>
+    <li>Returns confirmation with details</li>
+  </ul>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">6 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>FACT_ATTRIBUTED_COST Table</h2>
+  <div class="code" style="font-size: 15px;">
+CREATE TABLE FACT_ATTRIBUTED_COST (
+    COST_DATE               DATE NOT NULL,
+    COST_TYPE               VARCHAR,  -- 'WAREHOUSE', 'QUERY', 'STORAGE'
+    WAREHOUSE_NAME          VARCHAR,
+    USER_NAME               VARCHAR,
+    TEAM                    VARCHAR,
+    DEPARTMENT              VARCHAR,
+    COST_CENTER             VARCHAR,
+    PROJECT                 VARCHAR,
+    ENVIRONMENT             VARCHAR,
+    TOTAL_CREDITS           NUMBER(38,6),
+    TOTAL_COST_USD          NUMBER(38,2),
+    ATTRIBUTION_METHOD      VARCHAR,  -- Audit trail
+    CREATED_AT              TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP()
+);
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">7 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>Hands-On Lab</h2>
+  <div class="box">
+    <h3 style="font-size: 24px;">Lab Steps</h3>
+    <ul>
+      <li>Create dimension tables (DIM_COST_CENTER_MAPPING, FACT_ATTRIBUTED_COST)</li>
+      <li>Create procedures (SP_CALCULATE_CHARGEBACK, SP_REGISTER_CHARGEBACK_ENTITY)</li>
+      <li>Register your first team with SP_REGISTER_CHARGEBACK_ENTITY</li>
+      <li>Run SP_CALCULATE_CHARGEBACK for last 7 days</li>
+      <li>View attributed costs by team</li>
+      <li>Check unallocated cost % (goal: &lt;5%)</li>
+    </ul>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">8 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h2>Verification Query</h2>
+  <div class="code" style="font-size: 16px;">
+-- View attributed costs by team
+SELECT
+    COST_DATE,
+    DEPARTMENT,
+    TEAM,
+    COST_CENTER,
+    SUM(TOTAL_CREDITS) AS TOTAL_CREDITS,
+    SUM(TOTAL_COST_USD) AS TOTAL_COST_USD,
+    ATTRIBUTION_METHOD
+FROM FINOPS_CONTROL_DB.CHARGEBACK.FACT_ATTRIBUTED_COST
+WHERE COST_DATE >= CURRENT_DATE() - 7
+GROUP BY COST_DATE, DEPARTMENT, TEAM, COST_CENTER, ATTRIBUTION_METHOD
+ORDER BY COST_DATE DESC, TOTAL_COST_USD DESC;
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">9 / 10</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 03 — Chargeback Attribution</div>
+  <div><h1>Attribution Complete ✓</h1>
+  <div style="margin-top: 48px;">
+    <p style="font-size: 26px; line-height: 1.8;">Every dollar now attributed to a team, department,<br>project, and cost center with full audit trail.</p>
+    <p style="font-size: 24px; margin-top: 32px;">Next up: <span class="hi">Module 04 — Budget Controls & Alerts</span></p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">10 / 10</div>
+</section>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  function showSlide(n) { slides[currentSlide].classList.remove('active'); currentSlide = (n + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlide + 1); if (e.key === 'ArrowLeft') showSlide(currentSlide - 1); });
+</script>
+</body>
+</html>

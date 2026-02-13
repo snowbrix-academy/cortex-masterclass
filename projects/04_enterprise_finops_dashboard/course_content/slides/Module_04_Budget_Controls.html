@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Module 04: Budget Controls | Snowbrix Academy</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+  :root { --bg: #1A1A2E; --cyan: #00D4FF; --orange: #FF6B35; --green: #06D6A0; --gray: #B0A8A0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: var(--bg); color: #E8E8E8; overflow: hidden; height: 100vh; }
+  .slide { display: none; width: 100vw; height: 100vh; padding: 60px 80px; flex-direction: column; justify-content: center; position: relative; }
+  .slide.active { display: flex; }
+  .tag { position: absolute; top: 30px; left: 40px; font-family: 'JetBrains Mono'; font-size: 13px; color: var(--cyan); text-transform: uppercase; }
+  .brand { position: absolute; bottom: 30px; left: 40px; font-size: 12px; color: #6B7280; }
+  .num { position: absolute; bottom: 30px; right: 40px; font-size: 14px; color: #6B7280; }
+  h1 { font-family: 'JetBrains Mono'; font-size: 52px; color: var(--cyan); margin-bottom: 24px; }
+  h2 { font-family: 'JetBrains Mono'; font-size: 40px; margin-bottom: 32px; }
+  p, li { font-size: 22px; line-height: 1.7; color: var(--gray); }
+  .box { background: rgba(0, 212, 255, 0.1); border-left: 4px solid var(--cyan); padding: 20px 24px; margin: 20px 0; }
+  ul { list-style: none; }
+  ul li { padding: 8px 0 8px 28px; position: relative; }
+  ul li::before { content: '▸'; position: absolute; left: 0; color: var(--cyan); }
+  .hi { color: var(--cyan); font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+  th { background: rgba(0, 212, 255, 0.15); color: var(--cyan); padding: 12px; }
+  td { padding: 12px; border: 1px solid rgba(176, 168, 160, 0.2); }
+</style>
+</head>
+<body>
+
+<section class="slide active">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h1>Budget Controls & Alerts</h1>
+  <p style="font-size: 28px; margin-top: 20px;">Prevent cost overruns with automated budget controls,<br>3-tier alerts, anomaly detection, and month-end forecasting.</p></div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">1 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h2>3-Tier Alert System</h2>
+  <table>
+    <tr><th>Threshold</th><th>Action</th><th>Type</th></tr>
+    <tr><td><strong>80%</strong></td><td>Email to team lead (soft warning)</td><td style="color: var(--orange);">Warning</td></tr>
+    <tr><td><strong>90%</strong></td><td>Email + Slack to director (critical)</td><td style="color: #E63946;">Critical</td></tr>
+    <tr><td><strong>100%</strong></td><td>VP alert + option to suspend warehouses</td><td style="color: #E63946;">Block</td></tr>
+  </table>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">2 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h2>Budget Definition Table</h2>
+  <ul>
+    <li>Monthly/quarterly budgets by entity (dept, team, project)</li>
+    <li>Configurable thresholds (80%, 90%, 100%)</li>
+    <li>Budget period types (MONTHLY, QUARTERLY, ANNUAL)</li>
+    <li>Separate CAPEX (storage) vs OPEX (compute) tracking</li>
+  </ul>
+  <div class="box" style="margin-top: 32px;">
+    <p><strong>SP_CHECK_BUDGETS</strong> runs daily, compares actual vs budget, triggers alerts at thresholds</p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">3 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h2>Anomaly Detection</h2>
+  <p style="font-size: 24px; margin-bottom: 24px;"><strong>Two Methods:</strong></p>
+  <ul>
+    <li><span class="hi">Z-Score Method:</span> Flag days with spend >2σ above 30-day rolling average</li>
+    <li><span class="hi">Percentage Spike:</span> Compare today vs same-day-last-week, flag if >50% increase</li>
+  </ul>
+  <div class="box" style="margin-top: 40px;">
+    <p><strong>SP_DETECT_ANOMALIES</strong> runs daily, identifies unusual spend patterns automatically</p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">4 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h2>Month-End Forecasting</h2>
+  <ul>
+    <li>Calculate burn rate: <span class="hi">daily average spend × days remaining</span></li>
+    <li>Linear projection to month-end</li>
+    <li>Compare forecast vs budget</li>
+    <li>Alert if projected to exceed budget by >10%</li>
+  </ul>
+  <div class="box" style="margin-top: 40px;">
+    <p><strong>Example:</strong> On Feb 15th with $30K spent, burn rate = $2K/day, forecast = $30K + ($2K × 13 days) = <span class="hi">$56K</span> projected month-end</p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">5 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h2>Alert History & Audit Trail</h2>
+  <ul>
+    <li>All alerts logged to <span class="hi">ALERT_HISTORY</span> table</li>
+    <li>Track: alert type, entity, threshold, actual spend, timestamp</li>
+    <li>Resolution tracking: who acknowledged, actions taken</li>
+    <li>Audit trail for compliance and post-mortem analysis</li>
+  </ul>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">6 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h2>Hands-On Lab</h2>
+  <ul>
+    <li>Create budget tables (BUDGET_DEFINITIONS, BUDGET_VS_ACTUAL, ALERT_HISTORY)</li>
+    <li>Set a monthly budget for your department</li>
+    <li>Run SP_CHECK_BUDGETS to evaluate status</li>
+    <li>View budget vs actual report</li>
+    <li>Simulate anomaly detection with test data</li>
+  </ul>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">7 / 8</div>
+</section>
+
+<section class="slide">
+  <div class="tag">Module 04 — Budget Controls</div>
+  <div><h1>Budget Controls Complete ✓</h1>
+  <div style="margin-top: 48px;">
+    <p style="font-size: 26px; line-height: 1.8;">Automated budget monitoring with 3-tier alerts,<br>anomaly detection, and month-end forecasting.</p>
+    <p style="font-size: 24px; margin-top: 32px;">Next up: <span class="hi">Module 05 — BI Tool Detection</span></p>
+  </div>
+  </div>
+  <div class="brand">Snowbrix Academy</div>
+  <div class="num">8 / 8</div>
+</section>
+
+<script>
+  let currentSlide = 0;
+  const slides = document.querySelectorAll('.slide');
+  function showSlide(n) { slides[currentSlide].classList.remove('active'); currentSlide = (n + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+  document.addEventListener('keydown', (e) => { if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlide + 1); if (e.key === 'ArrowLeft') showSlide(currentSlide - 1); });
+</script>
+</body>
+</html>
