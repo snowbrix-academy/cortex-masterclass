@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Build production AI data apps with Snowflake Cortex. 10-module hands-on course: Analyst, Agent, Document AI. Launch Feb 20, 2026.">
+    <title>Snowflake Cortex Masterclass — Build Production AI Data Apps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background: #ffffff;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero .tagline {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 30px;
+            opacity: 0.95;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .cta-primary {
+            background: #ef4444;
+            color: white;
+            padding: 18px 48px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .launch-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Section */
+        section {
+            padding: 80px 20px;
+        }
+
+        section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 60px;
+            color: #1a1a1a;
+        }
+
+        /* What You'll Build */
+        .outcomes {
+            background: #f9fafb;
+        }
+
+        .outcomes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .outcome-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .outcome-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .outcome-card h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1e40af;
+        }
+
+        .outcome-card p {
+            color: #4b5563;
+            line-height: 1.7;
+        }
+
+        /* Course Structure */
+        .modules {
+            background: white;
+        }
+
+        .modules-table {
+            max-width: 900px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            width: 100%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .modules-table thead {
+            background: #1e40af;
+            color: white;
+        }
+
+        .modules-table th,
+        .modules-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modules-table tbody tr:hover {
+            background: #f9fafb;
+        }
+
+        .modules-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Pricing */
+        .pricing {
+            background: #f9fafb;
+        }
+
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            position: relative;
+        }
+
+        .pricing-card.featured {
+            border: 3px solid #ef4444;
+            transform: scale(1.05);
+        }
+
+        .pricing-card .badge {
+            background: #ef4444;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+
+        .pricing-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #1a1a1a;
+        }
+
+        .pricing-card .price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin-bottom: 10px;
+        }
+
+        .pricing-card .price .currency {
+            font-size: 1.5rem;
+        }
+
+        .pricing-card .original-price {
+            font-size: 1.2rem;
+            color: #9ca3af;
+            text-decoration: line-through;
+            margin-bottom: 20px;
+        }
+
+        .pricing-card ul {
+            list-style: none;
+            margin: 30px 0;
+            text-align: left;
+        }
+
+        .pricing-card ul li {
+            padding: 10px 0;
+            color: #4b5563;
+            display: flex;
+            align-items: center;
+        }
+
+        .pricing-card ul li:before {
+            content: "✓";
+            color: #10b981;
+            font-weight: bold;
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        /* Email Capture */
+        .waitlist {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .waitlist h2 {
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .waitlist p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0.95;
+        }
+
+        .email-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .email-form input {
+            flex: 1;
+            min-width: 250px;
+            padding: 16px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .email-form button {
+            background: #ef4444;
+            color: white;
+            padding: 16px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .email-form button:hover {
+            transform: translateY(-2px);
+        }
+
+        .lead-magnet {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .lead-magnet p {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        /* Why Different */
+        .differentiators {
+            background: white;
+        }
+
+        .diff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .diff-card {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .diff-card .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .diff-card h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+
+        .diff-card p {
+            color: #4b5563;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            background: #1a1a1a;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        footer p {
+            opacity: 0.8;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero .tagline {
+                font-size: 1.2rem;
+            }
+
+            section h2 {
+                font-size: 2rem;
+            }
+
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+
+            .modules-table {
+                font-size: 0.9rem;
+            }
+
+            .modules-table th,
+            .modules-table td {
+                padding: 12px 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="launch-badge">🚀 Launching February 20, 2026</div>
+            <h1>Snowflake Cortex Masterclass</h1>
+            <p class="tagline">Production-Grade Data Engineering. No Fluff.</p>
+            <p>Build production AI data apps using Snowflake Cortex (Analyst, Agent, Document AI). 10 hands-on modules. Deploy to your portfolio in 12 hours.</p>
+            <a href="#waitlist" class="cta-primary">Join Waitlist — Get Free Interview Guide</a>
+        </div>
+    </section>
+
+    <!-- What You'll Build -->
+    <section class="outcomes">
+        <div class="container">
+            <h2>🎯 What You'll Build</h2>
+            <div class="outcomes-grid">
+                <div class="outcome-card">
+                    <h3>Cortex Analyst App</h3>
+                    <p>Natural language to SQL using semantic YAML models. Deploy a production app that lets business users query data in plain English.</p>
+                </div>
+                <div class="outcome-card">
+                    <h3>Data Agent</h3>
+                    <p>Multi-step root cause analysis with autonomous tool orchestration. Build an agent that investigates anomalies across 12 tables.</p>
+                </div>
+                <div class="outcome-card">
+                    <h3>Document AI + RAG</h3>
+                    <p>PDF extraction + semantic search pipeline. Create a customer support system that answers questions from unstructured documents.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Structure -->
+    <section class="modules">
+        <div class="container">
+            <h2>📚 Course Structure (10 Modules, 12 Hours)</h2>
+            <table class="modules-table">
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Title</th>
+                        <th>Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>M1</strong></td>
+                        <td>Set Up Your Snowflake AI Workspace</td>
+                        <td>45 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M2</strong></td>
+                        <td>Deploy Your First Cortex Analyst App</td>
+                        <td>60 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M3</strong></td>
+                        <td>Build a Data Agent for Root Cause Analysis</td>
+                        <td>75 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M4</strong></td>
+                        <td>Add Multi-Step Investigation Tools</td>
+                        <td>60 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M5</strong></td>
+                        <td>Deploy Document AI with Cortex Search</td>
+                        <td>90 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M6</strong></td>
+                        <td>Build a RAG Pipeline for Customer Support</td>
+                        <td>75 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M7</strong></td>
+                        <td>Integrate All Three Apps into One Dashboard</td>
+                        <td>60 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M8</strong></td>
+                        <td>Handle Production Patterns: Errors & Retries</td>
+                        <td>60 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M9</strong></td>
+                        <td>Optimize Cost, Governance & Scale</td>
+                        <td>75 min</td>
+                    </tr>
+                    <tr>
+                        <td><strong>M10</strong></td>
+                        <td>Build Your Capstone Portfolio Project</td>
+                        <td>90 min</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Why Different -->
+    <section class="differentiators">
+        <div class="container">
+            <h2>🏆 What Makes This Course Different?</h2>
+            <div class="diff-grid">
+                <div class="diff-card">
+                    <div class="icon">🎪</div>
+                    <h3>Real Booth Demo</h3>
+                    <p>Reverse-engineered from Innovation Summit 2026 (300+ attendees)</p>
+                </div>
+                <div class="diff-card">
+                    <div class="icon">🏭</div>
+                    <h3>Production Patterns</h3>
+                    <p>Deploy to Snowflake, handle errors, optimize costs from Day 1</p>
+                </div>
+                <div class="diff-card">
+                    <div class="icon">💼</div>
+                    <h3>Portfolio-Ready</h3>
+                    <p>3 deployed apps to show recruiters and hiring managers</p>
+                </div>
+                <div class="diff-card">
+                    <div class="icon">📊</div>
+                    <h3>Progressive Data</h3>
+                    <p>3→5→7→12 tables with planted anomalies for root cause analysis</p>
+                </div>
+                <div class="diff-card">
+                    <div class="icon">🎤</div>
+                    <h3>Interview Prep</h3>
+                    <p>50+ Snowflake Cortex interview questions with answers</p>
+                </div>
+                <div class="diff-card">
+                    <div class="icon">🏢</div>
+                    <h3>Corporate Ready</h3>
+                    <p>B2B packages for FMCG, Finance, Healthcare, Telecom teams</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="pricing">
+        <div class="container">
+            <h2>💰 Pricing</h2>
+            <div class="pricing-cards">
+                <div class="pricing-card">
+                    <h3>Self-Paced</h3>
+                    <div class="price"><span class="currency">₹</span>6,999</div>
+                    <p style="color: #4b5563; margin-bottom: 30px;">Launch Price</p>
+                    <ul>
+                        <li>10 video modules (12 hours)</li>
+                        <li>All SQL scripts + Streamlit apps</li>
+                        <li>Progressive lab challenges</li>
+                        <li>Automated GitHub checks</li>
+                        <li>Lifetime access</li>
+                        <li>Community Discord</li>
+                    </ul>
+                    <a href="#waitlist" class="cta-primary" style="display: block; margin-top: 20px;">Join Waitlist</a>
+                </div>
+
+                <div class="pricing-card featured">
+                    <div class="badge">EARLY BIRD 🔥</div>
+                    <h3>Early Bird Special</h3>
+                    <div class="price"><span class="currency">₹</span>4,999</div>
+                    <div class="original-price">₹6,999</div>
+                    <ul>
+                        <li>Everything in Self-Paced</li>
+                        <li>48-hour early access (Feb 20-21)</li>
+                        <li>Free interview guide (₹999 value)</li>
+                        <li>Early bird badge on certificate</li>
+                        <li>Priority support</li>
+                        <li><strong>Save ₹2,000</strong></li>
+                    </ul>
+                    <a href="#waitlist" class="cta-primary" style="display: block; margin-top: 20px;">Get Early Bird Access</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Live Workshop</h3>
+                    <div class="price"><span class="currency">₹</span>15,000</div>
+                    <p style="color: #4b5563; margin-bottom: 30px;">Cohort-Based</p>
+                    <ul>
+                        <li>Everything in Self-Paced</li>
+                        <li>2 live sessions (4 hours each)</li>
+                        <li>Live code reviews</li>
+                        <li>Q&A with instructor</li>
+                        <li>Peer collaboration</li>
+                        <li>LinkedIn recommendation</li>
+                    </ul>
+                    <a href="#waitlist" class="cta-primary" style="display: block; margin-top: 20px;">Join Waitlist</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Waitlist / Email Capture -->
+    <section class="waitlist" id="waitlist">
+        <div class="container">
+            <h2>🚀 Join the Waitlist</h2>
+            <p>Get notified when the course launches on February 20, 2026. First 50 students get early bird pricing (₹4,999).</p>
+
+            <form class="email-form" action="#" method="POST">
+                <input type="email" name="email" placeholder="Enter your email" required>
+                <button type="submit">Join Waitlist</button>
+            </form>
+
+            <div class="lead-magnet">
+                <p><strong>🎁 Instant Access:</strong> Get "50 Snowflake Cortex Interview Questions" (PDF) when you join the waitlist.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Snowbrix Academy. Production-Grade Data Engineering. No Fluff.</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                <a href="https://github.com/snowbrix-academy/cortex-masterclass" style="color: #3b82f6; text-decoration: none;">GitHub</a> |
+                <a href="mailto:contact@snowbrix.academy" style="color: #3b82f6; text-decoration: none;">Contact</a>
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Email form handling (placeholder - integrate with Mailchimp/ConvertKit)
+        document.querySelector('.email-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = this.querySelector('input[type="email"]').value;
+
+            // TODO: Replace with actual Mailchimp/ConvertKit API call
+            alert('Thank you! You\'ve been added to the waitlist. Check your email for the interview guide PDF.');
+
+            // Example Mailchimp integration:
+            // fetch('YOUR_MAILCHIMP_ENDPOINT', {
+            //     method: 'POST',
+            //     body: JSON.stringify({ email: email }),
+            //     headers: { 'Content-Type': 'application/json' }
+            // });
+        });
+    </script>
+</body>
+</html>
