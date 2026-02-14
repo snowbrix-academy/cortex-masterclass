@@ -1,0 +1,405 @@
+# cortex_analyst_demo.yaml
+# Semantic model for Innovation Summit demo
+# Defines tables, joins, metrics, and business terms for Cortex Analyst
+#
+# STAGE TO: @DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SEMANTIC_MODELS/cortex_analyst_demo.yaml
+# UPLOAD:   PUT file://cortex_analyst_demo.yaml @DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SEMANTIC_MODELS AUTO_COMPRESS=FALSE OVERWRITE=TRUE;
+
+name: innovation_summit_sales
+description: >
+  Sales analytics model for Innovation Summit demo.
+  Covers transactional sales, marketing campaigns, customer data,
+  and support tickets across 4 regions and 6 product categories.
+
+tables:
+  - name: SALES_FACT
+    description: Transactional sales data — one row per order
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: SALES_FACT
+    dimensions:
+      - name: order_id
+        description: Unique order identifier
+        expr: ORDER_ID
+        data_type: NUMBER
+      - name: order_date
+        description: Date the order was placed
+        expr: ORDER_DATE
+        data_type: DATE
+      - name: order_status
+        description: "Order status: Completed or Cancelled"
+        expr: ORDER_STATUS
+        data_type: VARCHAR
+      - name: is_returned
+        description: Whether the order was returned (TRUE/FALSE)
+        expr: IS_RETURNED
+        data_type: BOOLEAN
+      - name: product_id
+        description: Foreign key to DIM_PRODUCT
+        expr: PRODUCT_ID
+        data_type: NUMBER
+      - name: region_id
+        description: Foreign key to DIM_REGION
+        expr: REGION_ID
+        data_type: NUMBER
+      - name: rep_id
+        description: Foreign key to DIM_SALES_REP
+        expr: REP_ID
+        data_type: NUMBER
+      - name: customer_id
+        description: Foreign key to CUSTOMER_DIM
+        expr: CUSTOMER_ID
+        data_type: NUMBER
+    measures:
+      - name: revenue
+        description: Total revenue (sum of order amounts for completed, non-returned orders)
+        expr: AMOUNT
+        data_type: NUMBER
+        default_aggregation: sum
+      - name: order_count
+        description: Number of orders
+        expr: ORDER_ID
+        data_type: NUMBER
+        default_aggregation: count
+      - name: avg_order_value
+        description: Average order value
+        expr: AMOUNT
+        data_type: NUMBER
+        default_aggregation: avg
+      - name: discount_pct
+        description: Discount percentage applied to the order (0-25%)
+        expr: DISCOUNT_PCT
+        data_type: NUMBER
+        default_aggregation: avg
+      - name: return_rate
+        description: Percentage of orders returned
+        expr: "CASE WHEN IS_RETURNED THEN 1.0 ELSE 0.0 END"
+        data_type: NUMBER
+        default_aggregation: avg
+
+  - name: DIM_PRODUCT
+    description: Product catalog — categories, subcategories, and cost
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: DIM_PRODUCT
+    primary_key:
+      columns:
+        - PRODUCT_ID
+    dimensions:
+      - name: product_id
+        description: Unique product identifier
+        expr: PRODUCT_ID
+        data_type: NUMBER
+      - name: product_name
+        description: Product display name
+        expr: PRODUCT_NAME
+        data_type: VARCHAR
+      - name: category
+        description: "Product category: Electronics, Apparel, Home & Kitchen, Sports, Office Supplies, Health & Beauty"
+        expr: CATEGORY
+        data_type: VARCHAR
+      - name: subcategory
+        description: "Product tier: Premium, Standard, Budget, Professional"
+        expr: SUBCATEGORY
+        data_type: VARCHAR
+      - name: unit_cost
+        description: Unit cost of the product
+        expr: UNIT_COST
+        data_type: NUMBER
+
+  - name: DIM_REGION
+    description: Geographic hierarchy — territory, region, country
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: DIM_REGION
+    primary_key:
+      columns:
+        - REGION_ID
+    dimensions:
+      - name: region_id
+        description: Unique region identifier
+        expr: REGION_ID
+        data_type: NUMBER
+      - name: region_name
+        description: "Region: North America, EMEA, APAC, LATAM"
+        expr: REGION_NAME
+        data_type: VARCHAR
+      - name: country
+        description: Country name
+        expr: COUNTRY
+        data_type: VARCHAR
+      - name: territory
+        description: "Sales territory code: NA, EMEA, APAC, LATAM"
+        expr: TERRITORY
+        data_type: VARCHAR
+
+  - name: DIM_DATE
+    description: Date dimension — calendar and fiscal periods
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: DIM_DATE
+    primary_key:
+      columns:
+        - DATE_KEY
+    dimensions:
+      - name: date_key
+        description: Calendar date
+        expr: DATE_KEY
+        data_type: DATE
+      - name: year
+        description: Calendar year
+        expr: YEAR
+        data_type: NUMBER
+      - name: quarter
+        description: Calendar quarter (1-4)
+        expr: QUARTER
+        data_type: NUMBER
+      - name: month
+        description: Calendar month (1-12)
+        expr: MONTH
+        data_type: NUMBER
+      - name: month_name
+        description: Month name (Jan, Feb, etc.)
+        expr: MONTH_NAME
+        data_type: VARCHAR
+      - name: fiscal_year
+        description: "Fiscal year (e.g., FY2025)"
+        expr: FISCAL_YEAR
+        data_type: VARCHAR
+
+  - name: DIM_SALES_REP
+    description: Sales rep directory with team assignments
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: DIM_SALES_REP
+    primary_key:
+      columns:
+        - REP_ID
+    dimensions:
+      - name: rep_id
+        description: Unique rep identifier
+        expr: REP_ID
+        data_type: NUMBER
+      - name: rep_name
+        description: Sales rep name
+        expr: REP_NAME
+        data_type: VARCHAR
+      - name: team
+        description: "Sales team: Enterprise, Mid-Market, SMB, Strategic, Inside Sales"
+        expr: TEAM
+        data_type: VARCHAR
+
+  - name: CAMPAIGN_FACT
+    description: Marketing campaigns with spend, impressions, and conversions
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: CAMPAIGN_FACT
+    dimensions:
+      - name: campaign_id
+        description: Unique campaign identifier
+        expr: CAMPAIGN_ID
+        data_type: NUMBER
+      - name: channel
+        description: "Marketing channel: Digital Ads, Email, Events, Content Marketing, Partner Co-Marketing"
+        expr: CHANNEL
+        data_type: VARCHAR
+      - name: campaign_status
+        description: "Campaign status: Active, Completed, Scheduled, Paused — Budget Freeze"
+        expr: CAMPAIGN_STATUS
+        data_type: VARCHAR
+      - name: start_date
+        description: Campaign start date
+        expr: START_DATE
+        data_type: DATE
+      - name: region_id
+        description: Foreign key to DIM_REGION
+        expr: REGION_ID
+        data_type: NUMBER
+    measures:
+      - name: campaign_spend
+        description: Total marketing spend
+        expr: SPEND
+        data_type: NUMBER
+        default_aggregation: sum
+      - name: impressions
+        description: Total ad impressions
+        expr: IMPRESSIONS
+        data_type: NUMBER
+        default_aggregation: sum
+      - name: conversions
+        description: Total conversions from campaign
+        expr: CONVERSIONS
+        data_type: NUMBER
+        default_aggregation: sum
+
+  - name: CUSTOMER_DIM
+    description: Customer master with segmentation and churn status
+    base_table:
+      database: DEMO_AI_SUMMIT
+      schema: CORTEX_ANALYST_DEMO
+      table: CUSTOMER_DIM
+    primary_key:
+      columns:
+        - CUSTOMER_ID
+    dimensions:
+      - name: customer_id
+        description: Unique customer identifier
+        expr: CUSTOMER_ID
+        data_type: NUMBER
+      - name: segment
+        description: "Customer segment: Enterprise, Mid-Market, SMB, Startup"
+        expr: SEGMENT
+        data_type: VARCHAR
+      - name: churn_flag
+        description: Whether the customer has churned (TRUE/FALSE)
+        expr: CHURN_FLAG
+        data_type: BOOLEAN
+      - name: region_id
+        description: Foreign key to DIM_REGION
+        expr: REGION_ID
+        data_type: NUMBER
+    measures:
+      - name: lifetime_value
+        description: Customer lifetime value in dollars
+        expr: LIFETIME_VALUE
+        data_type: NUMBER
+        default_aggregation: sum
+      - name: churn_rate
+        description: Percentage of customers who churned
+        expr: "CASE WHEN CHURN_FLAG THEN 1.0 ELSE 0.0 END"
+        data_type: NUMBER
+        default_aggregation: avg
+
+relationships:
+  - name: sales_to_product
+    left_table: SALES_FACT
+    right_table: DIM_PRODUCT
+    join_type: inner
+    relationship_columns:
+      - left_column: PRODUCT_ID
+        right_column: PRODUCT_ID
+
+  - name: sales_to_region
+    left_table: SALES_FACT
+    right_table: DIM_REGION
+    join_type: inner
+    relationship_columns:
+      - left_column: REGION_ID
+        right_column: REGION_ID
+
+  - name: sales_to_date
+    left_table: SALES_FACT
+    right_table: DIM_DATE
+    join_type: inner
+    relationship_columns:
+      - left_column: ORDER_DATE
+        right_column: DATE_KEY
+
+  - name: sales_to_rep
+    left_table: SALES_FACT
+    right_table: DIM_SALES_REP
+    join_type: inner
+    relationship_columns:
+      - left_column: REP_ID
+        right_column: REP_ID
+
+  - name: sales_to_customer
+    left_table: SALES_FACT
+    right_table: CUSTOMER_DIM
+    join_type: inner
+    relationship_columns:
+      - left_column: CUSTOMER_ID
+        right_column: CUSTOMER_ID
+
+  - name: campaign_to_region
+    left_table: CAMPAIGN_FACT
+    right_table: DIM_REGION
+    join_type: inner
+    relationship_columns:
+      - left_column: REGION_ID
+        right_column: REGION_ID
+
+  - name: customer_to_region
+    left_table: CUSTOMER_DIM
+    right_table: DIM_REGION
+    join_type: inner
+    relationship_columns:
+      - left_column: REGION_ID
+        right_column: REGION_ID
+
+verified_queries:
+  - name: total_sales_last_quarter
+    question: "What were total sales last quarter?"
+    sql: >
+      SELECT SUM(sf.AMOUNT) AS total_sales
+      FROM DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SALES_FACT sf
+      JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.DIM_DATE dd ON sf.ORDER_DATE = dd.DATE_KEY
+      WHERE dd.YEAR = 2025 AND dd.QUARTER = 3
+    verified_at: 1740787200
+
+  - name: return_rate_by_category
+    question: "Which product category has the highest return rate?"
+    sql: >
+      SELECT p.CATEGORY,
+             COUNT(*) AS total_orders,
+             SUM(CASE WHEN sf.IS_RETURNED THEN 1 ELSE 0 END) AS returns,
+             ROUND(returns / total_orders * 100, 1) AS return_rate_pct
+      FROM DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SALES_FACT sf
+      JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.DIM_PRODUCT p ON sf.PRODUCT_ID = p.PRODUCT_ID
+      GROUP BY p.CATEGORY
+      ORDER BY return_rate_pct DESC
+    verified_at: 1740787200
+
+  - name: marketing_vs_revenue_by_region
+    question: "Compare marketing spend vs revenue by region for Q3 and Q4"
+    sql: >
+      SELECT r.TERRITORY,
+             SUM(CASE WHEN dd.QUARTER = 3 THEN sf.AMOUNT END) AS q3_revenue,
+             SUM(CASE WHEN dd.QUARTER = 4 THEN sf.AMOUNT END) AS q4_revenue,
+             SUM(CASE WHEN cf.START_DATE BETWEEN '2025-07-01' AND '2025-09-30' THEN cf.SPEND END) AS q3_spend,
+             SUM(CASE WHEN cf.START_DATE BETWEEN '2025-10-01' AND '2025-12-31' THEN cf.SPEND END) AS q4_spend
+      FROM DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SALES_FACT sf
+      JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.DIM_DATE dd ON sf.ORDER_DATE = dd.DATE_KEY
+      JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.DIM_REGION r ON sf.REGION_ID = r.REGION_ID
+      LEFT JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.CAMPAIGN_FACT cf ON r.REGION_ID = cf.REGION_ID
+      WHERE dd.YEAR = 2025
+      GROUP BY r.TERRITORY
+    verified_at: 1740787200
+
+  - name: top_reps_above_50k
+    question: "Which sales rep closed the most deals above $50K in the last 6 months?"
+    sql: >
+      SELECT sr.REP_NAME, sr.TEAM,
+             COUNT(*) AS deals_above_50k,
+             ROUND(SUM(sf.AMOUNT), 0) AS total_value
+      FROM DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SALES_FACT sf
+      JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.DIM_SALES_REP sr ON sf.REP_ID = sr.REP_ID
+      WHERE sf.AMOUNT > 50000
+        AND sf.ORDER_DATE >= DATEADD(MONTH, -6, CURRENT_DATE())
+      GROUP BY sr.REP_NAME, sr.TEAM
+      ORDER BY deals_above_50k DESC
+      LIMIT 10
+    verified_at: 1740787200
+
+  - name: discount_vs_churn
+    question: "What's the correlation between discount percentage and customer churn?"
+    sql: >
+      SELECT CASE WHEN sf.DISCOUNT_PCT < 5 THEN '0-5%'
+                  WHEN sf.DISCOUNT_PCT < 10 THEN '5-10%'
+                  WHEN sf.DISCOUNT_PCT < 15 THEN '10-15%'
+                  WHEN sf.DISCOUNT_PCT < 20 THEN '15-20%'
+                  ELSE '20%+' END AS discount_band,
+             COUNT(DISTINCT sf.CUSTOMER_ID) AS total_customers,
+             SUM(CASE WHEN c.CHURN_FLAG THEN 1 ELSE 0 END) AS churned,
+             ROUND(churned / total_customers * 100, 1) AS churn_rate_pct
+      FROM DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.SALES_FACT sf
+      JOIN DEMO_AI_SUMMIT.CORTEX_ANALYST_DEMO.CUSTOMER_DIM c ON sf.CUSTOMER_ID = c.CUSTOMER_ID
+      GROUP BY discount_band
+      ORDER BY discount_band
+    verified_at: 1740787200
