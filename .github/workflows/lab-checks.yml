@@ -1,0 +1,64 @@
+name: Lab Validation Checks
+
+on:
+  pull_request:
+    paths:
+      - 'labs/**'  # Only run when labs/ folder changes
+
+jobs:
+  validate-lab:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for accurate diffs
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          pip install sqlfluff==2.3.5
+          pip install black==23.12.1
+          pip install flake8==7.0.0
+          pip install yamllint==1.33.0
+          pip install pyyaml==6.0.1
+
+      # Check 1: SQL Syntax (sqlfluff)
+      - name: SQL Syntax Check
+        run: |
+          echo "Linting SQL files in labs/"
+          sqlfluff lint labs/**/*.sql --dialect snowflake --rules L001,L003,L006,L010,L014,L019
+        continue-on-error: false
+
+      # Check 2: Python Formatting (black)
+      - name: Python Formatting Check
+        run: |
+          echo "Checking Python formatting with black"
+          black --check labs/**/*.py --line-length 120
+        continue-on-error: false
+
+      # Check 3: Python Linting (flake8)
+      - name: Python Linting Check
+        run: |
+          echo "Linting Python files with flake8"
+          flake8 labs/**/*.py --max-line-length=120 --ignore=E203,W503
+        continue-on-error: false
+
+      # Check 4: YAML Validation (yamllint)
+      - name: YAML Validation Check
+        run: |
+          echo "Validating YAML files"
+          yamllint labs/**/*.yaml -d "{extends: default, rules: {line-length: {max: 120}}}"
+        continue-on-error: false
+
+      # Success message
+      - name: All Checks Passed
+        if: success()
+        run: |
+          echo "✅ All checks passed! Module lab is ready for review."
+          echo "Merge this PR to mark module as complete."
