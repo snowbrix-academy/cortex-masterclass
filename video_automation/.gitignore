@@ -1,0 +1,33 @@
+# Video Automation - Generated Files
+# These are generated outputs and should not be committed
+
+# Generated slides
+output/slides/*.pptx
+
+# Generated audio files
+output/audio/**/*.wav
+output/audio/temp/
+
+# Generated videos
+output/videos/*.mp4
+output/broll/**/*.mp4
+output/final/*.mp4
+
+# Temporary files
+*.tmp
+*.temp
+__pycache__/
+*.pyc
+
+# But keep directory structure and checklists
+!output/.gitkeep
+!output/audio/.gitkeep
+!output/audio/module_01/.gitkeep
+!output/audio/module_02/.gitkeep
+!output/slides/.gitkeep
+!output/videos/.gitkeep
+!output/videos/*.md
+!output/broll/.gitkeep
+!output/broll/module_01/.gitkeep
+!output/broll/module_02/.gitkeep
+!output/final/.gitkeep
