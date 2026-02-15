@@ -1,0 +1,15 @@
+# Databricks App Configuration — Station B: Agent Framework
+
+command: ["streamlit", "run", "app.py", "--server.port=8080"]
+
+env:
+  - name: CATALOG
+    value: "demo_ai_summit_databricks"
+  - name: SQL_WAREHOUSE_ID
+    value: ""  # Set to your SQL warehouse ID
+  - name: AGENT_ENDPOINT
+    value: ""  # Set to your Agent Framework endpoint (if using live mode)
+
+resources:
+  cpu: "1"
+  memory: "2Gi"

@@ -1,0 +1,17 @@
+# Databricks App Configuration — Station C: Document Intelligence
+
+command: ["streamlit", "run", "app.py", "--server.port=8080"]
+
+env:
+  - name: CATALOG
+    value: "demo_ai_summit_databricks"
+  - name: SQL_WAREHOUSE_ID
+    value: ""  # Set to your SQL warehouse ID
+  - name: VECTOR_SEARCH_ENDPOINT
+    value: "demo_ai_summit_vs_endpoint"
+  - name: VECTOR_SEARCH_INDEX
+    value: "demo_ai_summit_databricks.documents.documents_search_index"
+
+resources:
+  cpu: "1"
+  memory: "2Gi"

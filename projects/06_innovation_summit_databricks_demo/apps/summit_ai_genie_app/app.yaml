@@ -1,0 +1,16 @@
+# Databricks App Configuration
+# Docs: https://docs.databricks.com/apps/
+
+command: ["streamlit", "run", "app.py", "--server.port=8080"]
+
+env:
+  - name: GENIE_SPACE_ID
+    value: "summit_sales_analytics"
+  - name: CATALOG
+    value: "demo_ai_summit_databricks"
+  - name: SQL_WAREHOUSE_ID
+    value: ""  # Set this to your SQL warehouse ID
+
+resources:
+  cpu: "1"
+  memory: "2Gi"
